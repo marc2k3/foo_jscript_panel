@@ -1,0 +1,110 @@
+// ==PREPROCESSOR==
+// @name "MainMenuManager All-In-One"
+// @author "YBStone / T.P Wang / marc2003"
+// @import "%fb2k_component_path%docs\Flags.txt"
+// @import "%fb2k_component_path%docs\Helpers.txt"
+// ==/PREPROCESSOR==
+
+var img = gdi.Image(fb.ComponentPath + 'samples\\basic\\images\\cog.png');
+
+function on_focus(is_focused) {
+	if (is_focused) {
+		plman.SetActivePlaylistContext();
+	}
+}
+
+function on_paint(gr) {
+	gr.DrawImage(img, 0, 0, img.Width, img.Height, 0, 0, img.Width, img.Height);
+}
+
+function on_mouse_lbtn_up(x, y) {
+	if (x > 0 && x < img.Width && y > 0 && y < img.Height) {
+		menu();
+	}
+}
+
+function menu() {
+	var basemenu = window.CreatePopupMenu();
+	var contextman = fb.CreateContextMenuManager();
+	
+	var child1 = window.CreatePopupMenu(); //File
+	var child2 = window.CreatePopupMenu(); //Edit
+	var child3 = window.CreatePopupMenu(); //View
+	var child4 = window.CreatePopupMenu(); //Playback
+	var child5 = window.CreatePopupMenu(); //Library
+	var child6 = window.CreatePopupMenu(); //Help
+	var child7 = window.CreatePopupMenu(); //Now playing
+	
+	var menuman1 = fb.CreateMainMenuManager();
+	var menuman2 = fb.CreateMainMenuManager();
+	var menuman3 = fb.CreateMainMenuManager();
+	var menuman4 = fb.CreateMainMenuManager();
+	var menuman5 = fb.CreateMainMenuManager();
+	var menuman6 = fb.CreateMainMenuManager();
+	
+	// MF_STRING is defined in docs\Flags.txt
+	child1.AppendTo(basemenu, MF_STRING, 'File');
+	child2.AppendTo(basemenu, MF_STRING, 'Edit');
+	child3.AppendTo(basemenu, MF_STRING, 'View');
+	child4.AppendTo(basemenu, MF_STRING, 'Playback');
+	child5.AppendTo(basemenu, MF_STRING, 'Library');
+	child6.AppendTo(basemenu, MF_STRING, 'Help');
+	
+	menuman1.Init('file');
+	menuman2.Init('edit');
+	menuman3.Init('View');
+	menuman4.Init('playback');
+	menuman5.Init('library');
+	menuman6.Init('help');
+	
+	menuman1.BuildMenu(child1, 1000);
+	menuman2.BuildMenu(child2, 2000);
+	menuman3.BuildMenu(child3, 3000);
+	menuman4.BuildMenu(child4, 4000);
+	menuman5.BuildMenu(child5, 5000);
+	menuman6.BuildMenu(child6, 6000);
+	
+	if (fb.IsPlaying) {
+		contextman.InitNowPlaying();
+		contextman.BuildMenu(child7, 7000);
+		basemenu.AppendMenuSeparator();
+		child7.AppendTo(basemenu, MF_STRING, 'Now Playing');
+	}
+	
+	var idx = basemenu.TrackPopupMenu(0, 0);
+
+	switch (true) {
+	case idx == 0:
+		break;
+	case idx < 2000:
+		menuman1.ExecuteByID(idx - 1000);
+		break;
+	case idx < 3000:
+		menuman2.ExecuteByID(idx - 2000);
+		break;
+	case idx < 4000:
+		menuman3.ExecuteByID(idx - 3000);
+		break;
+	case idx < 5000:
+		menuman4.ExecuteByID(idx - 4000);
+		break;
+	case idx < 6000:
+		menuman5.ExecuteByID(idx - 5000);
+		break;
+	case idx < 7000:
+		menuman6.ExecuteByID(idx - 6000);
+		break;
+	case idx < 8000:
+		contextman.ExecuteByID(idx - 7000);
+		break;
+	}
+	
+	basemenu.Dispose();
+	contextman.Dispose();
+	menuman1.Dispose();
+	menuman2.Dispose();
+	menuman3.Dispose();
+	menuman4.Dispose();
+	menuman5.Dispose();
+	menuman6.Dispose();
+}
