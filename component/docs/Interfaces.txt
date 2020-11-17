@@ -576,10 +576,10 @@ interface IGdi {
 	Methods:
 		gdi.CreateImage(w, h) (IGdiBitmap)
 
-		gdi.Font(name, size_px[, style]) (IGdiFont)
+		gdi.Font(font_name, font_size_px[, font_style]) (IGdiFont)
 		/*
-		size_px: See Helpers.txt > Point2Pixel function for conversions.
-		style: default 0, can be combined.
+		font_size_px: See Helpers.txt > Point2Pixel function for conversions.
+		font_style: default 0, can be combined.
 
 		0: Regular
 		1: Bold
@@ -1426,6 +1426,9 @@ interface IWindow {
 
 		window.CreateTooltip([font_name, font_size_px, font_style]) (ITooltip)
 		/*
+		Since it's not permitted to call this more than once in a panel, see the additional window.SetTooltipFont
+		method too.
+
 		font_name: default "Segoe UI"
 		font_size_px: default 12
 		font_style: default 0, can be combined.
@@ -1436,8 +1439,6 @@ interface IWindow {
 		3: BoldItalic
 		4: Underline
 		8: Strikeout
-
-		IMPORTANT: Only call once per panel instance.
 		*/
 
 			interface ITooltip {
@@ -1606,6 +1607,22 @@ interface IWindow {
 		val: string, number, boolean
 		Set property value. To remove an existing property, you can supply "null" as the "val".
 		Property values will be saved per panel instance and are remembered between foobar2000 restarts.
+		*/
+
+		window.SetTooltipFont(font_name, font_size_px[, font_style])
+		/*
+		As of v2.4.1, it's not permitted to call window.CreateTooltip more than once in a single panel so this was added in v2.4.3
+		to allow changing the font on the fly without reloading the panel.
+
+		font_size_px: See Helpers.txt > Point2Pixel function for conversions.
+		font_style: default 0, can be combined.
+
+		0: Regular
+		1: Bold
+		2: Italic
+		3: BoldItalic
+		4: Underline
+		8: Strikeout
 		*/
 
 		window.ShowConfigure() (void)

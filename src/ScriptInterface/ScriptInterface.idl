@@ -482,6 +482,7 @@ library foo_jscript_panel
 		HRESULT SetInterval(IDispatch* func, int delay, [out, retval] UINT* p);
 		HRESULT SetProperty(BSTR name, VARIANT val);
 		HRESULT SetTimeout(IDispatch* func, int delay, [out, retval] UINT* p);
+		HRESULT SetTooltipFont(BSTR name, float pxSize, [defaultvalue(0)] int style);
 		HRESULT ShowConfigure();
 		HRESULT ShowProperties();
 		[propget] HRESULT Height([out, retval] int* p);

@@ -27,6 +27,7 @@ public:
 	STDMETHODIMP SetInterval(IDispatch* func, int delay, UINT* p) override;
 	STDMETHODIMP SetProperty(BSTR name, VARIANT val) override;
 	STDMETHODIMP SetTimeout(IDispatch* func, int delay, UINT* p) override;
+	STDMETHODIMP SetTooltipFont(BSTR name, float pxSize, int style) override;
 	STDMETHODIMP ShowConfigure() override;
 	STDMETHODIMP ShowProperties() override;
 	STDMETHODIMP get_Height(int* p) override;

@@ -190,6 +190,18 @@ STDMETHODIMP Window::SetTimeout(IDispatch* func, int delay, UINT* p)
 	return S_OK;
 }
 
+STDMETHODIMP Window::SetTooltipFont(BSTR name, float pxSize, int style)
+{
+	if (m_panel->m_tooltip.IsWindow())
+	{
+		if (!m_panel->m_tooltip_font.IsNull()) m_panel->m_tooltip_font.DeleteObject();
+
+		m_panel->m_tooltip_font = create_font(name, pxSize, style);
+		m_panel->m_tooltip.SetFont(m_panel->m_tooltip_font, FALSE);
+	}
+	return S_OK;
+}
+
 STDMETHODIMP Window::ShowConfigure()
 {
 	fb2k::inMainThread([&]()
