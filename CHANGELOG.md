@@ -1,3 +1,6 @@
+## v2.4.3
+- Add window.SetTooltipFont. Since it's not permissable to call window.CreateTooltip more than once in a panel, this method has been added for changing the tooltip font without reloading the panel.
+
 ## v2.4.2
 - Internal changes only, no new features.
 
