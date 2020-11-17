@@ -8,12 +8,11 @@ public:
 
 	bool convert(const VARIANT& v, pfc::bit_array_bittable& out)
 	{
-		if (!init(v)) return false;
+		if (!init(v, VT_UI4)) return false;
 		if (m_data.empty()) out.resize(0);
 
 		for (auto& item : m_data)
 		{
-			if (!change_type(item, VT_UI4)) return false;
 			out.set(item.ulVal, true);
 		}
 		return true;
@@ -21,11 +20,10 @@ public:
 
 	bool convert(const VARIANT& v, pfc::string_list_impl& out)
 	{
-		if (!init(v)) return false;
+		if (!init(v, VT_BSTR)) return false;
 
 		for (auto& item : m_data)
 		{
-			if (!change_type(item, VT_BSTR)) return false;
 			out.add_item(string_utf8_from_wide(item.bstrVal));
 		}
 		return true;
@@ -33,7 +31,7 @@ public:
 
 	bool convert(const VARIANT& v, std::vector<Gdiplus::PointF>& out)
 	{
-		if (!init(v)) return false;
+		if (!init(v, VT_R4)) return false;
 		if (m_data.size() % 2 != 0) return false;
 
 		const size_t count = m_data.size() >> 1;
@@ -41,46 +39,36 @@ public:
 
 		for (size_t i = 0; i < count; ++i)
 		{
-			_variant_t varX = m_data[i * 2];
-			_variant_t varY = m_data[(i * 2) + 1];
-			if (!change_type(varX, VT_R4)) return false;
-			if (!change_type(varY, VT_R4)) return false;
-			out[i] = { varX.fltVal, varY.fltVal };
+			out[i] = { m_data[i * 2].fltVal, m_data[(i * 2) + 1].fltVal };
 		}
 		return true;
 	}
 
 private:
-	bool change_type(VARIANT& var, VARTYPE vt)
+	bool get_property(IDispatch* pdisp, const std::wstring& name, VARTYPE vt, VARIANT& result)
 	{
-		return SUCCEEDED(VariantChangeType(&var, &var, 0, vt));
+		auto cname = const_cast<LPOLESTR>(name.data());
+		DISPID dispId;
+		DISPPARAMS params{};
+		if (FAILED(pdisp->GetIDsOfNames(IID_NULL, &cname, 1, LOCALE_USER_DEFAULT, &dispId))) return false;
+		if (FAILED(pdisp->Invoke(dispId, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_PROPERTYGET, &params, &result, nullptr, nullptr))) return false;
+		if (FAILED(VariantChangeType(&result, &result, 0, vt))) return false;
+		return true;
 	}
 
-	bool init(const VARIANT& v)
+	bool init(const VARIANT& v, VARTYPE vt)
 	{
 		if (v.vt != VT_DISPATCH || !v.pdispVal) return false;
 
 		IDispatch* pdisp = v.pdispVal;
-		DISPID dispId;
-		DISPPARAMS params{};
 		_variant_t result;
-
-		auto name = const_cast<LPOLESTR>(L"length");
-
-		if (FAILED(pdisp->GetIDsOfNames(IID_NULL, &name, 1, LOCALE_USER_DEFAULT, &dispId))) return false;
-		if (FAILED(pdisp->Invoke(dispId, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_PROPERTYGET, &params, &result, nullptr, nullptr))) return false;
-		if (!change_type(result, VT_UI4)) return false;
-
+		if (!get_property(pdisp, L"length", VT_UI4, result)) return false;
 		const size_t count = result.ulVal;
 		m_data.resize(count);
 
 		for (size_t i = 0; i < count; ++i)
 		{
-			std::wstring num = std::to_wstring(i);
-			name = const_cast<LPOLESTR>(num.data());
-
-			if (FAILED(pdisp->GetIDsOfNames(IID_NULL, &name, 1, LOCALE_USER_DEFAULT, &dispId))) return false;
-			if (FAILED(pdisp->Invoke(dispId, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_PROPERTYGET, &params, &result, nullptr, nullptr))) return false;
+			if (!get_property(pdisp, std::to_wstring(i), vt, result)) return false;
 			m_data[i] = result;
 		}
 		return true;
