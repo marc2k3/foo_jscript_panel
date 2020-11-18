@@ -130,12 +130,7 @@ STDMETHODIMP Window::NotifyOthers(BSTR name, VARIANT info)
 {
 	if (info.vt & VT_BYREF) return E_INVALIDARG;
 
-	_variant_t var;
-	if (FAILED(VariantCopy(&var, &info))) return E_INVALIDARG;
-	auto d = var.Detach();
-
-	auto data = new CallbackData<_bstr_t, _variant_t>(name, 0);
-	data->m_item2.Attach(d);
+	auto data = new CallbackData<_bstr_t, _variant_t>(name, info);
 	PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_notify_data, data, m_panel->m_hwnd);
 	return S_OK;
 }
