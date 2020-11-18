@@ -1609,7 +1609,7 @@ interface IWindow {
 		Property values will be saved per panel instance and are remembered between foobar2000 restarts.
 		*/
 
-		window.SetTooltipFont(font_name, font_size_px[, font_style])
+		window.SetTooltipFont(font_name, font_size_px[, font_style]) (void)
 		/*
 		As of v2.4.1, it's not permitted to call window.CreateTooltip more than once in a single panel so this was added in v2.4.3
 		to allow changing the font on the fly without reloading the panel.
