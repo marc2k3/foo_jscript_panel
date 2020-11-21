@@ -5,17 +5,8 @@ bool PanelProperties::get_property(const char* key, VARIANT& out)
 {
 	if (m_map.count(key))
 	{
-		_variant_t val = m_map.at(key);
-		if (g_sizeof(val.vt) != -1 && SUCCEEDED(VariantCopy(&out, &val)))
-		{
-			return true;
-		}
-		else
-		{
-			m_map.erase(key);
-		}
+		return SUCCEEDED(VariantCopy(&out, &m_map.at(key)));
 	}
-
 	return false;
 }
 
@@ -35,15 +26,11 @@ int PanelProperties::g_sizeof(VARTYPE vt)
 	case VT_I4:
 	case VT_UI4:
 	case VT_R4:
-	case VT_INT:
-	case VT_UINT:
 		return sizeof(LONG);
 	case VT_I8:
 	case VT_UI8:
 		return sizeof(LONGLONG);
 	case VT_R8:
-	case VT_CY:
-	case VT_DATE:
 		return sizeof(double);
 	default:
 		return -1;

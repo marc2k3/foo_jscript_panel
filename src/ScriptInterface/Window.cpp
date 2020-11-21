@@ -103,27 +103,15 @@ STDMETHODIMP Window::GetProperty(BSTR name, VARIANT defaultval, VARIANT* p)
 {
 	if (!p) return E_POINTER;
 
-	HRESULT hr;
-	_variant_t var;
 	auto uname = string_utf8_from_wide(name);
-
-	if (m_panel->m_config->m_properties->get_property(uname, var))
+	if (m_panel->m_config->m_properties->get_property(uname, *p))
 	{
-		hr = VariantCopy(p, &var);
-	}
-	else
-	{
-		if (defaultval.vt == VT_ERROR || defaultval.vt == VT_EMPTY) defaultval.vt = VT_NULL;
-		m_panel->m_config->m_properties->set_property(uname, defaultval);
-		hr = VariantCopy(p, &defaultval);
+		return S_OK;
 	}
 
-	if (FAILED(hr))
-	{
-		p = nullptr;
-	}
-
-	return S_OK;
+	m_panel->m_config->m_properties->set_property(uname, defaultval);
+	if (defaultval.vt == VT_ERROR || defaultval.vt == VT_EMPTY) defaultval.vt = VT_NULL;
+	return VariantCopy(p, &defaultval);
 }
 
 STDMETHODIMP Window::NotifyOthers(BSTR name, VARIANT info)
