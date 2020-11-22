@@ -6,12 +6,12 @@
 Fb::Fb() {}
 Fb::~Fb() {}
 
-STDMETHODIMP Fb::AcquireUiSelectionHolder(IUiSelectionHolder** pp)
+STDMETHODIMP Fb::AcquireUiSelectionHolder(IUiSelectionHolder** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	ui_selection_holder::ptr holder = ui_selection_manager::get()->acquire();
-	*pp = new ComObjectImpl<UiSelectionHolder>(holder);
+	*out = new ComObjectImpl<UiSelectionHolder>(holder);
 	return S_OK;
 }
 
@@ -27,17 +27,17 @@ STDMETHODIMP Fb::AddFiles()
 	return S_OK;
 }
 
-STDMETHODIMP Fb::CheckClipboardContents(UINT /* FFS */, VARIANT_BOOL* p)
+STDMETHODIMP Fb::CheckClipboardContents(UINT /* FFS */, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = VARIANT_FALSE;
+	*out = VARIANT_FALSE;
 	pfc::com_ptr_t<IDataObject> obj;
 	if (SUCCEEDED(OleGetClipboard(obj.receive_ptr())))
 	{
 		bool native;
 		DWORD drop_effect = DROPEFFECT_COPY;
-		*p = to_variant_bool(SUCCEEDED(ole_interaction::get()->check_dataobject(obj, drop_effect, native)));
+		*out = to_variant_bool(SUCCEEDED(ole_interaction::get()->check_dataobject(obj, drop_effect, native)));
 	}
 	return S_OK;
 }
@@ -48,29 +48,29 @@ STDMETHODIMP Fb::ClearPlaylist()
 	return S_OK;
 }
 
-STDMETHODIMP Fb::CopyHandleListToClipboard(IMetadbHandleList* handles, VARIANT_BOOL* p)
+STDMETHODIMP Fb::CopyHandleListToClipboard(IMetadbHandleList* handles, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_list* handles_ptr = nullptr;
 	GET_PTR(handles, handles_ptr);
 
 	auto obj = ole_interaction::get()->create_dataobject(*handles_ptr);
-	*p = to_variant_bool(SUCCEEDED(OleSetClipboard(obj.get_ptr())));
+	*out = to_variant_bool(SUCCEEDED(OleSetClipboard(obj.get_ptr())));
 	return S_OK;
 }
 
-STDMETHODIMP Fb::CreateContextMenuManager(IContextMenuManager** pp)
+STDMETHODIMP Fb::CreateContextMenuManager(IContextMenuManager** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*pp = new ComObjectImpl<ContextMenuManager>();
+	*out = new ComObjectImpl<ContextMenuManager>();
 	return S_OK;
 }
 
-STDMETHODIMP Fb::CreateHandleList(VARIANT handle, IMetadbHandleList** pp)
+STDMETHODIMP Fb::CreateHandleList(VARIANT handle, IMetadbHandleList** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_list items;
 	IDispatch* temp = nullptr;
@@ -84,34 +84,34 @@ STDMETHODIMP Fb::CreateHandleList(VARIANT handle, IMetadbHandleList** pp)
 
 		items.add_item(reinterpret_cast<metadb_handle*>(ptr));
 	}
-	*pp = new ComObjectImpl<MetadbHandleList>(items);
+	*out = new ComObjectImpl<MetadbHandleList>(items);
 	return S_OK;
 }
 
-STDMETHODIMP Fb::CreateMainMenuManager(IMainMenuManager** pp)
+STDMETHODIMP Fb::CreateMainMenuManager(IMainMenuManager** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*pp = new ComObjectImpl<MainMenuManager>();
+	*out = new ComObjectImpl<MainMenuManager>();
 	return S_OK;
 }
 
-STDMETHODIMP Fb::CreateProfiler(BSTR name, IProfiler** pp)
+STDMETHODIMP Fb::CreateProfiler(BSTR name, IProfiler** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*pp = new ComObjectImpl<Profiler>(string_utf8_from_wide(name));
+	*out = new ComObjectImpl<Profiler>(string_utf8_from_wide(name));
 	return S_OK;
 }
 
-STDMETHODIMP Fb::DoDragDrop(IMetadbHandleList* handles, UINT okEffects, UINT* p)
+STDMETHODIMP Fb::DoDragDrop(IMetadbHandleList* handles, UINT okEffects, UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_list* handles_ptr = nullptr;
 	GET_PTR(handles, handles_ptr);
 
-	*p = DROPEFFECT_NONE;
+	*out = DROPEFFECT_NONE;
 
 	if (handles_ptr->get_count() && okEffects != DROPEFFECT_NONE)
 	{
@@ -121,7 +121,7 @@ STDMETHODIMP Fb::DoDragDrop(IMetadbHandleList* handles, UINT okEffects, UINT* p)
 		DWORD returnEffect;
 		if (::DoDragDrop(obj.get_ptr(), source.get_ptr(), okEffects, &returnEffect) != DRAGDROP_S_CANCEL)
 		{
-			*p = returnEffect;
+			*out = returnEffect;
 		}
 	}
 	return S_OK;
@@ -133,9 +133,9 @@ STDMETHODIMP Fb::Exit()
 	return S_OK;
 }
 
-STDMETHODIMP Fb::GetClipboardContents(UINT /* FFS */, IMetadbHandleList** pp)
+STDMETHODIMP Fb::GetClipboardContents(UINT /* FFS */, IMetadbHandleList** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto api = ole_interaction::get();
 	pfc::com_ptr_t<IDataObject> obj;
@@ -155,13 +155,13 @@ STDMETHODIMP Fb::GetClipboardContents(UINT /* FFS */, IMetadbHandleList** pp)
 		}
 	}
 
-	*pp = new ComObjectImpl<MetadbHandleList>(items);
+	*out = new ComObjectImpl<MetadbHandleList>(items);
 	return S_OK;
 }
 
-STDMETHODIMP Fb::GetDSPPresets(BSTR* p)
+STDMETHODIMP Fb::GetDSPPresets(BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	json j = json::array();
 	auto api = dsp_config_manager_v2::get();
@@ -178,41 +178,41 @@ STDMETHODIMP Fb::GetDSPPresets(BSTR* p)
 				{ "name", name.get_ptr() }
 			});
 	}
-	*p = to_bstr(j.dump().c_str());
+	*out = to_bstr(j.dump().c_str());
 	return S_OK;
 }
 
-STDMETHODIMP Fb::GetFocusItem(IMetadbHandle** pp)
+STDMETHODIMP Fb::GetFocusItem(IMetadbHandle** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_ptr metadb;
-	*pp = playlist_manager::get()->activeplaylist_get_focus_item_handle(metadb) ? new ComObjectImpl<MetadbHandle>(metadb) : nullptr;
+	*out = playlist_manager::get()->activeplaylist_get_focus_item_handle(metadb) ? new ComObjectImpl<MetadbHandle>(metadb) : nullptr;
 	return S_OK;
 }
 
-STDMETHODIMP Fb::GetLibraryItems(IMetadbHandleList** pp)
+STDMETHODIMP Fb::GetLibraryItems(IMetadbHandleList** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_list items;
 	library_manager::get()->get_all_items(items);
-	*pp = new ComObjectImpl<MetadbHandleList>(items);
+	*out = new ComObjectImpl<MetadbHandleList>(items);
 	return S_OK;
 }
 
-STDMETHODIMP Fb::GetNowPlaying(IMetadbHandle** pp)
+STDMETHODIMP Fb::GetNowPlaying(IMetadbHandle** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_ptr metadb;
-	*pp = playback_control::get()->get_now_playing(metadb) ? new ComObjectImpl<MetadbHandle>(metadb) : nullptr;
+	*out = playback_control::get()->get_now_playing(metadb) ? new ComObjectImpl<MetadbHandle>(metadb) : nullptr;
 	return S_OK;
 }
 
-STDMETHODIMP Fb::GetOutputDevices(BSTR* p)
+STDMETHODIMP Fb::GetOutputDevices(BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	json j = json::array();
 	auto api = output_manager_v2::get();
@@ -229,13 +229,13 @@ STDMETHODIMP Fb::GetOutputDevices(BSTR* p)
 					{ "active", config.m_output == output_id && config.m_device == device_id }
 				});
 		});
-	*p = to_bstr(j.dump().c_str());
+	*out = to_bstr(j.dump().c_str());
 	return S_OK;
 }
 
-STDMETHODIMP Fb::GetQueryItems(IMetadbHandleList* handles, BSTR query, IMetadbHandleList** pp)
+STDMETHODIMP Fb::GetQueryItems(IMetadbHandleList* handles, BSTR query, IMetadbHandleList** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_list* handles_ptr = nullptr;
 	GET_PTR(handles, handles_ptr);
@@ -255,58 +255,58 @@ STDMETHODIMP Fb::GetQueryItems(IMetadbHandleList* handles, BSTR query, IMetadbHa
 		mask.set_size(copy.get_count());
 		filter->test_multi(copy, mask.get_ptr());
 		copy.filter_mask(mask.get_ptr());
-		*pp = new ComObjectImpl<MetadbHandleList>(copy);
+		*out = new ComObjectImpl<MetadbHandleList>(copy);
 		return S_OK;
 	}
 	return E_INVALIDARG;
 }
 
-STDMETHODIMP Fb::GetSelection(IMetadbHandle** pp)
+STDMETHODIMP Fb::GetSelection(IMetadbHandle** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_list items;
 	ui_selection_manager::get()->get_selection(items);
-	*pp = items.get_count() ? new ComObjectImpl<MetadbHandle>(items[0]) : nullptr;
+	*out = items.get_count() ? new ComObjectImpl<MetadbHandle>(items[0]) : nullptr;
 	return S_OK;
 }
 
-STDMETHODIMP Fb::GetSelections(UINT flags, IMetadbHandleList** pp)
+STDMETHODIMP Fb::GetSelections(UINT flags, IMetadbHandleList** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_list items;
 	ui_selection_manager_v2::get()->get_selection(items, flags);
-	*pp = new ComObjectImpl<MetadbHandleList>(items);
+	*out = new ComObjectImpl<MetadbHandleList>(items);
 	return S_OK;
 }
 
-STDMETHODIMP Fb::GetSelectionType(UINT* p)
+STDMETHODIMP Fb::GetSelectionType(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	const GUID type = ui_selection_manager_v2::get()->get_selection_type(0);
 	const auto it = FIND_IF(guids::selections, [type](const GUID* g) { return *g == type; });
-	*p = it != guids::selections.end() ? std::distance(guids::selections.begin(), it) : 0;
+	*out = it != guids::selections.end() ? std::distance(guids::selections.begin(), it) : 0;
 	return S_OK;
 }
 
-STDMETHODIMP Fb::IsLibraryEnabled(VARIANT_BOOL* p)
+STDMETHODIMP Fb::IsLibraryEnabled(VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(library_manager::get()->is_library_enabled());
+	*out = to_variant_bool(library_manager::get()->is_library_enabled());
 	return S_OK;
 }
 
-STDMETHODIMP Fb::IsMetadbInMediaLibrary(IMetadbHandle* handle, VARIANT_BOOL* p)
+STDMETHODIMP Fb::IsMetadbInMediaLibrary(IMetadbHandle* handle, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle* ptr = nullptr;
 	GET_PTR(handle, ptr);
 
-	*p = to_variant_bool(library_manager::get()->is_item_in_library(ptr));
+	*out = to_variant_bool(library_manager::get()->is_item_in_library(ptr));
 	return S_OK;
 }
 
@@ -352,27 +352,27 @@ STDMETHODIMP Fb::Random()
 	return S_OK;
 }
 
-STDMETHODIMP Fb::RunContextCommand(BSTR command, VARIANT_BOOL* p)
+STDMETHODIMP Fb::RunContextCommand(BSTR command, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = VARIANT_FALSE;
+	*out = VARIANT_FALSE;
 	if (playback_control::get()->is_playing())
 	{
 		contextmenu_manager::ptr cm;
 		contextmenu_manager::g_create(cm);
 		cm->init_context_now_playing(contextmenu_manager::flag_view_full);
-		*p = to_variant_bool(helpers::execute_context_command_recur(cm->get_root(), string_utf8_from_wide(command)));
+		*out = to_variant_bool(helpers::execute_context_command_recur(cm->get_root(), string_utf8_from_wide(command)));
 	}
 	return S_OK;
 }
 
-STDMETHODIMP Fb::RunContextCommandWithMetadb(BSTR command, VARIANT handle, VARIANT_BOOL* p)
+STDMETHODIMP Fb::RunContextCommandWithMetadb(BSTR command, VARIANT handle, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 	if (handle.vt != VT_DISPATCH || !handle.pdispVal) return E_INVALIDARG;
 
-	*p = VARIANT_FALSE;
+	*out = VARIANT_FALSE;
 
 	metadb_handle_list handle_list;
 	IDispatch* temp = nullptr;
@@ -403,16 +403,16 @@ STDMETHODIMP Fb::RunContextCommandWithMetadb(BSTR command, VARIANT handle, VARIA
 		contextmenu_manager::ptr cm;
 		contextmenu_manager::g_create(cm);
 		cm->init_context(handle_list, contextmenu_manager::flag_view_full);
-		*p = to_variant_bool(helpers::execute_context_command_recur(cm->get_root(), string_utf8_from_wide(command)));
+		*out = to_variant_bool(helpers::execute_context_command_recur(cm->get_root(), string_utf8_from_wide(command)));
 	}
 	return S_OK;
 }
 
-STDMETHODIMP Fb::RunMainMenuCommand(BSTR command, VARIANT_BOOL* p)
+STDMETHODIMP Fb::RunMainMenuCommand(BSTR command, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(helpers::execute_mainmenu_command(string_utf8_from_wide(command)));
+	*out = to_variant_bool(helpers::execute_mainmenu_command(string_utf8_from_wide(command)));
 	return S_OK;
 }
 
@@ -481,11 +481,11 @@ STDMETHODIMP Fb::Stop()
 	return S_OK;
 }
 
-STDMETHODIMP Fb::TitleFormat(BSTR pattern, ITitleFormat** pp)
+STDMETHODIMP Fb::TitleFormat(BSTR pattern, ITitleFormat** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*pp = new ComObjectImpl<::TitleFormat>(string_utf8_from_wide(pattern));
+	*out = new ComObjectImpl<::TitleFormat>(string_utf8_from_wide(pattern));
 	return S_OK;
 }
 
@@ -507,127 +507,127 @@ STDMETHODIMP Fb::VolumeUp()
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_AlwaysOnTop(VARIANT_BOOL* p)
+STDMETHODIMP Fb::get_AlwaysOnTop(VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(config_object::g_get_data_bool_simple(standard_config_objects::bool_ui_always_on_top, false));
+	*out = to_variant_bool(config_object::g_get_data_bool_simple(standard_config_objects::bool_ui_always_on_top, false));
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_ComponentPath(BSTR* p)
+STDMETHODIMP Fb::get_ComponentPath(BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_bstr(helpers::get_fb2k_component_path());
+	*out = to_bstr(helpers::get_fb2k_component_path());
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_CursorFollowPlayback(VARIANT_BOOL* p)
+STDMETHODIMP Fb::get_CursorFollowPlayback(VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(config_object::g_get_data_bool_simple(standard_config_objects::bool_cursor_follows_playback, false));
+	*out = to_variant_bool(config_object::g_get_data_bool_simple(standard_config_objects::bool_cursor_follows_playback, false));
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_FoobarPath(BSTR* p)
+STDMETHODIMP Fb::get_FoobarPath(BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_bstr(helpers::get_fb2k_path());
+	*out = to_bstr(helpers::get_fb2k_path());
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_IsPaused(VARIANT_BOOL* p)
+STDMETHODIMP Fb::get_IsPaused(VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(playback_control::get()->is_paused());
+	*out = to_variant_bool(playback_control::get()->is_paused());
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_IsPlaying(VARIANT_BOOL* p)
+STDMETHODIMP Fb::get_IsPlaying(VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(playback_control::get()->is_playing());
+	*out = to_variant_bool(playback_control::get()->is_playing());
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_PlaybackFollowCursor(VARIANT_BOOL* p)
+STDMETHODIMP Fb::get_PlaybackFollowCursor(VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(config_object::g_get_data_bool_simple(standard_config_objects::bool_playback_follows_cursor, false));
+	*out = to_variant_bool(config_object::g_get_data_bool_simple(standard_config_objects::bool_playback_follows_cursor, false));
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_PlaybackLength(double* p)
+STDMETHODIMP Fb::get_PlaybackLength(double* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = playback_control::get()->playback_get_length();
+	*out = playback_control::get()->playback_get_length();
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_PlaybackTime(double* p)
+STDMETHODIMP Fb::get_PlaybackTime(double* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = playback_control::get()->playback_get_position();
+	*out = playback_control::get()->playback_get_position();
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_ProfilePath(BSTR* p)
+STDMETHODIMP Fb::get_ProfilePath(BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_bstr(helpers::get_profile_path());
+	*out = to_bstr(helpers::get_profile_path());
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_ReplaygainMode(UINT* p)
+STDMETHODIMP Fb::get_ReplaygainMode(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	t_replaygain_config rg;
 	replaygain_manager::get()->get_core_settings(rg);
-	*p = rg.m_source_mode;
+	*out = rg.m_source_mode;
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_StopAfterCurrent(VARIANT_BOOL* p)
+STDMETHODIMP Fb::get_StopAfterCurrent(VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(playback_control::get()->get_stop_after_current());
+	*out = to_variant_bool(playback_control::get()->get_stop_after_current());
 	return S_OK;
 }
 
-STDMETHODIMP Fb::get_Volume(float* p)
+STDMETHODIMP Fb::get_Volume(float* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = playback_control::get()->get_volume();
+	*out = playback_control::get()->get_volume();
 	return S_OK;
 }
 
-STDMETHODIMP Fb::put_AlwaysOnTop(VARIANT_BOOL p)
+STDMETHODIMP Fb::put_AlwaysOnTop(VARIANT_BOOL b)
 {
-	config_object::g_set_data_bool(standard_config_objects::bool_ui_always_on_top, to_bool(p));
+	config_object::g_set_data_bool(standard_config_objects::bool_ui_always_on_top, to_bool(b));
 	return S_OK;
 }
 
-STDMETHODIMP Fb::put_CursorFollowPlayback(VARIANT_BOOL p)
+STDMETHODIMP Fb::put_CursorFollowPlayback(VARIANT_BOOL b)
 {
-	config_object::g_set_data_bool(standard_config_objects::bool_cursor_follows_playback, to_bool(p));
+	config_object::g_set_data_bool(standard_config_objects::bool_cursor_follows_playback, to_bool(b));
 	return S_OK;
 }
 
-STDMETHODIMP Fb::put_PlaybackFollowCursor(VARIANT_BOOL p)
+STDMETHODIMP Fb::put_PlaybackFollowCursor(VARIANT_BOOL b)
 {
-	config_object::g_set_data_bool(standard_config_objects::bool_playback_follows_cursor, to_bool(p));
+	config_object::g_set_data_bool(standard_config_objects::bool_playback_follows_cursor, to_bool(b));
 	return S_OK;
 }
 
@@ -637,9 +637,9 @@ STDMETHODIMP Fb::put_PlaybackTime(double time)
 	return S_OK;
 }
 
-STDMETHODIMP Fb::put_ReplaygainMode(UINT p)
+STDMETHODIMP Fb::put_ReplaygainMode(UINT idx)
 {
-	switch (p)
+	switch (idx)
 	{
 	case 0: standard_commands::main_rg_disable(); break;
 	case 1: standard_commands::main_rg_set_track(); break;
@@ -652,9 +652,9 @@ STDMETHODIMP Fb::put_ReplaygainMode(UINT p)
 	return S_OK;
 }
 
-STDMETHODIMP Fb::put_StopAfterCurrent(VARIANT_BOOL p)
+STDMETHODIMP Fb::put_StopAfterCurrent(VARIANT_BOOL b)
 {
-	playback_control::get()->set_stop_after_current(to_bool(p));
+	playback_control::get()->set_stop_after_current(to_bool(b));
 	return S_OK;
 }
 

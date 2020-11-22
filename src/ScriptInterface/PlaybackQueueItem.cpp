@@ -4,35 +4,35 @@
 PlaybackQueueItem::PlaybackQueueItem(const t_playback_queue_item& playback_queue_item) : m_playback_queue_item(playback_queue_item) {}
 PlaybackQueueItem::~PlaybackQueueItem() {}
 
-STDMETHODIMP PlaybackQueueItem::get__ptr(void** pp)
+STDMETHODIMP PlaybackQueueItem::get__ptr(void** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*pp = &m_playback_queue_item;
+	*out = &m_playback_queue_item;
 	return S_OK;
 }
 
-STDMETHODIMP PlaybackQueueItem::get_Handle(IMetadbHandle** pp)
+STDMETHODIMP PlaybackQueueItem::get_Handle(IMetadbHandle** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*pp = new ComObjectImpl<MetadbHandle>(m_playback_queue_item.m_handle);
+	*out = new ComObjectImpl<MetadbHandle>(m_playback_queue_item.m_handle);
 	return S_OK;
 }
 
-STDMETHODIMP PlaybackQueueItem::get_PlaylistIndex(int* p)
+STDMETHODIMP PlaybackQueueItem::get_PlaylistIndex(int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_int(m_playback_queue_item.m_playlist);
+	*out = to_int(m_playback_queue_item.m_playlist);
 	return S_OK;
 }
 
-STDMETHODIMP PlaybackQueueItem::get_PlaylistItemIndex(int* p)
+STDMETHODIMP PlaybackQueueItem::get_PlaylistItemIndex(int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_int(m_playback_queue_item.m_item);
+	*out = to_int(m_playback_queue_item.m_item);
 	return S_OK;
 }
 

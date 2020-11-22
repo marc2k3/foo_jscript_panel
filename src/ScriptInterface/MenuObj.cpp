@@ -8,11 +8,11 @@ MenuObj::MenuObj(CWindow wnd_parent) : m_wnd_parent(wnd_parent)
 
 MenuObj::~MenuObj() {}
 
-STDMETHODIMP MenuObj::get__HMENU(HMENU* p)
+STDMETHODIMP MenuObj::get__HMENU(HMENU* out)
 {
-	if (!m_hMenu || !p) return E_POINTER;
+	if (!m_hMenu || !out) return E_POINTER;
 
-	*p = m_hMenu;
+	*out = m_hMenu;
 	return S_OK;
 }
 
@@ -33,12 +33,12 @@ STDMETHODIMP MenuObj::AppendMenuSeparator()
 	return S_OK;
 }
 
-STDMETHODIMP MenuObj::AppendTo(IMenuObj* parent, UINT flags, BSTR text)
+STDMETHODIMP MenuObj::AppendTo(IMenuObj* obj, UINT flags, BSTR text)
 {
 	if (!m_hMenu) return E_POINTER;
 
-	MenuObj* pMenuParent = static_cast<MenuObj*>(parent);
-	if (::AppendMenu(pMenuParent->m_hMenu, flags | MF_STRING | MF_POPUP, UINT_PTR(m_hMenu), text))
+	MenuObj* parent = static_cast<MenuObj*>(obj);
+	if (::AppendMenu(parent->m_hMenu, flags | MF_STRING | MF_POPUP, UINT_PTR(m_hMenu), text))
 	{
 		m_has_detached = true;
 	}
@@ -61,16 +61,16 @@ STDMETHODIMP MenuObj::CheckMenuRadioItem(UINT first, UINT last, UINT selected)
 	return S_OK;
 }
 
-STDMETHODIMP MenuObj::TrackPopupMenu(int x, int y, UINT flags, UINT* p)
+STDMETHODIMP MenuObj::TrackPopupMenu(int x, int y, UINT flags, UINT* out)
 {
-	if (!m_hMenu || !p) return E_POINTER;
+	if (!m_hMenu || !out) return E_POINTER;
 
 	flags |= TPM_NONOTIFY | TPM_RETURNCMD | TPM_RIGHTBUTTON;
 	flags &= ~TPM_RECURSE;
 
 	CPoint pt(x, y);
 	m_wnd_parent.ClientToScreen(&pt);
-	*p = ::TrackPopupMenu(m_hMenu, flags, pt.x, pt.y, 0, m_wnd_parent, nullptr);
+	*out = ::TrackPopupMenu(m_hMenu, flags, pt.x, pt.y, 0, m_wnd_parent, nullptr);
 	return S_OK;
 }
 

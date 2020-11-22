@@ -20,10 +20,10 @@ STDMETHODIMP Profiler::Reset()
 	return S_OK;
 }
 
-STDMETHODIMP Profiler::get_Time(int* p)
+STDMETHODIMP Profiler::get_Time(int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = static_cast<int>(m_timer.query() * 1000);
+	*out = static_cast<int>(m_timer.query() * 1000);
 	return S_OK;
 }

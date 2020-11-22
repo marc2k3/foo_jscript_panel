@@ -8,27 +8,27 @@ GdiRawBitmap::GdiRawBitmap(Gdiplus::Bitmap* bitmap) : m_width(bitmap->GetWidth()
 
 GdiRawBitmap::~GdiRawBitmap() {}
 
-STDMETHODIMP GdiRawBitmap::get__HBITMAP(HBITMAP* p)
+STDMETHODIMP GdiRawBitmap::get__HBITMAP(HBITMAP* out)
 {
-	if (!m_hbmp || !p) return E_POINTER;
+	if (!m_hbmp || !out) return E_POINTER;
 
-	*p = m_hbmp;
+	*out = m_hbmp;
 	return S_OK;
 }
 
-STDMETHODIMP GdiRawBitmap::get_Height(UINT* p)
+STDMETHODIMP GdiRawBitmap::get_Height(UINT* out)
 {
-	if (!m_hbmp || !p) return E_POINTER;
+	if (!m_hbmp || !out) return E_POINTER;
 
-	*p = m_height;
+	*out = m_height;
 	return S_OK;
 }
 
-STDMETHODIMP GdiRawBitmap::get_Width(UINT* p)
+STDMETHODIMP GdiRawBitmap::get_Width(UINT* out)
 {
-	if (!m_hbmp || !p) return E_POINTER;
+	if (!m_hbmp || !out) return E_POINTER;
 
-	*p = m_width;
+	*out = m_width;
 	return S_OK;
 }
 

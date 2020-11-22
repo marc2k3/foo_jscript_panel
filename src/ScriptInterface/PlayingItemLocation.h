@@ -7,9 +7,9 @@ protected:
 	~PlayingItemLocation();
 
 public:
-	STDMETHODIMP get_IsValid(VARIANT_BOOL* p) override;
-	STDMETHODIMP get_PlaylistIndex(int* p) override;
-	STDMETHODIMP get_PlaylistItemIndex(int* p) override;
+	STDMETHODIMP get_IsValid(VARIANT_BOOL* out) override;
+	STDMETHODIMP get_PlaylistIndex(int* out) override;
+	STDMETHODIMP get_PlaylistItemIndex(int* out) override;
 
 private:
 	bool m_isValid = false;

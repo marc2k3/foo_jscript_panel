@@ -4,50 +4,50 @@
 MeasureStringInfo::MeasureStringInfo(const Gdiplus::RectF& rect, int chars, int lines) : m_rect(rect), m_chars(chars), m_lines(lines) {}
 MeasureStringInfo::~MeasureStringInfo() {}
 
-STDMETHODIMP MeasureStringInfo::get_chars(int* p)
+STDMETHODIMP MeasureStringInfo::get_chars(int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_chars;
+	*out = m_chars;
 	return S_OK;
 }
 
-STDMETHODIMP MeasureStringInfo::get_height(float* p)
+STDMETHODIMP MeasureStringInfo::get_height(float* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_rect.Height;
+	*out = m_rect.Height;
 	return S_OK;
 }
 
-STDMETHODIMP MeasureStringInfo::get_lines(int* p)
+STDMETHODIMP MeasureStringInfo::get_lines(int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_lines;
+	*out = m_lines;
 	return S_OK;
 }
 
-STDMETHODIMP MeasureStringInfo::get_width(float* p)
+STDMETHODIMP MeasureStringInfo::get_width(float* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_rect.Width;
+	*out = m_rect.Width;
 	return S_OK;
 }
 
-STDMETHODIMP MeasureStringInfo::get_x(float* p)
+STDMETHODIMP MeasureStringInfo::get_x(float* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_rect.X;
+	*out = m_rect.X;
 	return S_OK;
 }
 
-STDMETHODIMP MeasureStringInfo::get_y(float* p)
+STDMETHODIMP MeasureStringInfo::get_y(float* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_rect.Y;
+	*out = m_rect.Y;
 	return S_OK;
 }

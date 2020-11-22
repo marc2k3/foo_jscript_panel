@@ -6,15 +6,15 @@
 GdiBitmap::GdiBitmap(std::unique_ptr<Gdiplus::Bitmap> bitmap) : m_bitmap(std::move(bitmap)) {}
 GdiBitmap::~GdiBitmap() {}
 
-STDMETHODIMP GdiBitmap::get__ptr(void** pp)
+STDMETHODIMP GdiBitmap::get__ptr(void** out)
 {
-	*pp = m_bitmap.get();
+	*out = m_bitmap.get();
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::ApplyAlpha(UINT8 alpha, IGdiBitmap** pp)
+STDMETHODIMP GdiBitmap::ApplyAlpha(UINT8 alpha, IGdiBitmap** out)
 {
-	if (!m_bitmap || !pp) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
 	const auto width = m_bitmap->GetWidth();
 	const auto height = m_bitmap->GetHeight();
@@ -30,13 +30,13 @@ STDMETHODIMP GdiBitmap::ApplyAlpha(UINT8 alpha, IGdiBitmap** pp)
 
 	g.DrawImage(m_bitmap.get(), rect, 0, 0, width, height, Gdiplus::UnitPixel, &ia);
 
-	*pp = new ComObjectImpl<GdiBitmap>(std::move(bitmap));
+	*out = new ComObjectImpl<GdiBitmap>(std::move(bitmap));
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::ApplyMask(IGdiBitmap* image, VARIANT_BOOL* p)
+STDMETHODIMP GdiBitmap::ApplyMask(IGdiBitmap* image, VARIANT_BOOL* out)
 {
-	if (!m_bitmap || !p) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
 	Gdiplus::Bitmap* bitmap_mask = nullptr;
 	GET_PTR(image, bitmap_mask);
@@ -46,7 +46,7 @@ STDMETHODIMP GdiBitmap::ApplyMask(IGdiBitmap* image, VARIANT_BOOL* p)
 		return E_INVALIDARG;
 	}
 
-	*p = VARIANT_FALSE;
+	*out = VARIANT_FALSE;
 
 	const Gdiplus::Rect rect(0, 0, m_bitmap->GetWidth(), m_bitmap->GetHeight());
 	Gdiplus::BitmapData bmpdata_dst, bmpdata_mask;
@@ -69,33 +69,33 @@ STDMETHODIMP GdiBitmap::ApplyMask(IGdiBitmap* image, VARIANT_BOOL* p)
 			}
 
 			m_bitmap->UnlockBits(&bmpdata_dst);
-			*p = VARIANT_TRUE;
+			*out = VARIANT_TRUE;
 		}
 		bitmap_mask->UnlockBits(&bmpdata_mask);
 	}
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::Clone(float x, float y, float w, float h, IGdiBitmap** pp)
+STDMETHODIMP GdiBitmap::Clone(float x, float y, float w, float h, IGdiBitmap** out)
 {
-	if (!m_bitmap || !pp) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
 	std::unique_ptr<Gdiplus::Bitmap> bitmap(m_bitmap->Clone(x, y, w, h, PixelFormat32bppPARGB));
-	*pp = ensure_gdiplus_object(bitmap) ? new ComObjectImpl<GdiBitmap>(std::move(bitmap)) : nullptr;
+	*out = ensure_gdiplus_object(bitmap) ? new ComObjectImpl<GdiBitmap>(std::move(bitmap)) : nullptr;
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::CreateRawBitmap(IGdiRawBitmap** pp)
+STDMETHODIMP GdiBitmap::CreateRawBitmap(IGdiRawBitmap** out)
 {
-	if (!m_bitmap || !pp) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
-	*pp = new ComObjectImpl<GdiRawBitmap>(m_bitmap.get());
+	*out = new ComObjectImpl<GdiRawBitmap>(m_bitmap.get());
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* p)
+STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* out)
 {
-	if (!m_bitmap || !p) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
 	const int w = std::min<int>(m_bitmap->GetWidth(), 220);
 	const int h = std::min<int>(m_bitmap->GetHeight(), 220);
@@ -143,22 +143,22 @@ STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* p)
 				{ "freq", cluster.get_frequency(colours_length) },
 			});
 	}
-	*p = to_bstr(j.dump().c_str());
+	*out = to_bstr(j.dump().c_str());
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::GetGraphics(IGdiGraphics** pp)
+STDMETHODIMP GdiBitmap::GetGraphics(IGdiGraphics** out)
 {
-	if (!m_bitmap || !pp) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
-	*pp = new ComObjectImpl<GdiGraphics>();
-	(*pp)->put__ptr(new Gdiplus::Graphics(m_bitmap.get()));
+	*out = new ComObjectImpl<GdiGraphics>();
+	(*out)->put__ptr(new Gdiplus::Graphics(m_bitmap.get()));
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::InvertColours(IGdiBitmap** pp)
+STDMETHODIMP GdiBitmap::InvertColours(IGdiBitmap** out)
 {
-	if (!m_bitmap || !pp) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
 	Gdiplus::ImageAttributes ia;
 	Gdiplus::ColorMatrix cm = { 0.f };
@@ -171,28 +171,24 @@ STDMETHODIMP GdiBitmap::InvertColours(IGdiBitmap** pp)
 	Gdiplus::Graphics g(bitmap.get());
 	g.DrawImage(m_bitmap.get(), rect, 0, 0, rect.Width, rect.Height, Gdiplus::UnitPixel, &ia);
 
-	*pp = new ComObjectImpl<GdiBitmap>(std::move(bitmap));
+	*out = new ComObjectImpl<GdiBitmap>(std::move(bitmap));
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::ReleaseGraphics(IGdiGraphics* p)
+STDMETHODIMP GdiBitmap::ReleaseGraphics(IGdiGraphics* gr)
 {
-	if (p)
-	{
-		Gdiplus::Graphics* g = nullptr;
-		GET_PTR(p, g);
-		p->put__ptr(nullptr);
-		if (g) delete g;
-	}
-
+	Gdiplus::Graphics* graphics = nullptr;
+	GET_PTR(gr, graphics);
+	gr->put__ptr(nullptr);
+	if (graphics) delete graphics;
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::Resize(UINT w, UINT h, int interpolation_mode, IGdiBitmap** pp)
+STDMETHODIMP GdiBitmap::Resize(UINT w, UINT h, int interpolation_mode, IGdiBitmap** out)
 {
-	if (!m_bitmap || !pp) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
-	*pp = new ComObjectImpl<GdiBitmap>(resize(w, h, static_cast<Gdiplus::InterpolationMode>(interpolation_mode)));
+	*out = new ComObjectImpl<GdiBitmap>(resize(w, h, static_cast<Gdiplus::InterpolationMode>(interpolation_mode)));
 	return S_OK;
 }
 
@@ -204,11 +200,11 @@ STDMETHODIMP GdiBitmap::RotateFlip(UINT mode)
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::SaveAs(BSTR path, BSTR format, VARIANT_BOOL* p)
+STDMETHODIMP GdiBitmap::SaveAs(BSTR path, BSTR format, VARIANT_BOOL* out)
 {
-	if (!m_bitmap || !p) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
-	*p = VARIANT_FALSE;
+	*out = VARIANT_FALSE;
 
 	size_t num = 0, size = 0;
 	if (Gdiplus::GetImageEncodersSize(&num, &size) == Gdiplus::Ok && size > 0)
@@ -221,7 +217,7 @@ STDMETHODIMP GdiBitmap::SaveAs(BSTR path, BSTR format, VARIANT_BOOL* p)
 				if (wcscmp(pImageCodecInfo.get_ptr()[i].MimeType, format) == 0)
 				{
 					m_bitmap->Save(path, &pImageCodecInfo.get_ptr()[i].Clsid);
-					*p = to_variant_bool(m_bitmap->GetLastStatus() == Gdiplus::Ok);
+					*out = to_variant_bool(m_bitmap->GetLastStatus() == Gdiplus::Ok);
 					break;
 				}
 			}
@@ -279,19 +275,19 @@ STDMETHODIMP GdiBitmap::StackBlur(UINT8 radius)
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::get_Height(UINT* p)
+STDMETHODIMP GdiBitmap::get_Height(UINT* out)
 {
-	if (!m_bitmap || !p) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
-	*p = m_bitmap->GetHeight();
+	*out = m_bitmap->GetHeight();
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::get_Width(UINT* p)
+STDMETHODIMP GdiBitmap::get_Width(UINT* out)
 {
-	if (!m_bitmap || !p) return E_POINTER;
+	if (!m_bitmap || !out) return E_POINTER;
 
-	*p = m_bitmap->GetWidth();
+	*out = m_bitmap->GetWidth();
 	return S_OK;
 }
 

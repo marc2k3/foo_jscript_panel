@@ -9,9 +9,9 @@ protected:
 	void FinalRelease() override;
 
 public:
-	STDMETHODIMP get__HBITMAP(HBITMAP* p) override;
-	STDMETHODIMP get_Height(UINT* p) override;
-	STDMETHODIMP get_Width(UINT* p) override;
+	STDMETHODIMP get__HBITMAP(HBITMAP* out) override;
+	STDMETHODIMP get_Height(UINT* out) override;
+	STDMETHODIMP get_Width(UINT* out) override;
 
 private:
 	HBITMAP m_hbmp;

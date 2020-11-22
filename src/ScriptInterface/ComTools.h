@@ -70,12 +70,12 @@ public:
 		return S_OK;
 	}
 
-	STDMETHODIMP GetTypeInfo(UINT i, LCID, ITypeInfo** pp) override
+	STDMETHODIMP GetTypeInfo(UINT i, LCID, ITypeInfo** out) override
 	{
-		if (!pp) return E_POINTER;
+		if (!out) return E_POINTER;
 		if (i != 0) return DISP_E_BADINDEX;
 		g_type_info_cache.m_type_info->AddRef();
-		*pp = g_type_info_cache.m_type_info.GetInterfacePtr();
+		*out = g_type_info_cache.m_type_info.GetInterfacePtr();
 		return S_OK;
 	}
 
@@ -139,7 +139,7 @@ public:
 
 	ULONG STDMETHODCALLTYPE Release() override
 	{
-		const auto n = --m_counter;
+		const long n = --m_counter;
 		if (n == 0)
 		{
 			this->FinalRelease();

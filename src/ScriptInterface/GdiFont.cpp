@@ -4,54 +4,54 @@
 GdiFont::GdiFont(std::unique_ptr<Gdiplus::Font> font, HFONT hFont, bool managed) : m_font(std::move(font)), m_hFont(hFont), m_managed(managed) {}
 GdiFont::~GdiFont() {}
 
-STDMETHODIMP GdiFont::get__HFONT(HFONT* p)
+STDMETHODIMP GdiFont::get__HFONT(HFONT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_hFont;
+	*out = m_hFont;
 	return S_OK;
 }
 
-STDMETHODIMP GdiFont::get__ptr(void** pp)
+STDMETHODIMP GdiFont::get__ptr(void** out)
 {
-	*pp = m_font.get();
+	*out = m_font.get();
 	return S_OK;
 }
 
-STDMETHODIMP GdiFont::get_Height(UINT* p)
+STDMETHODIMP GdiFont::get_Height(UINT* out)
 {
-	if (!m_font || !p) return E_POINTER;
+	if (!m_font || !out) return E_POINTER;
 
 	auto dpi = static_cast<float>(QueryScreenDPI(nullptr));
-	*p = to_uint(m_font->GetHeight(dpi));
+	*out = to_uint(m_font->GetHeight(dpi));
 	return S_OK;
 }
 
-STDMETHODIMP GdiFont::get_Name(BSTR* p)
+STDMETHODIMP GdiFont::get_Name(BSTR* out)
 {
-	if (!m_font || !p) return E_POINTER;
+	if (!m_font || !out) return E_POINTER;
 
 	std::array<wchar_t, LF_FACESIZE> name;
 	Gdiplus::FontFamily fontFamily;
 	m_font->GetFamily(&fontFamily);
 	fontFamily.GetFamilyName(name.data(), LANG_NEUTRAL);
-	*p = SysAllocString(name.data());
+	*out = SysAllocString(name.data());
 	return S_OK;
 }
 
-STDMETHODIMP GdiFont::get_Size(float* p)
+STDMETHODIMP GdiFont::get_Size(float* out)
 {
-	if (!m_font || !p) return E_POINTER;
+	if (!m_font || !out) return E_POINTER;
 
-	*p = m_font->GetSize();
+	*out = m_font->GetSize();
 	return S_OK;
 }
 
-STDMETHODIMP GdiFont::get_Style(int* p)
+STDMETHODIMP GdiFont::get_Style(int* out)
 {
-	if (!m_font || !p) return E_POINTER;
+	if (!m_font || !out) return E_POINTER;
 
-	*p = m_font->GetStyle();
+	*out = m_font->GetStyle();
 	return S_OK;
 }
 

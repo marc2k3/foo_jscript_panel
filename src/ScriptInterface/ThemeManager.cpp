@@ -28,11 +28,11 @@ STDMETHODIMP ThemeManager::DrawThemeBackground(IGdiGraphics* gr, int x, int y, i
 	return S_OK;
 }
 
-STDMETHODIMP ThemeManager::IsThemePartDefined(int partid, int stateid, VARIANT_BOOL* p)
+STDMETHODIMP ThemeManager::IsThemePartDefined(int partid, int stateid, VARIANT_BOOL* out)
 {
-	if (!m_theme || !p) return E_POINTER;
+	if (!m_theme || !out) return E_POINTER;
 
-	*p = to_variant_bool(::IsThemePartDefined(m_theme, partid, stateid));
+	*out = to_variant_bool(::IsThemePartDefined(m_theme, partid, stateid));
 	return S_OK;
 }
 

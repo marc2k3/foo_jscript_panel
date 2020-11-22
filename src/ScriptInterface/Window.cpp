@@ -7,38 +7,38 @@
 Window::Window(PanelWindow* panel) : m_panel(panel) {}
 Window::~Window() {}
 
-STDMETHODIMP Window::ClearInterval(UINT intervalID)
+STDMETHODIMP Window::ClearInterval(UINT id)
 {
-	PanelTimerDispatcher::instance().kill_timer(intervalID);
+	PanelTimerDispatcher::instance().kill_timer(id);
 	return S_OK;
 }
 
-STDMETHODIMP Window::ClearTimeout(UINT timeoutID)
+STDMETHODIMP Window::ClearTimeout(UINT id)
 {
-	PanelTimerDispatcher::instance().kill_timer(timeoutID);
+	PanelTimerDispatcher::instance().kill_timer(id);
 	return S_OK;
 }
 
-STDMETHODIMP Window::CreatePopupMenu(IMenuObj** pp)
+STDMETHODIMP Window::CreatePopupMenu(IMenuObj** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*pp = new ComObjectImpl<MenuObj>(m_panel->m_hwnd);
+	*out = new ComObjectImpl<MenuObj>(m_panel->m_hwnd);
 	return S_OK;
 }
 
-STDMETHODIMP Window::CreateThemeManager(BSTR classid, IThemeManager** pp)
+STDMETHODIMP Window::CreateThemeManager(BSTR classid, IThemeManager** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	HTHEME theme = OpenThemeData(m_panel->m_hwnd, classid);
-	*pp = theme ? new ComObjectImpl<ThemeManager>(theme) : nullptr;
+	*out = theme ? new ComObjectImpl<ThemeManager>(theme) : nullptr;
 	return S_OK;
 }
 
-STDMETHODIMP Window::CreateTooltip(BSTR name, float pxSize, int style, ITooltip** pp)
+STDMETHODIMP Window::CreateTooltip(BSTR name, float pxSize, int style, ITooltip** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	if (m_panel->m_tooltip.IsWindow()) return E_NOTIMPL;
 
@@ -59,59 +59,59 @@ STDMETHODIMP Window::CreateTooltip(BSTR name, float pxSize, int style, ITooltip*
 	m_panel->m_tooltip_font = create_font(name, pxSize, style);
 	m_panel->m_tooltip.SetFont(m_panel->m_tooltip_font, FALSE);
 
-	*pp = new ComObjectImpl<Tooltip>(m_panel->m_tooltip, m_panel->m_hwnd);
+	*out = new ComObjectImpl<Tooltip>(m_panel->m_tooltip, m_panel->m_hwnd);
 	return S_OK;
 }
 
-STDMETHODIMP Window::GetColourCUI(UINT type, int* p)
+STDMETHODIMP Window::GetColourCUI(UINT type, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 	if (m_panel->m_is_default_ui) return E_NOTIMPL;
 
-	*p = m_panel->get_colour_ui(type);
+	*out = m_panel->get_colour_ui(type);
 	return S_OK;
 }
 
-STDMETHODIMP Window::GetColourDUI(UINT type, int* p)
+STDMETHODIMP Window::GetColourDUI(UINT type, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 	if (!m_panel->m_is_default_ui) return E_NOTIMPL;
 
-	*p = m_panel->get_colour_ui(type);
+	*out = m_panel->get_colour_ui(type);
 	return S_OK;
 }
 
-STDMETHODIMP Window::GetFontCUI(UINT type, IGdiFont** pp)
+STDMETHODIMP Window::GetFontCUI(UINT type, IGdiFont** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 	if (m_panel->m_is_default_ui) return E_NOTIMPL;
 
-	*pp = m_panel->get_font_ui(type);
+	*out = m_panel->get_font_ui(type);
 	return S_OK;
 }
 
-STDMETHODIMP Window::GetFontDUI(UINT type, IGdiFont** pp)
+STDMETHODIMP Window::GetFontDUI(UINT type, IGdiFont** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 	if (!m_panel->m_is_default_ui) return E_NOTIMPL;
 
-	*pp = m_panel->get_font_ui(type);
+	*out = m_panel->get_font_ui(type);
 	return S_OK;
 }
 
-STDMETHODIMP Window::GetProperty(BSTR name, VARIANT defaultval, VARIANT* p)
+STDMETHODIMP Window::GetProperty(BSTR name, VARIANT defaultval, VARIANT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto uname = string_utf8_from_wide(name);
-	if (m_panel->m_config->m_properties->get_property(uname, *p))
+	if (m_panel->m_config->m_properties->get_property(uname, *out))
 	{
 		return S_OK;
 	}
 
 	m_panel->m_config->m_properties->set_property(uname, defaultval);
 	if (defaultval.vt == VT_ERROR || defaultval.vt == VT_EMPTY || defaultval.vt == VT_DISPATCH) defaultval.vt = VT_NULL;
-	return VariantCopy(p, &defaultval);
+	return VariantCopy(out, &defaultval);
 }
 
 STDMETHODIMP Window::NotifyOthers(BSTR name, VARIANT info)
@@ -151,11 +151,11 @@ STDMETHODIMP Window::SetCursor(UINT id)
 	return S_OK;
 }
 
-STDMETHODIMP Window::SetInterval(IDispatch* func, int delay, UINT* p)
+STDMETHODIMP Window::SetInterval(IDispatch* func, int delay, UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = PanelTimerDispatcher::instance().set_interval(m_panel->m_hwnd, delay, func);
+	*out = PanelTimerDispatcher::instance().set_interval(m_panel->m_hwnd, delay, func);
 	return S_OK;
 }
 
@@ -165,11 +165,11 @@ STDMETHODIMP Window::SetProperty(BSTR name, VARIANT val)
 	return S_OK;
 }
 
-STDMETHODIMP Window::SetTimeout(IDispatch* func, int delay, UINT* p)
+STDMETHODIMP Window::SetTimeout(IDispatch* func, int delay, UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = PanelTimerDispatcher::instance().set_timeout(m_panel->m_hwnd, delay, func);
+	*out = PanelTimerDispatcher::instance().set_timeout(m_panel->m_hwnd, delay, func);
 	return S_OK;
 }
 
@@ -203,91 +203,91 @@ STDMETHODIMP Window::ShowProperties()
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_Height(int* p)
+STDMETHODIMP Window::get_Height(int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_panel->m_rect.Height();
+	*out = m_panel->m_rect.Height();
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_ID(UINT* p)
+STDMETHODIMP Window::get_ID(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_panel->m_id;
+	*out = m_panel->m_id;
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_InstanceType(UINT* p)
+STDMETHODIMP Window::get_InstanceType(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_panel->m_is_default_ui ? 1 : 0;
+	*out = m_panel->m_is_default_ui ? 1 : 0;
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_IsTransparent(VARIANT_BOOL* p)
+STDMETHODIMP Window::get_IsTransparent(VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(m_panel->is_transparent());
+	*out = to_variant_bool(m_panel->is_transparent());
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_IsVisible(VARIANT_BOOL* p)
+STDMETHODIMP Window::get_IsVisible(VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(m_panel->m_hwnd.IsWindowVisible());
+	*out = to_variant_bool(m_panel->m_hwnd.IsWindowVisible());
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_MaxHeight(UINT* p)
+STDMETHODIMP Window::get_MaxHeight(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_panel->m_max.y;
+	*out = m_panel->m_max.y;
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_MaxWidth(UINT* p)
+STDMETHODIMP Window::get_MaxWidth(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_panel->m_max.x;
+	*out = m_panel->m_max.x;
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_MinHeight(UINT* p)
+STDMETHODIMP Window::get_MinHeight(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_panel->m_min.y;
+	*out = m_panel->m_min.y;
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_MinWidth(UINT* p)
+STDMETHODIMP Window::get_MinWidth(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_panel->m_min.x;
+	*out = m_panel->m_min.x;
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_Name(BSTR* p)
+STDMETHODIMP Window::get_Name(BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_bstr(m_panel->m_script_host->m_info->m_name);
+	*out = to_bstr(m_panel->m_script_host->m_info->m_name);
 	return S_OK;
 }
 
-STDMETHODIMP Window::get_Width(int* p)
+STDMETHODIMP Window::get_Width(int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_panel->m_rect.Width();
+	*out = m_panel->m_rect.Width();
 	return S_OK;
 }
 

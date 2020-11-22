@@ -9,12 +9,12 @@ protected:
 	void FinalRelease() override;
 
 public:
-	STDMETHODIMP get__HFONT(HFONT* p) override;
-	STDMETHODIMP get__ptr(void** pp) override;
-	STDMETHODIMP get_Height(UINT* p) override;
-	STDMETHODIMP get_Name(BSTR* p) override;
-	STDMETHODIMP get_Size(float* p) override;
-	STDMETHODIMP get_Style(int* p) override;
+	STDMETHODIMP get__HFONT(HFONT* out) override;
+	STDMETHODIMP get__ptr(void** out) override;
+	STDMETHODIMP get_Height(UINT* out) override;
+	STDMETHODIMP get_Name(BSTR* out) override;
+	STDMETHODIMP get_Size(float* out) override;
+	STDMETHODIMP get_Style(int* out) override;
 
 private:
 	HFONT m_hFont = nullptr;

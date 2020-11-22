@@ -52,11 +52,11 @@ STDMETHODIMP Plman::ClearPlaylistSelection(UINT playlistIndex)
 	return S_OK;
 }
 
-STDMETHODIMP Plman::CreateAutoPlaylist(UINT playlistIndex, BSTR name, BSTR query, BSTR sort, UINT flags, int* p)
+STDMETHODIMP Plman::CreateAutoPlaylist(UINT playlistIndex, BSTR name, BSTR query, BSTR sort, UINT flags, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = -1;
+	*out = -1;
 
 	auto uquery = string_utf8_from_wide(query);
 	search_filter_v2::ptr filter;
@@ -72,32 +72,32 @@ STDMETHODIMP Plman::CreateAutoPlaylist(UINT playlistIndex, BSTR name, BSTR query
 		size_t pos;
 		CreatePlaylist(playlistIndex, name, &pos);
 		autoplaylist_manager::get()->add_client_simple(uquery, string_utf8_from_wide(sort), pos, flags);
-		*p = to_int(pos);
+		*out = to_int(pos);
 	}
 	return S_OK;
 }
 
-STDMETHODIMP Plman::CreatePlaylist(UINT playlistIndex, BSTR name, UINT* p)
+STDMETHODIMP Plman::CreatePlaylist(UINT playlistIndex, BSTR name, UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto api = playlist_manager::get();
 	auto uname = string_utf8_from_wide(name);
 
 	if (uname.length())
 	{
-		*p = api->create_playlist(uname, uname.length(), playlistIndex);
+		*out = api->create_playlist(uname, uname.length(), playlistIndex);
 	}
 	else
 	{
-		*p = api->create_playlist_autoname(playlistIndex);
+		*out = api->create_playlist_autoname(playlistIndex);
 	}
 	return S_OK;
 }
 
-STDMETHODIMP Plman::DuplicatePlaylist(UINT playlistIndex, BSTR name, UINT* p)
+STDMETHODIMP Plman::DuplicatePlaylist(UINT playlistIndex, BSTR name, UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto api = playlist_manager_v4::get();
 
@@ -113,7 +113,7 @@ STDMETHODIMP Plman::DuplicatePlaylist(UINT playlistIndex, BSTR name, UINT* p)
 		}
 
 		stream_reader_dummy dummy_reader;
-		*p = api->create_playlist_ex(uname.get_ptr(), uname.get_length(), playlistIndex + 1, items, &dummy_reader, fb2k::noAbort);
+		*out = api->create_playlist_ex(uname.get_ptr(), uname.get_length(), playlistIndex + 1, items, &dummy_reader, fb2k::noAbort);
 		return S_OK;
 	}
 	return E_INVALIDARG;
@@ -125,40 +125,40 @@ STDMETHODIMP Plman::EnsurePlaylistItemVisible(UINT playlistIndex, UINT playlistI
 	return S_OK;
 }
 
-STDMETHODIMP Plman::ExecutePlaylistDefaultAction(UINT playlistIndex, UINT playlistItemIndex, VARIANT_BOOL* p)
+STDMETHODIMP Plman::ExecutePlaylistDefaultAction(UINT playlistIndex, UINT playlistItemIndex, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto api = playlist_manager::get();
 	if (playlistIndex < api->get_playlist_count() && playlistItemIndex < api->playlist_get_item_count(playlistIndex))
 	{
-		*p = to_variant_bool(api->playlist_execute_default_action(playlistIndex, playlistItemIndex));
+		*out = to_variant_bool(api->playlist_execute_default_action(playlistIndex, playlistItemIndex));
 		return S_OK;
 	}
 	return E_INVALIDARG;
 }
 
-STDMETHODIMP Plman::FindOrCreatePlaylist(BSTR name, VARIANT_BOOL unlocked, UINT* p)
+STDMETHODIMP Plman::FindOrCreatePlaylist(BSTR name, VARIANT_BOOL unlocked, UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto api = playlist_manager::get();
 	auto uname = string_utf8_from_wide(name);
 
 	if (to_bool(unlocked))
 	{
-		*p = api->find_or_create_playlist_unlocked(uname);
+		*out = api->find_or_create_playlist_unlocked(uname);
 	}
 	else
 	{
-		*p = api->find_or_create_playlist(uname);
+		*out = api->find_or_create_playlist(uname);
 	}
 	return S_OK;
 }
 
-STDMETHODIMP Plman::FindPlaybackQueueItemIndex(IMetadbHandle* handle, UINT playlistIndex, UINT playlistItemIndex, int* p)
+STDMETHODIMP Plman::FindPlaybackQueueItemIndex(IMetadbHandle* handle, UINT playlistIndex, UINT playlistItemIndex, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle* ptr = nullptr;
 	GET_PTR(handle, ptr);
@@ -167,15 +167,15 @@ STDMETHODIMP Plman::FindPlaybackQueueItemIndex(IMetadbHandle* handle, UINT playl
 	item.m_handle = ptr;
 	item.m_playlist = playlistIndex;
 	item.m_item = playlistItemIndex;
-	*p = to_int(playlist_manager::get()->queue_find_index(item));
+	*out = to_int(playlist_manager::get()->queue_find_index(item));
 	return S_OK;
 }
 
-STDMETHODIMP Plman::FindPlaylist(BSTR name, int* p)
+STDMETHODIMP Plman::FindPlaylist(BSTR name, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_int(playlist_manager::get()->find_playlist(string_utf8_from_wide(name)));
+	*out = to_int(playlist_manager::get()->find_playlist(string_utf8_from_wide(name)));
 	return S_OK;
 }
 
@@ -185,9 +185,9 @@ STDMETHODIMP Plman::FlushPlaybackQueue()
 	return S_OK;
 }
 
-STDMETHODIMP Plman::GetPlaybackQueueContents(VARIANT* p)
+STDMETHODIMP Plman::GetPlaybackQueueContents(VARIANT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	pfc::list_t<t_playback_queue_item> contents;
 	playlist_manager::get()->queue_get_contents(contents);
@@ -204,14 +204,14 @@ STDMETHODIMP Plman::GetPlaybackQueueContents(VARIANT* p)
 		if (!writer.put_item(i, var)) return E_OUTOFMEMORY;
 	}
 
-	p->vt = VT_ARRAY | VT_VARIANT;
-	p->parray = writer.get_ptr();
+	out->vt = VT_ARRAY | VT_VARIANT;
+	out->parray = writer.get_ptr();
 	return S_OK;
 }
 
-STDMETHODIMP Plman::GetPlaybackQueueHandles(IMetadbHandleList** pp)
+STDMETHODIMP Plman::GetPlaybackQueueHandles(IMetadbHandleList** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	pfc::list_t<t_playback_queue_item> contents;
 	playlist_manager::get()->queue_get_contents(contents);
@@ -221,102 +221,102 @@ STDMETHODIMP Plman::GetPlaybackQueueHandles(IMetadbHandleList** pp)
 	{
 		items.add_item(contents[i].m_handle);
 	}
-	*pp = new ComObjectImpl<MetadbHandleList>(items);
+	*out = new ComObjectImpl<MetadbHandleList>(items);
 	return S_OK;
 }
 
-STDMETHODIMP Plman::GetPlayingItemLocation(IPlayingItemLocation** pp)
+STDMETHODIMP Plman::GetPlayingItemLocation(IPlayingItemLocation** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	size_t playlistIndex;
 	size_t playlistItemIndex;
 	bool isValid = playlist_manager::get()->get_playing_item_location(&playlistIndex, &playlistItemIndex);
-	*pp = new ComObjectImpl<PlayingItemLocation>(isValid, playlistIndex, playlistItemIndex);
+	*out = new ComObjectImpl<PlayingItemLocation>(isValid, playlistIndex, playlistItemIndex);
 	return S_OK;
 }
 
-STDMETHODIMP Plman::GetPlaylistFocusItemIndex(UINT playlistIndex, int* p)
+STDMETHODIMP Plman::GetPlaylistFocusItemIndex(UINT playlistIndex, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_int(playlist_manager::get()->playlist_get_focus_item(playlistIndex));
+	*out = to_int(playlist_manager::get()->playlist_get_focus_item(playlistIndex));
 	return S_OK;
 }
 
-STDMETHODIMP Plman::GetPlaylistItems(UINT playlistIndex, IMetadbHandleList** pp)
+STDMETHODIMP Plman::GetPlaylistItems(UINT playlistIndex, IMetadbHandleList** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_list items;
 	playlist_manager::get()->playlist_get_all_items(playlistIndex, items);
-	*pp = new ComObjectImpl<MetadbHandleList>(items);
+	*out = new ComObjectImpl<MetadbHandleList>(items);
 	return S_OK;
 }
 
-STDMETHODIMP Plman::GetPlaylistLockFilterMask(UINT playlistIndex, int* p)
+STDMETHODIMP Plman::GetPlaylistLockFilterMask(UINT playlistIndex, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_int(playlist_manager::get()->playlist_lock_get_filter_mask(playlistIndex));
+	*out = to_int(playlist_manager::get()->playlist_lock_get_filter_mask(playlistIndex));
 	return S_OK;
 }
 
-STDMETHODIMP Plman::GetPlaylistLockName(UINT playlistIndex, BSTR* p)
+STDMETHODIMP Plman::GetPlaylistLockName(UINT playlistIndex, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	string8 str;
 	playlist_manager::get()->playlist_lock_query_name(playlistIndex, str);
-	*p = to_bstr(str);
+	*out = to_bstr(str);
 	return S_OK;
 }
 
-STDMETHODIMP Plman::GetPlaylistName(UINT playlistIndex, BSTR* p)
+STDMETHODIMP Plman::GetPlaylistName(UINT playlistIndex, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	string8 str;
 	playlist_manager::get()->playlist_get_name(playlistIndex, str);
-	*p = to_bstr(str);
+	*out = to_bstr(str);
 	return S_OK;
 }
 
-STDMETHODIMP Plman::GetPlaylistSelectedItems(UINT playlistIndex, IMetadbHandleList** pp)
+STDMETHODIMP Plman::GetPlaylistSelectedItems(UINT playlistIndex, IMetadbHandleList** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle_list items;
 	playlist_manager::get()->playlist_get_selected_items(playlistIndex, items);
-	*pp = new ComObjectImpl<MetadbHandleList>(items);
+	*out = new ComObjectImpl<MetadbHandleList>(items);
 	return S_OK;
 }
 
-STDMETHODIMP Plman::GetRecyclerItems(UINT index, IMetadbHandleList** pp)
+STDMETHODIMP Plman::GetRecyclerItems(UINT index, IMetadbHandleList** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto api = playlist_manager_v3::get();
 	if (index < api->recycler_get_count())
 	{
 		metadb_handle_list items;
 		api->recycler_get_content(index, items);
-		*pp = new ComObjectImpl<MetadbHandleList>(items);
+		*out = new ComObjectImpl<MetadbHandleList>(items);
 		return S_OK;
 	}
 	return E_INVALIDARG;
 }
 
-STDMETHODIMP Plman::GetRecyclerName(UINT index, BSTR* p)
+STDMETHODIMP Plman::GetRecyclerName(UINT index, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto api = playlist_manager_v3::get();
 	if (index < api->recycler_get_count())
 	{
 		string8 str;
 		api->recycler_get_name(index, str);
-		*p = to_bstr(str);
+		*out = to_bstr(str);
 		return S_OK;
 	}
 	return E_INVALIDARG;
@@ -341,44 +341,44 @@ STDMETHODIMP Plman::InsertPlaylistItemsFilter(UINT playlistIndex, UINT base, IMe
 	return S_OK;
 }
 
-STDMETHODIMP Plman::IsAutoPlaylist(UINT playlistIndex, VARIANT_BOOL* p)
+STDMETHODIMP Plman::IsAutoPlaylist(UINT playlistIndex, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	if (playlistIndex < playlist_manager::get()->get_playlist_count())
 	{
-		*p = to_variant_bool(autoplaylist_manager::get()->is_client_present(playlistIndex));
+		*out = to_variant_bool(autoplaylist_manager::get()->is_client_present(playlistIndex));
 		return S_OK;
 	}
 	return E_INVALIDARG;
 }
 
-STDMETHODIMP Plman::IsPlaylistItemSelected(UINT playlistIndex, UINT playlistItemIndex, VARIANT_BOOL* p)
+STDMETHODIMP Plman::IsPlaylistItemSelected(UINT playlistIndex, UINT playlistItemIndex, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(playlist_manager::get()->playlist_is_item_selected(playlistIndex, playlistItemIndex));
+	*out = to_variant_bool(playlist_manager::get()->playlist_is_item_selected(playlistIndex, playlistItemIndex));
 	return S_OK;
 }
 
-STDMETHODIMP Plman::IsPlaylistLocked(UINT playlistIndex, VARIANT_BOOL* p)
+STDMETHODIMP Plman::IsPlaylistLocked(UINT playlistIndex, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto api = playlist_manager::get();
 	if (playlistIndex < api->get_playlist_count())
 	{
-		*p = to_variant_bool(api->playlist_lock_is_present(playlistIndex));
+		*out = to_variant_bool(api->playlist_lock_is_present(playlistIndex));
 		return S_OK;
 	}
 	return E_INVALIDARG;
 }
 
-STDMETHODIMP Plman::MovePlaylist(UINT from, UINT to, VARIANT_BOOL* p)
+STDMETHODIMP Plman::MovePlaylist(UINT from, UINT to, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = VARIANT_FALSE;
+	*out = VARIANT_FALSE;
 	auto api = playlist_manager::get();
 	const size_t count = api->get_playlist_count();
 
@@ -388,24 +388,24 @@ STDMETHODIMP Plman::MovePlaylist(UINT from, UINT to, VARIANT_BOOL* p)
 		std::iota(order.begin(), order.end(), 0U);
 		pfc::create_move_items_permutation(order.data(), count, pfc::bit_array_one(from), to - from);
 
-		*p = to_variant_bool(api->reorder(order.data(), order.size()));
+		*out = to_variant_bool(api->reorder(order.data(), order.size()));
 	}
 	return S_OK;
 }
 
-STDMETHODIMP Plman::MovePlaylistSelection(UINT playlistIndex, int delta, VARIANT_BOOL* p)
+STDMETHODIMP Plman::MovePlaylistSelection(UINT playlistIndex, int delta, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(playlist_manager::get()->playlist_move_selection(playlistIndex, delta));
+	*out = to_variant_bool(playlist_manager::get()->playlist_move_selection(playlistIndex, delta));
 	return S_OK;
 }
 
-STDMETHODIMP Plman::PlaylistItemCount(UINT playlistIndex, UINT* p)
+STDMETHODIMP Plman::PlaylistItemCount(UINT playlistIndex, UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = playlist_manager::get()->playlist_get_item_count(playlistIndex);
+	*out = playlist_manager::get()->playlist_get_item_count(playlistIndex);
 	return S_OK;
 }
 
@@ -454,19 +454,19 @@ STDMETHODIMP Plman::RemoveItemsFromPlaybackQueue(VARIANT affectedItems)
 	return S_OK;
 }
 
-STDMETHODIMP Plman::RemovePlaylist(UINT playlistIndex, VARIANT_BOOL* p)
+STDMETHODIMP Plman::RemovePlaylist(UINT playlistIndex, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(playlist_manager::get()->remove_playlist(playlistIndex));
+	*out = to_variant_bool(playlist_manager::get()->remove_playlist(playlistIndex));
 	return S_OK;
 }
 
-STDMETHODIMP Plman::RemovePlaylists(VARIANT playlistIndexes, VARIANT_BOOL* p)
+STDMETHODIMP Plman::RemovePlaylists(VARIANT playlistIndexes, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = VARIANT_FALSE;
+	*out = VARIANT_FALSE;
 
 	auto api = playlist_manager::get();
 	pfc::bit_array_bittable affected(api->get_playlist_count());
@@ -475,7 +475,7 @@ STDMETHODIMP Plman::RemovePlaylists(VARIANT playlistIndexes, VARIANT_BOOL* p)
 
 	if (affected.size())
 	{
-		*p = to_variant_bool(api->remove_playlists(affected));
+		*out = to_variant_bool(api->remove_playlists(affected));
 	}
 	return S_OK;
 }
@@ -486,20 +486,20 @@ STDMETHODIMP Plman::RemovePlaylistSelection(UINT playlistIndex, VARIANT_BOOL cro
 	return S_OK;
 }
 
-STDMETHODIMP Plman::RemovePlaylistSwitch(UINT playlistIndex, VARIANT_BOOL* p)
+STDMETHODIMP Plman::RemovePlaylistSwitch(UINT playlistIndex, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(playlist_manager::get()->remove_playlist_switch(playlistIndex));
+	*out = to_variant_bool(playlist_manager::get()->remove_playlist_switch(playlistIndex));
 	return S_OK;
 }
 
-STDMETHODIMP Plman::RenamePlaylist(UINT playlistIndex, BSTR name, VARIANT_BOOL* p)
+STDMETHODIMP Plman::RenamePlaylist(UINT playlistIndex, BSTR name, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto uname = string_utf8_from_wide(name);
-	*p = to_variant_bool(playlist_manager::get()->playlist_rename(playlistIndex, uname, uname.length()));
+	*out = to_variant_bool(playlist_manager::get()->playlist_rename(playlistIndex, uname, uname.length()));
 	return S_OK;
 }
 
@@ -545,36 +545,36 @@ STDMETHODIMP Plman::SetPlaylistSelectionSingle(UINT playlistIndex, UINT playlist
 	return S_OK;
 }
 
-STDMETHODIMP Plman::ShowAutoPlaylistUI(UINT playlistIndex, VARIANT_BOOL* p)
+STDMETHODIMP Plman::ShowAutoPlaylistUI(UINT playlistIndex, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	if (playlistIndex < playlist_manager::get()->get_playlist_count())
 	{
-		*p = VARIANT_FALSE;
+		*out = VARIANT_FALSE;
 		auto api = autoplaylist_manager::get();
 		if (api->is_client_present(playlistIndex))
 		{
 			api->query_client(playlistIndex)->show_ui(playlistIndex);
-			*p = VARIANT_TRUE;
+			*out = VARIANT_TRUE;
 		}
 		return S_OK;
 	}
 	return E_INVALIDARG;
 }
 
-STDMETHODIMP Plman::SortByFormat(UINT playlistIndex, BSTR pattern, VARIANT_BOOL selOnly, VARIANT_BOOL* p)
+STDMETHODIMP Plman::SortByFormat(UINT playlistIndex, BSTR pattern, VARIANT_BOOL selOnly, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto upattern = string_utf8_from_wide(pattern);
-	*p = to_variant_bool(playlist_manager::get()->playlist_sort_by_format(playlistIndex, upattern.length() ? upattern.get_ptr() : nullptr, to_bool(selOnly)));
+	*out = to_variant_bool(playlist_manager::get()->playlist_sort_by_format(playlistIndex, upattern.length() ? upattern.get_ptr() : nullptr, to_bool(selOnly)));
 	return S_OK;
 }
 
-STDMETHODIMP Plman::SortByFormatV2(UINT playlistIndex, BSTR pattern, int direction, VARIANT_BOOL* p)
+STDMETHODIMP Plman::SortByFormatV2(UINT playlistIndex, BSTR pattern, int direction, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto api = playlist_manager::get();
 
@@ -589,7 +589,7 @@ STDMETHODIMP Plman::SortByFormatV2(UINT playlistIndex, BSTR pattern, int directi
 
 	metadb_handle_list_helper::sort_by_format_get_order_v2(items, order.data(), obj, nullptr, direction, fb2k::noAbort);
 
-	*p = to_variant_bool(api->playlist_reorder_items(playlistIndex, order.data(), count));
+	*out = to_variant_bool(api->playlist_reorder_items(playlistIndex, order.data(), count));
 	return S_OK;
 }
 
@@ -620,43 +620,43 @@ STDMETHODIMP Plman::UndoBackup(UINT playlistIndex)
 	return S_OK;
 }
 
-STDMETHODIMP Plman::get_ActivePlaylist(int* p)
+STDMETHODIMP Plman::get_ActivePlaylist(int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_int(playlist_manager::get()->get_active_playlist());
+	*out = to_int(playlist_manager::get()->get_active_playlist());
 	return S_OK;
 }
 
-STDMETHODIMP Plman::get_PlaybackOrder(UINT* p)
+STDMETHODIMP Plman::get_PlaybackOrder(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = playlist_manager::get()->playback_order_get_active();
+	*out = playlist_manager::get()->playback_order_get_active();
 	return S_OK;
 }
 
-STDMETHODIMP Plman::get_PlayingPlaylist(int* p)
+STDMETHODIMP Plman::get_PlayingPlaylist(int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_int(playlist_manager::get()->get_playing_playlist());
+	*out = to_int(playlist_manager::get()->get_playing_playlist());
 	return S_OK;
 }
 
-STDMETHODIMP Plman::get_PlaylistCount(UINT* p)
+STDMETHODIMP Plman::get_PlaylistCount(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = playlist_manager::get()->get_playlist_count();
+	*out = playlist_manager::get()->get_playlist_count();
 	return S_OK;
 }
 
-STDMETHODIMP Plman::get_RecyclerCount(UINT* p)
+STDMETHODIMP Plman::get_RecyclerCount(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = playlist_manager_v3::get()->recycler_get_count();
+	*out = playlist_manager_v3::get()->recycler_get_count();
 	return S_OK;
 }
 
@@ -671,12 +671,12 @@ STDMETHODIMP Plman::put_ActivePlaylist(UINT playlistIndex)
 	return E_INVALIDARG;
 }
 
-STDMETHODIMP Plman::put_PlaybackOrder(UINT p)
+STDMETHODIMP Plman::put_PlaybackOrder(UINT order)
 {
 	auto api = playlist_manager::get();
-	if (p < api->playback_order_get_count())
+	if (order < api->playback_order_get_count())
 	{
-		api->playback_order_set_active(p);
+		api->playback_order_set_active(order);
 		return S_OK;
 	}
 	return E_INVALIDARG;

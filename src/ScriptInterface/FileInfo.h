@@ -9,16 +9,16 @@ protected:
 	void FinalRelease() override;
 
 public:
-	STDMETHODIMP get__ptr(void** pp) override;
-	STDMETHODIMP InfoFind(BSTR name, int* p) override;
-	STDMETHODIMP InfoName(UINT idx, BSTR* p) override;
-	STDMETHODIMP InfoValue(UINT idx, BSTR* p) override;
-	STDMETHODIMP MetaFind(BSTR name, int* p) override;
-	STDMETHODIMP MetaName(UINT idx, BSTR* p) override;
-	STDMETHODIMP MetaValue(UINT idx, UINT vidx, BSTR* p) override;
-	STDMETHODIMP MetaValueCount(UINT idx, UINT* p) override;
-	STDMETHODIMP get_InfoCount(UINT* p) override;
-	STDMETHODIMP get_MetaCount(UINT* p) override;
+	STDMETHODIMP get__ptr(void** out) override;
+	STDMETHODIMP InfoFind(BSTR name, int* out) override;
+	STDMETHODIMP InfoName(UINT idx, BSTR* out) override;
+	STDMETHODIMP InfoValue(UINT idx, BSTR* out) override;
+	STDMETHODIMP MetaFind(BSTR name, int* out) override;
+	STDMETHODIMP MetaName(UINT idx, BSTR* out) override;
+	STDMETHODIMP MetaValue(UINT idx, UINT vidx, BSTR* out) override;
+	STDMETHODIMP MetaValueCount(UINT idx, UINT* out) override;
+	STDMETHODIMP get_InfoCount(UINT* out) override;
+	STDMETHODIMP get_MetaCount(UINT* out) override;
 
 private:
 	metadb_info_container::ptr m_info;

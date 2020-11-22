@@ -30,12 +30,12 @@ STDMETHODIMP Tooltip::Deactivate()
 	return S_OK;
 }
 
-STDMETHODIMP Tooltip::GetDelayTime(int type, int* p)
+STDMETHODIMP Tooltip::GetDelayTime(int type, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 	if (type < TTDT_AUTOMATIC || type > TTDT_INITIAL) return E_INVALIDARG;
 
-	*p = m_tooltip.SendMessage(TTM_GETDELAYTIME, type);
+	*out = m_tooltip.SendMessage(TTM_GETDELAYTIME, type);
 	return S_OK;
 }
 
@@ -61,11 +61,11 @@ STDMETHODIMP Tooltip::TrackPosition(int x, int y)
 	return S_OK;
 }
 
-STDMETHODIMP Tooltip::get_Text(BSTR* p)
+STDMETHODIMP Tooltip::get_Text(BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = SysAllocString(m_tip_buffer.data());
+	*out = SysAllocString(m_tip_buffer.data());
 	return S_OK;
 }
 

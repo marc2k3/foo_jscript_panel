@@ -8,21 +8,21 @@
 Utils::Utils() {}
 Utils::~Utils() {}
 
-STDMETHODIMP Utils::Chardet(BSTR filename, UINT* p)
+STDMETHODIMP Utils::Chardet(BSTR filename, UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = helpers::guess_codepage(helpers::read_file(string_utf8_from_wide(filename)));
+	*out = helpers::guess_codepage(helpers::read_file(string_utf8_from_wide(filename)));
 	return S_OK;
 }
 
-STDMETHODIMP Utils::CheckComponent(BSTR name, VARIANT_BOOL* p)
+STDMETHODIMP Utils::CheckComponent(BSTR name, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto uname = string_utf8_from_wide(name);
 
-	*p = VARIANT_FALSE;
+	*out = VARIANT_FALSE;
 
 	for (auto e = service_enum_t<componentversion>(); !e.finished(); ++e)
 	{
@@ -30,7 +30,7 @@ STDMETHODIMP Utils::CheckComponent(BSTR name, VARIANT_BOOL* p)
 		e.get()->get_file_name(str);
 		if (_stricmp(str, uname) == 0)
 		{
-			*p = VARIANT_TRUE;
+			*out = VARIANT_TRUE;
 			break;
 		}
 	}
@@ -38,11 +38,11 @@ STDMETHODIMP Utils::CheckComponent(BSTR name, VARIANT_BOOL* p)
 	return S_OK;
 }
 
-STDMETHODIMP Utils::CheckFont(BSTR name, VARIANT_BOOL* p)
+STDMETHODIMP Utils::CheckFont(BSTR name, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = VARIANT_FALSE;
+	*out = VARIANT_FALSE;
 
 	Gdiplus::InstalledFontCollection fonts;
 	const int count = fonts.GetFamilyCount();
@@ -57,7 +57,7 @@ STDMETHODIMP Utils::CheckFont(BSTR name, VARIANT_BOOL* p)
 			families.get_ptr()[i].GetFamilyName(family_name.data());
 			if (_wcsicmp(name, family_name.data()) == 0)
 			{
-				*p = VARIANT_TRUE;
+				*out = VARIANT_TRUE;
 				break;
 			}
 		}
@@ -65,39 +65,39 @@ STDMETHODIMP Utils::CheckFont(BSTR name, VARIANT_BOOL* p)
 	return S_OK;
 }
 
-STDMETHODIMP Utils::ColourPicker(UINT window_id, int default_colour, int* p)
+STDMETHODIMP Utils::ColourPicker(UINT window_id, int default_colour, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	COLORREF colour = to_colorref(default_colour);
 	uChooseColor(&colour, reinterpret_cast<HWND>(window_id), m_colours.data());
-	*p = to_argb(colour);
+	*out = to_argb(colour);
 	return S_OK;
 }
 
-STDMETHODIMP Utils::DateStringToTimestamp(BSTR str, UINT64* p)
+STDMETHODIMP Utils::DateStringToTimestamp(BSTR str, UINT64* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = pfc::fileTimeWtoU(filetimestamp_from_string(string_utf8_from_wide(str).get_ptr()));
+	*out = pfc::fileTimeWtoU(filetimestamp_from_string(string_utf8_from_wide(str).get_ptr()));
 	return S_OK;
 }
 
-STDMETHODIMP Utils::FormatDuration(double seconds, BSTR* p)
+STDMETHODIMP Utils::FormatDuration(double seconds, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	string8 str = pfc::format_time_ex(seconds, 0).get_ptr();
-	*p = to_bstr(str);
+	*out = to_bstr(str);
 	return S_OK;
 }
 
-STDMETHODIMP Utils::FormatFileSize(UINT64 bytes, BSTR* p)
+STDMETHODIMP Utils::FormatFileSize(UINT64 bytes, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	string8 str = pfc::format_file_size_short(bytes);
-	*p = to_bstr(str);
+	*out = to_bstr(str);
 	return S_OK;
 }
 
@@ -111,61 +111,61 @@ STDMETHODIMP Utils::GetAlbumArtAsync(UINT window_id, IMetadbHandle* handle, UINT
 	return S_OK;
 }
 
-STDMETHODIMP Utils::GetAlbumArtEmbedded(BSTR rawpath, UINT art_id, IGdiBitmap** pp)
+STDMETHODIMP Utils::GetAlbumArtEmbedded(BSTR rawpath, UINT art_id, IGdiBitmap** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*pp = helpers::get_album_art_embedded(string_utf8_from_wide(rawpath), art_id);
+	*out = helpers::get_album_art_embedded(string_utf8_from_wide(rawpath), art_id);
 	return S_OK;
 }
 
-STDMETHODIMP Utils::GetAlbumArtV2(IMetadbHandle* handle, UINT art_id, VARIANT_BOOL need_stub, IGdiBitmap** pp)
+STDMETHODIMP Utils::GetAlbumArtV2(IMetadbHandle* handle, UINT art_id, VARIANT_BOOL need_stub, IGdiBitmap** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle* ptr = nullptr;
 	GET_PTR(handle, ptr);
 
 	string8 dummy;
-	*pp = helpers::get_album_art(ptr, art_id, to_bool(need_stub), false, dummy);
+	*out = helpers::get_album_art(ptr, art_id, to_bool(need_stub), false, dummy);
 	return S_OK;
 }
 
-STDMETHODIMP Utils::GetFileSize(BSTR path, __int64* p)
+STDMETHODIMP Utils::GetFileSize(BSTR path, __int64* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	LARGE_INTEGER file_size = { 0 };
 	CloseHandleScope hFile = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if (hFile.Get() != INVALID_HANDLE_VALUE) GetFileSizeEx(hFile.Get(), &file_size);
 
-	*p = file_size.QuadPart;
+	*out = file_size.QuadPart;
 	return S_OK;
 }
 
-STDMETHODIMP Utils::GetSysColour(UINT index, int* p)
+STDMETHODIMP Utils::GetSysColour(UINT index, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = 0;
+	*out = 0;
 	if (::GetSysColorBrush(index) != nullptr)
 	{
-		*p = to_argb(::GetSysColor(index));
+		*out = to_argb(::GetSysColor(index));
 	}
 	return S_OK;
 }
 
-STDMETHODIMP Utils::GetSystemMetrics(UINT index, int* p)
+STDMETHODIMP Utils::GetSystemMetrics(UINT index, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = ::GetSystemMetrics(index);
+	*out = ::GetSystemMetrics(index);
 	return S_OK;
 }
 
-STDMETHODIMP Utils::Glob(BSTR pattern, UINT exc_mask, UINT inc_mask, VARIANT* p)
+STDMETHODIMP Utils::Glob(BSTR pattern, UINT exc_mask, UINT inc_mask, VARIANT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	std::vector<std::wstring> strings;
 
@@ -200,14 +200,14 @@ STDMETHODIMP Utils::Glob(BSTR pattern, UINT exc_mask, UINT inc_mask, VARIANT* p)
 		if (!writer.put_item(i, var)) return E_OUTOFMEMORY;
 	}
 
-	p->vt = VT_ARRAY | VT_VARIANT;
-	p->parray = writer.get_ptr();
+	out->vt = VT_ARRAY | VT_VARIANT;
+	out->parray = writer.get_ptr();
 	return S_OK;
 }
 
-STDMETHODIMP Utils::InputBox(UINT window_id, BSTR prompt, BSTR caption, BSTR def, VARIANT_BOOL error_on_cancel, BSTR* p)
+STDMETHODIMP Utils::InputBox(UINT window_id, BSTR prompt, BSTR caption, BSTR def, VARIANT_BOOL error_on_cancel, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	modal_dialog_scope scope;
 	if (scope.can_create())
@@ -223,7 +223,7 @@ STDMETHODIMP Utils::InputBox(UINT window_id, BSTR prompt, BSTR caption, BSTR def
 		const int status = dlg.DoModal(hwnd);
 		if (status == IDOK)
 		{
-			*p = to_bstr(dlg.m_value);
+			*out = to_bstr(dlg.m_value);
 		}
 		else if (status == IDCANCEL)
 		{
@@ -231,39 +231,39 @@ STDMETHODIMP Utils::InputBox(UINT window_id, BSTR prompt, BSTR caption, BSTR def
 			{
 				return E_FAIL;
 			}
-			*p = SysAllocString(def);
+			*out = SysAllocString(def);
 		}
 	}
 	return S_OK;
 }
 
-STDMETHODIMP Utils::IsFile(BSTR filename, VARIANT_BOOL* p)
+STDMETHODIMP Utils::IsFile(BSTR filename, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(!PathIsDirectory(filename) && PathFileExists(filename));
+	*out = to_variant_bool(!PathIsDirectory(filename) && PathFileExists(filename));
 	return S_OK;
 }
 
-STDMETHODIMP Utils::IsFolder(BSTR folder, VARIANT_BOOL* p)
+STDMETHODIMP Utils::IsFolder(BSTR folder, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(PathIsDirectory(folder));
+	*out = to_variant_bool(PathIsDirectory(folder));
 	return S_OK;
 }
 
-STDMETHODIMP Utils::IsKeyPressed(UINT vkey, VARIANT_BOOL* p)
+STDMETHODIMP Utils::IsKeyPressed(UINT vkey, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(::IsKeyPressed(vkey));
+	*out = to_variant_bool(::IsKeyPressed(vkey));
 	return S_OK;
 }
 
-STDMETHODIMP Utils::ListFiles(BSTR folder, VARIANT_BOOL recur, VARIANT* p)
+STDMETHODIMP Utils::ListFiles(BSTR folder, VARIANT_BOOL recur, VARIANT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	Strings files = helpers::list_files(string_utf8_from_wide(folder).get_ptr(), to_bool(recur));
 	const size_t count = files.size();
@@ -276,14 +276,14 @@ STDMETHODIMP Utils::ListFiles(BSTR folder, VARIANT_BOOL recur, VARIANT* p)
 		if (!writer.put_item(i, files[i].c_str())) return E_OUTOFMEMORY;
 	}
 
-	p->vt = VT_ARRAY | VT_VARIANT;
-	p->parray = writer.get_ptr();
+	out->vt = VT_ARRAY | VT_VARIANT;
+	out->parray = writer.get_ptr();
 	return S_OK;
 }
 
-STDMETHODIMP Utils::ListFolders(BSTR folder, VARIANT_BOOL recur, VARIANT* p)
+STDMETHODIMP Utils::ListFolders(BSTR folder, VARIANT_BOOL recur, VARIANT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	Strings folders = helpers::list_folders(string_utf8_from_wide(folder).get_ptr(), to_bool(recur));
 	const size_t count = folders.size();
@@ -296,94 +296,94 @@ STDMETHODIMP Utils::ListFolders(BSTR folder, VARIANT_BOOL recur, VARIANT* p)
 		if (!writer.put_item(i, PFC_string_formatter() << folders[i].c_str() << "\\")) return E_OUTOFMEMORY;
 	}
 
-	p->vt = VT_ARRAY | VT_VARIANT;
-	p->parray = writer.get_ptr();
+	out->vt = VT_ARRAY | VT_VARIANT;
+	out->parray = writer.get_ptr();
 	return S_OK;
 }
 
-STDMETHODIMP Utils::MapString(BSTR str, UINT lcid, UINT flags, BSTR* p)
+STDMETHODIMP Utils::MapString(BSTR str, UINT lcid, UINT flags, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	int r = LCMapStringW(lcid, flags, str, wcslen(str) + 1, nullptr, 0);
 	if (r)
 	{
 		std::wstring dst(r, '\0');
 		r = LCMapStringW(lcid, flags, str, wcslen(str) + 1, dst.data(), dst.size());
-		if (r) *p = SysAllocString(dst.data());
+		if (r) *out = SysAllocString(dst.data());
 		return S_OK;
 	}
 	return E_INVALIDARG;
 }
 
-STDMETHODIMP Utils::PathWildcardMatch(BSTR pattern, BSTR str, VARIANT_BOOL* p)
+STDMETHODIMP Utils::PathWildcardMatch(BSTR pattern, BSTR str, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(PathMatchSpec(str, pattern));
+	*out = to_variant_bool(PathMatchSpec(str, pattern));
 	return S_OK;
 }
 
-STDMETHODIMP Utils::ReadINI(BSTR filename, BSTR section, BSTR key, BSTR defaultval, BSTR* p)
+STDMETHODIMP Utils::ReadINI(BSTR filename, BSTR section, BSTR key, BSTR defaultval, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	std::array<wchar_t, MAX_PATH> buf;
 	GetPrivateProfileString(section, key, defaultval, buf.data(), buf.size(), filename);
-	*p = SysAllocString(buf.data());
+	*out = SysAllocString(buf.data());
 	return S_OK;
 }
 
-STDMETHODIMP Utils::ReadTextFile(BSTR filename, UINT codepage, BSTR* p)
+STDMETHODIMP Utils::ReadTextFile(BSTR filename, UINT codepage, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	std::wstring content;
 	helpers::read_file_wide(filename, codepage, content);
-	*p = SysAllocString(content.data());
+	*out = SysAllocString(content.data());
 	return S_OK;
 }
 
-STDMETHODIMP Utils::ReadUTF8(BSTR filename, BSTR* p)
+STDMETHODIMP Utils::ReadUTF8(BSTR filename, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_bstr(helpers::read_file(string_utf8_from_wide(filename)));
+	*out = to_bstr(helpers::read_file(string_utf8_from_wide(filename)));
 	return S_OK;
 }
 
-STDMETHODIMP Utils::TimestampToDateString(UINT64 ts, BSTR* p)
+STDMETHODIMP Utils::TimestampToDateString(UINT64 ts, BSTR* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_bstr(format_filetimestamp(pfc::fileTimeUtoW(ts)).get_ptr());
+	*out = to_bstr(format_filetimestamp(pfc::fileTimeUtoW(ts)).get_ptr());
 	return S_OK;
 }
 
-STDMETHODIMP Utils::WriteINI(BSTR filename, BSTR section, BSTR key, BSTR val, VARIANT_BOOL* p)
+STDMETHODIMP Utils::WriteINI(BSTR filename, BSTR section, BSTR key, BSTR val, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = to_variant_bool(WritePrivateProfileString(section, key, val, filename));
+	*out = to_variant_bool(WritePrivateProfileString(section, key, val, filename));
 	return S_OK;
 }
 
-STDMETHODIMP Utils::WriteTextFile(BSTR filename, BSTR content, VARIANT_BOOL* p)
+STDMETHODIMP Utils::WriteTextFile(BSTR filename, BSTR content, VARIANT_BOOL* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = VARIANT_FALSE;
+	*out = VARIANT_FALSE;
 	if (content != nullptr)
 	{
-		*p = to_variant_bool(helpers::write_file(string_utf8_from_wide(filename).get_ptr(), string_utf8_from_wide(content).get_ptr()));
+		*out = to_variant_bool(helpers::write_file(string_utf8_from_wide(filename).get_ptr(), string_utf8_from_wide(content).get_ptr()));
 	}
 	return S_OK;
 }
 
-STDMETHODIMP Utils::get_Version(UINT* p)
+STDMETHODIMP Utils::get_Version(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = jsp::version;
+	*out = jsp::version;
 	return S_OK;
 }

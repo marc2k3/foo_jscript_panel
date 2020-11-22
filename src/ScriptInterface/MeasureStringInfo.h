@@ -7,12 +7,12 @@ protected:
 	~MeasureStringInfo();
 
 public:
-	STDMETHODIMP get_chars(int* p) override;
-	STDMETHODIMP get_height(float* p) override;
-	STDMETHODIMP get_lines(int* p) override;
-	STDMETHODIMP get_width(float* p) override;
-	STDMETHODIMP get_x(float* p) override;
-	STDMETHODIMP get_y(float* p) override;
+	STDMETHODIMP get_chars(int* out) override;
+	STDMETHODIMP get_height(float* out) override;
+	STDMETHODIMP get_lines(int* out) override;
+	STDMETHODIMP get_width(float* out) override;
+	STDMETHODIMP get_x(float* out) override;
+	STDMETHODIMP get_y(float* out) override;
 
 private:
 	Gdiplus::RectF m_rect;

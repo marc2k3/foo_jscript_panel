@@ -7,5 +7,5 @@ protected:
 	~Console();
 
 public:
-	STDMETHODIMP Log(SAFEARRAY* p) override;
+	STDMETHODIMP Log(SAFEARRAY* sa) override;
 };

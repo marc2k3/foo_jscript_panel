@@ -9,8 +9,8 @@ protected:
 	void FinalRelease() override;
 
 public:
-	STDMETHODIMP BuildMenu(IMenuObj* p, int base_id) override;
-	STDMETHODIMP ExecuteByID(UINT id, VARIANT_BOOL* p) override;
+	STDMETHODIMP BuildMenu(IMenuObj* obj, int base_id) override;
+	STDMETHODIMP ExecuteByID(UINT id, VARIANT_BOOL* out) override;
 	STDMETHODIMP InitContext(IMetadbHandleList* handles) override;
 	STDMETHODIMP InitContextPlaylist() override;
 	STDMETHODIMP InitNowPlaying() override;

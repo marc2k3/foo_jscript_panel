@@ -4,21 +4,21 @@
 MainMenuManager::MainMenuManager() {}
 MainMenuManager::~MainMenuManager() {}
 
-STDMETHODIMP MainMenuManager::BuildMenu(IMenuObj* p, UINT base_id)
+STDMETHODIMP MainMenuManager::BuildMenu(IMenuObj* obj, UINT base_id)
 {
 	if (m_mm.is_empty()) return E_POINTER;
 
 	HMENU menu;
-	p->get__HMENU(&menu);
+	obj->get__HMENU(&menu);
 	m_mm->generate_menu_win32(menu, base_id, SIZE_MAX, mainmenu_manager::flag_show_shortcuts);
 	return S_OK;
 }
 
-STDMETHODIMP MainMenuManager::ExecuteByID(UINT id, VARIANT_BOOL* p)
+STDMETHODIMP MainMenuManager::ExecuteByID(UINT id, VARIANT_BOOL* out)
 {
-	if (m_mm.is_empty() || !p) return E_POINTER;
+	if (m_mm.is_empty() || !out) return E_POINTER;
 
-	*p = to_variant_bool(m_mm->execute_command(id));
+	*out = to_variant_bool(m_mm->execute_command(id));
 	return S_OK;
 }
 

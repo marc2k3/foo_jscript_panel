@@ -4,22 +4,22 @@
 ContextMenuManager::ContextMenuManager() {}
 ContextMenuManager::~ContextMenuManager() {}
 
-STDMETHODIMP ContextMenuManager::BuildMenu(IMenuObj* p, int base_id)
+STDMETHODIMP ContextMenuManager::BuildMenu(IMenuObj* obj, int base_id)
 {
 	if (m_cm.is_empty()) return E_POINTER;
 
 	HMENU menu;
-	p->get__HMENU(&menu);
+	obj->get__HMENU(&menu);
 	contextmenu_node* parent = m_cm->get_root();
 	m_cm->win32_build_menu(menu, parent, base_id, -1);
 	return S_OK;
 }
 
-STDMETHODIMP ContextMenuManager::ExecuteByID(UINT id, VARIANT_BOOL* p)
+STDMETHODIMP ContextMenuManager::ExecuteByID(UINT id, VARIANT_BOOL* out)
 {
-	if (m_cm.is_empty() || !p) return E_POINTER;
+	if (m_cm.is_empty() || !out) return E_POINTER;
 
-	*p = to_variant_bool(m_cm->execute_by_id(id));
+	*out = to_variant_bool(m_cm->execute_by_id(id));
 	return S_OK;
 }
 

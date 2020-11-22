@@ -9,8 +9,8 @@ protected:
 	void FinalRelease() override;
 
 public:
-	STDMETHODIMP BuildMenu(IMenuObj* p, UINT base_id) override;
-	STDMETHODIMP ExecuteByID(UINT id, VARIANT_BOOL* p) override;
+	STDMETHODIMP BuildMenu(IMenuObj* obj, UINT base_id) override;
+	STDMETHODIMP ExecuteByID(UINT id, VARIANT_BOOL* out) override;
 	STDMETHODIMP Init(BSTR root_name) override;
 
 private:

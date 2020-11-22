@@ -5,21 +5,21 @@
 GdiGraphics::GdiGraphics() {}
 GdiGraphics::~GdiGraphics() {}
 
-STDMETHODIMP GdiGraphics::get__ptr(void** pp)
+STDMETHODIMP GdiGraphics::get__ptr(void** out)
 {
-	*pp = m_graphics;
+	*out = m_graphics;
 	return S_OK;
 }
 
-STDMETHODIMP GdiGraphics::put__ptr(void* p)
+STDMETHODIMP GdiGraphics::put__ptr(void* g)
 {
-	m_graphics = reinterpret_cast<Gdiplus::Graphics*>(p);
+	m_graphics = reinterpret_cast<Gdiplus::Graphics*>(g);
 	return S_OK;
 }
 
-STDMETHODIMP GdiGraphics::CalcTextHeight(BSTR str, IGdiFont* font, UINT* p)
+STDMETHODIMP GdiGraphics::CalcTextHeight(BSTR str, IGdiFont* font, UINT* out)
 {
-	if (!m_graphics || !p) return E_POINTER;
+	if (!m_graphics || !out) return E_POINTER;
 
 	HFONT hFont = nullptr;
 	font->get__HFONT(&hFont);
@@ -29,16 +29,16 @@ STDMETHODIMP GdiGraphics::CalcTextHeight(BSTR str, IGdiFont* font, UINT* p)
 		SelectObjectScope scope(dc, hFont);
 		SIZE size;
 		GetTextExtentPoint32(dc, str, SysStringLen(str), &size);
-		*p = to_uint(size.cy);
+		*out = to_uint(size.cy);
 	}
 
 	m_graphics->ReleaseHDC(dc);
 	return S_OK;
 }
 
-STDMETHODIMP GdiGraphics::CalcTextWidth(BSTR str, IGdiFont* font, UINT* p)
+STDMETHODIMP GdiGraphics::CalcTextWidth(BSTR str, IGdiFont* font, UINT* out)
 {
-	if (!m_graphics || !p) return E_POINTER;
+	if (!m_graphics || !out) return E_POINTER;
 
 	HFONT hFont = nullptr;
 	font->get__HFONT(&hFont);
@@ -48,7 +48,7 @@ STDMETHODIMP GdiGraphics::CalcTextWidth(BSTR str, IGdiFont* font, UINT* p)
 		SelectObjectScope scope(dc, hFont);
 		SIZE size;
 		GetTextExtentPoint32(dc, str, SysStringLen(str), &size);
-		*p = to_uint(size.cx);
+		*out = to_uint(size.cx);
 	}
 
 	m_graphics->ReleaseHDC(dc);
@@ -159,9 +159,9 @@ STDMETHODIMP GdiGraphics::DrawString(BSTR str, IGdiFont* font, __int64 colour, f
 	return S_OK;
 }
 
-STDMETHODIMP GdiGraphics::EstimateLineWrap(BSTR str, IGdiFont* font, UINT width, VARIANT* p)
+STDMETHODIMP GdiGraphics::EstimateLineWrap(BSTR str, IGdiFont* font, UINT width, VARIANT* out)
 {
-	if (!m_graphics || !p) return E_POINTER;
+	if (!m_graphics || !out) return E_POINTER;
 
 	EstimateLineWrap::WrappedItems result;
 
@@ -192,8 +192,8 @@ STDMETHODIMP GdiGraphics::EstimateLineWrap(BSTR str, IGdiFont* font, UINT width,
 		if (!writer.put_item((i * 2) + 1, var2)) return E_OUTOFMEMORY;
 	}
 
-	p->vt = VT_ARRAY | VT_VARIANT;
-	p->parray = writer.get_ptr();
+	out->vt = VT_ARRAY | VT_VARIANT;
+	out->parray = writer.get_ptr();
 	return S_OK;
 }
 
@@ -344,9 +344,9 @@ STDMETHODIMP GdiGraphics::GdiDrawText(BSTR str, IGdiFont* font, __int64 colour, 
 	return S_OK;
 }
 
-STDMETHODIMP GdiGraphics::MeasureString(BSTR str, IGdiFont* font, float x, float y, float w, float h, int flags, IMeasureStringInfo** pp)
+STDMETHODIMP GdiGraphics::MeasureString(BSTR str, IGdiFont* font, float x, float y, float w, float h, int flags, IMeasureStringInfo** out)
 {
-	if (!m_graphics || !pp) return E_POINTER;
+	if (!m_graphics || !out) return E_POINTER;
 
 	Gdiplus::Font* fn = nullptr;
 	GET_PTR(font, fn);
@@ -359,7 +359,7 @@ STDMETHODIMP GdiGraphics::MeasureString(BSTR str, IGdiFont* font, float x, float
 
 	m_graphics->MeasureString(str, -1, fn, Gdiplus::RectF(x, y, w, h), &fmt, &rect, &chars, &lines);
 
-	*pp = new ComObjectImpl<MeasureStringInfo>(rect, chars, lines);
+	*out = new ComObjectImpl<MeasureStringInfo>(rect, chars, lines);
 	return S_OK;
 }
 

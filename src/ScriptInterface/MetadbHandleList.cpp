@@ -10,11 +10,11 @@
 MetadbHandleList::MetadbHandleList(metadb_handle_list_cref handles) : m_handles(handles) {}
 MetadbHandleList::~MetadbHandleList() {}
 
-STDMETHODIMP MetadbHandleList::get__ptr(void** pp)
+STDMETHODIMP MetadbHandleList::get__ptr(void** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*pp = &m_handles;
+	*out = &m_handles;
 	return S_OK;
 }
 
@@ -65,44 +65,44 @@ STDMETHODIMP MetadbHandleList::AttachImage(BSTR path, UINT art_id)
 	return S_OK;
 }
 
-STDMETHODIMP MetadbHandleList::BSearch(IMetadbHandle* handle, int* p)
+STDMETHODIMP MetadbHandleList::BSearch(IMetadbHandle* handle, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle* ptr = nullptr;
 	GET_PTR(handle, ptr);
 
-	*p = to_int(m_handles.bsearch_by_pointer(ptr));
+	*out = to_int(m_handles.bsearch_by_pointer(ptr));
 	return S_OK;
 }
 
-STDMETHODIMP MetadbHandleList::CalcTotalDuration(double* p)
+STDMETHODIMP MetadbHandleList::CalcTotalDuration(double* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_handles.calc_total_duration();
+	*out = m_handles.calc_total_duration();
 	return S_OK;
 }
 
-STDMETHODIMP MetadbHandleList::CalcTotalSize(UINT64* p)
+STDMETHODIMP MetadbHandleList::CalcTotalSize(UINT64* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = metadb_handle_list_helper::calc_total_size(m_handles, true);
+	*out = metadb_handle_list_helper::calc_total_size(m_handles, true);
 	return S_OK;
 }
 
-STDMETHODIMP MetadbHandleList::Clone(IMetadbHandleList** pp)
+STDMETHODIMP MetadbHandleList::Clone(IMetadbHandleList** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*pp = new ComObjectImpl<MetadbHandleList>(m_handles);
+	*out = new ComObjectImpl<MetadbHandleList>(m_handles);
 	return S_OK;
 }
 
-STDMETHODIMP MetadbHandleList::Convert(VARIANT* p)
+STDMETHODIMP MetadbHandleList::Convert(VARIANT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	const size_t count = m_handles.get_count();
 	ComArrayWriter writer;
@@ -115,25 +115,25 @@ STDMETHODIMP MetadbHandleList::Convert(VARIANT* p)
 		var.pdispVal = new ComObjectImpl<MetadbHandle>(m_handles[i]);
 		if (!writer.put_item(i, var)) return E_OUTOFMEMORY;
 	}
-	p->vt = VT_ARRAY | VT_VARIANT;
-	p->parray = writer.get_ptr();
+	out->vt = VT_ARRAY | VT_VARIANT;
+	out->parray = writer.get_ptr();
 	return S_OK;
 }
 
-STDMETHODIMP MetadbHandleList::Find(IMetadbHandle* handle, int* p)
+STDMETHODIMP MetadbHandleList::Find(IMetadbHandle* handle, int* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	metadb_handle* ptr = nullptr;
 	GET_PTR(handle, ptr);
 
-	*p = to_int(m_handles.find_item(ptr));
+	*out = to_int(m_handles.find_item(ptr));
 	return S_OK;
 }
 
-STDMETHODIMP MetadbHandleList::GetLibraryRelativePaths(VARIANT* p)
+STDMETHODIMP MetadbHandleList::GetLibraryRelativePaths(VARIANT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	auto api = library_manager::get();
 	const size_t count = m_handles.get_count();
@@ -151,8 +151,8 @@ STDMETHODIMP MetadbHandleList::GetLibraryRelativePaths(VARIANT* p)
 		if (!writer.put_item(i, str)) return E_OUTOFMEMORY;
 	}
 
-	p->vt = VT_ARRAY | VT_VARIANT;
-	p->parray = writer.get_ptr();
+	out->vt = VT_ARRAY | VT_VARIANT;
+	out->parray = writer.get_ptr();
 	return S_OK;
 }
 
@@ -401,21 +401,21 @@ STDMETHODIMP MetadbHandleList::UpdateFileInfoFromJSON(BSTR str)
 	}
 }
 
-STDMETHODIMP MetadbHandleList::get_Count(UINT* p)
+STDMETHODIMP MetadbHandleList::get_Count(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_handles.get_count();
+	*out = m_handles.get_count();
 	return S_OK;
 }
 
-STDMETHODIMP MetadbHandleList::get_Item(UINT index, IMetadbHandle** pp)
+STDMETHODIMP MetadbHandleList::get_Item(UINT index, IMetadbHandle** out)
 {
-	if (!pp) return E_POINTER;
+	if (!out) return E_POINTER;
 
 	if (index < m_handles.get_count())
 	{
-		*pp = new ComObjectImpl<MetadbHandle>(m_handles.get_item_ref(index));
+		*out = new ComObjectImpl<MetadbHandle>(m_handles.get_item_ref(index));
 		return S_OK;
 	}
 	return E_INVALIDARG;

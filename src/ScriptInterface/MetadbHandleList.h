@@ -9,17 +9,17 @@ protected:
 	void FinalRelease() override;
 
 public:
-	STDMETHODIMP get__ptr(void** pp) override;
+	STDMETHODIMP get__ptr(void** out) override;
 	STDMETHODIMP Add(IMetadbHandle* handle) override;
 	STDMETHODIMP AddRange(IMetadbHandleList* handles) override;
 	STDMETHODIMP AttachImage(BSTR path, UINT art_id) override;
-	STDMETHODIMP BSearch(IMetadbHandle* handle, int* p) override;
-	STDMETHODIMP CalcTotalDuration(double* p) override;
-	STDMETHODIMP CalcTotalSize(UINT64* p) override;
-	STDMETHODIMP Clone(IMetadbHandleList** pp) override;
-	STDMETHODIMP Convert(VARIANT* p) override;
-	STDMETHODIMP Find(IMetadbHandle* handle, int* p) override;
-	STDMETHODIMP GetLibraryRelativePaths(VARIANT* p) override;
+	STDMETHODIMP BSearch(IMetadbHandle* handle, int* out) override;
+	STDMETHODIMP CalcTotalDuration(double* out) override;
+	STDMETHODIMP CalcTotalSize(UINT64* out) override;
+	STDMETHODIMP Clone(IMetadbHandleList** out) override;
+	STDMETHODIMP Convert(VARIANT* out) override;
+	STDMETHODIMP Find(IMetadbHandle* handle, int* out) override;
+	STDMETHODIMP GetLibraryRelativePaths(VARIANT* out) override;
 	STDMETHODIMP Insert(UINT index, IMetadbHandle* handle) override;
 	STDMETHODIMP InsertRange(UINT index, IMetadbHandleList* handles) override;
 	STDMETHODIMP MakeDifference(IMetadbHandleList* handles) override;
@@ -38,8 +38,8 @@ public:
 	STDMETHODIMP RemoveRange(UINT from, UINT count) override;
 	STDMETHODIMP Sort() override;
 	STDMETHODIMP UpdateFileInfoFromJSON(BSTR str) override;
-	STDMETHODIMP get_Count(UINT* p) override;
-	STDMETHODIMP get_Item(UINT index, IMetadbHandle** pp) override;
+	STDMETHODIMP get_Count(UINT* out) override;
+	STDMETHODIMP get_Item(UINT index, IMetadbHandle** out) override;
 	STDMETHODIMP put_Item(UINT index, IMetadbHandle* handle) override;
 
 private:

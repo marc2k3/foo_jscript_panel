@@ -9,10 +9,10 @@ protected:
 	void FinalRelease() override;
 
 public:
-	STDMETHODIMP get__ptr(void** pp) override;
-	STDMETHODIMP get_Handle(IMetadbHandle** pp) override;
-	STDMETHODIMP get_PlaylistIndex(int* p) override;
-	STDMETHODIMP get_PlaylistItemIndex(int* p) override;
+	STDMETHODIMP get__ptr(void** out) override;
+	STDMETHODIMP get_Handle(IMetadbHandle** out) override;
+	STDMETHODIMP get_PlaylistIndex(int* out) override;
+	STDMETHODIMP get_PlaylistItemIndex(int* out) override;
 
 private:
 	t_playback_queue_item m_playback_queue_item;

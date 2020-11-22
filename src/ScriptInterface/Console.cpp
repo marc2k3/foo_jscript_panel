@@ -4,16 +4,16 @@
 Console::Console() {}
 Console::~Console() {}
 
-STDMETHODIMP Console::Log(SAFEARRAY* p)
+STDMETHODIMP Console::Log(SAFEARRAY* sa)
 {
 	string8 str;
 	LONG count = 0;
-	if (FAILED(SafeArrayGetUBound(p, 1, &count))) return E_INVALIDARG;
+	if (FAILED(SafeArrayGetUBound(sa, 1, &count))) return E_INVALIDARG;
 
 	for (LONG i = 0; i <= count; ++i)
 	{
 		_variant_t var;
-		if (FAILED(SafeArrayGetElement(p, &i, &var))) continue;
+		if (FAILED(SafeArrayGetElement(sa, &i, &var))) continue;
 		if (FAILED(VariantChangeType(&var, &var, VARIANT_ALPHABOOL, VT_BSTR))) continue;
 		auto tmp = string_utf8_from_wide(var.bstrVal);
 		if (tmp.length())

@@ -4,11 +4,11 @@
 DropAction::DropAction() {}
 DropAction::~DropAction() {}
 
-STDMETHODIMP DropAction::get_Effect(UINT* p)
+STDMETHODIMP DropAction::get_Effect(UINT* out)
 {
-	if (!p) return E_POINTER;
+	if (!out) return E_POINTER;
 
-	*p = m_effect;
+	*out = m_effect;
 	return S_OK;
 }
 
