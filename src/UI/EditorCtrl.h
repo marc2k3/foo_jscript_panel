@@ -41,8 +41,8 @@ private:
 	{
 		Colour back = 0, fore = 0;
 		bool bold = false, italics = false, underlined = false;
-		int case_force = 0;
-		size_t flags = 0, size = 0;
+		int case_force = 0, size = 0;
+		size_t flags = 0;
 		std::string font;
 	};
 
@@ -64,6 +64,7 @@ private:
 	using APIs = std::vector<API>;
 
 	Colour ParseHex(const std::string& hex);
+	EditorStyle ParseStyle(const std::string& str);
 	IndentationStatus GetIndentState(Line line);
 	LRESULT OnChange(UINT, int, CWindow);
 	LRESULT OnCharAdded(LPNMHDR);
@@ -76,8 +77,6 @@ private:
 	bool Contains(const std::string& str, char ch);
 	bool Includes(const StyleAndWords& symbols, const std::string& value);
 	bool FindBraceMatchPos(Position& braceAtCaret, Position& braceOpposite);
-	bool GetPropertyEx(const std::string& key, std::string& out);
-	bool ParseStyle(const std::string& definition, EditorStyle& style);
 	bool RangeIsAllWhitespace(Position start, Position end);
 	int IndentOfBlock(Line line);
 	Line GetCurrentLineNumber();

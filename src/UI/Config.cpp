@@ -6,10 +6,10 @@ static const std::vector<Config::SimpleKeyVal> init_table =
 	{"style.default", "font:Consolas,size:11"},
 	{"style.comment", "fore:#008000"},
 	{"style.keyword", "bold,fore:#0000FF"},
-	{"style.indentifier", "$(style.default)"},
+	{"style.identifier", "font:Consolas,size:11"},
 	{"style.string", "fore:#FF0000"},
 	{"style.number", "fore:#FF0000"},
-	{"style.operator", "$(style.default)"},
+	{"style.operator", "font:Consolas,size:11"},
 	{"style.linenumber", "font:Consolas,size:9,fore:#2B91AF"},
 	{"style.bracelight", "bold,fore:#000000,back:#FFEE62"},
 	{"style.bracebad", "bold,fore:#FF0000"},
@@ -36,8 +36,8 @@ void Config::get_data_raw(stream_writer* writer, abort_callback& abort)
 		writer->write_lendian_t(m_data.size(), abort);
 		for (const auto& [key, value] : m_data)
 		{
-			writer->write_string(key, abort);
-			writer->write_string(value, abort);
+			writer->write_string(key.c_str(), abort);
+			writer->write_string(value.c_str(), abort);
 		}
 		writer->write_object(&m_conf_wndpl, sizeof(WINDOWPLACEMENT), abort);
 		writer->write_object(&m_property_wndpl, sizeof(WINDOWPLACEMENT), abort);
@@ -50,12 +50,11 @@ void Config::import(stringp content)
 	SimpleMap data_map;
 	for (const std::string& line : helpers::split_string(content.get_ptr(), CRLF))
 	{
-		if (line.empty() || line.at(0) == '#') continue;
 		const size_t pos = line.find('=');
 		if (pos == 0 || pos == std::string::npos) continue;
 		std::string key = line.substr(0, pos);
 		std::string value = line.substr(pos + 1);
-		data_map[key.c_str()].set_string(value.c_str());
+		data_map[key] = value;
 	}
 	merge_data(data_map);
 }
@@ -95,16 +94,11 @@ void Config::set_data_raw(stream_reader* reader, size_t sizehint, abort_callback
 		{
 			reader->read_string(key, abort);
 			reader->read_string(value, abort);
-			data_map.emplace(key, value);
+			data_map.emplace(key.get_ptr(), value.get_ptr());
 		}
 
-		try
-		{
-			// this can fail silently on first run upgrading from old version which doesn't have it set yet
-			reader->read_object(&m_conf_wndpl, sizeof(WINDOWPLACEMENT), abort);
-			reader->read_object(&m_property_wndpl, sizeof(WINDOWPLACEMENT), abort);
-		}
-		catch (...) {}
+		reader->read_object(&m_conf_wndpl, sizeof(WINDOWPLACEMENT), abort);
+		reader->read_object(&m_property_wndpl, sizeof(WINDOWPLACEMENT), abort);
 	}
 	catch (...)
 	{

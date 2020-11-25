@@ -20,6 +20,20 @@ enum
 	ESF_CASEFORCE = 1 << 7,
 };
 
+static const std::map<std::string, std::set<int>> styles =
+{
+	{ "style.default", { STYLE_DEFAULT } },
+	{ "style.comment", { SCE_C_COMMENT, SCE_C_COMMENTLINE, SCE_C_COMMENTDOC, SCE_C_COMMENTLINEDOC, SCE_C_COMMENTDOCKEYWORD, SCE_C_COMMENTDOCKEYWORDERROR } },
+	{ "style.linenumber", { STYLE_LINENUMBER } },
+	{ "style.bracelight", { STYLE_BRACELIGHT } },
+	{ "style.bracebad" , { STYLE_BRACEBAD } },
+	{ "style.keyword", { SCE_C_WORD } },
+	{ "style.identifier", { SCE_C_IDENTIFIER } },
+	{ "style.number", { SCE_C_NUMBER } },
+	{ "style.string", { SCE_C_STRING, SCE_C_CHARACTER } },
+	{ "style.operator", { SCE_C_OPERATOR } },
+};
+
 struct StringComparePartialNC
 {
 	StringComparePartialNC(size_t len) : m_len(len) {}
@@ -44,32 +58,6 @@ static constexpr const char* js_keywords = "abstract boolean break byte case cat
 	" operator outer rest Array Math RegExp window fb gdi utils plman console";
 
 static constexpr std::array<const int, 21> ctrlcodes = { 'Q', 'W', 'E', 'R', 'I', 'O', 'P', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'B', 'N', 'M', 186, 187, 226 };
-
-struct Style
-{
-	int id;
-	const char* name;
-};
-
-static const std::vector<Style> styles =
-{
-	{ STYLE_DEFAULT, "style.default" },
-	{ STYLE_LINENUMBER, "style.linenumber" },
-	{ STYLE_BRACELIGHT, "style.bracelight" },
-	{ STYLE_BRACEBAD, "style.bracebad" },
-	{ SCE_C_COMMENT, "style.comment" },
-	{ SCE_C_COMMENTLINE, "style.comment" },
-	{ SCE_C_COMMENTDOC, "style.comment" },
-	{ SCE_C_COMMENTLINEDOC, "style.comment" },
-	{ SCE_C_COMMENTDOCKEYWORD, "style.comment" },
-	{ SCE_C_COMMENTDOCKEYWORDERROR, "style.comment" },
-	{ SCE_C_WORD, "style.keyword" },
-	{ SCE_C_IDENTIFIER, "style.indentifier" },
-	{ SCE_C_NUMBER, "style.number" },
-	{ SCE_C_STRING, "style.string" },
-	{ SCE_C_CHARACTER, "style.string" },
-	{ SCE_C_OPERATOR, "style.operator" }
-};
 
 CEditorCtrl::CEditorCtrl() {}
 
@@ -107,6 +95,66 @@ CEditorCtrl::Colour CEditorCtrl::ParseHex(const std::string& hex)
 	const int b = int_from_hex_byte(hex.c_str() + 5);
 
 	return RGB(r, g, b);
+}
+
+CEditorCtrl::EditorStyle CEditorCtrl::ParseStyle(const std::string& str)
+{
+	EditorStyle style;
+
+	for (const std::string& value : helpers::split_string(str, ","))
+	{
+		Strings tmp = helpers::split_string(value, ":");
+		std::string primary = tmp[0];
+		std::string secondary = tmp.size() == 2 ? tmp[1] : "";
+
+		if (primary == "bold")
+		{
+			style.flags |= ESF_BOLD;
+			style.bold = true;
+		}
+		else if (primary == "italics")
+		{
+			style.flags |= ESF_ITALICS;
+			style.italics = true;
+		}
+		else if (primary == "underlined")
+		{
+			style.flags |= ESF_UNDERLINED;
+			style.underlined = true;
+		}
+		else if (primary == "font")
+		{
+			style.flags |= ESF_FONT;
+			style.font = secondary;
+		}
+		else if (primary == "fore")
+		{
+			style.flags |= ESF_FORE;
+			style.fore = ParseHex(secondary);
+		}
+		else if (primary == "back")
+		{
+			style.flags |= ESF_BACK;
+			style.back = ParseHex(secondary);
+		}
+		else if (primary == "size" && pfc::string_is_numeric(secondary.c_str()))
+		{
+			style.flags |= ESF_SIZE;
+			style.size = std::stoi(secondary);
+		}
+		else if (primary == "case")
+		{
+			style.flags |= ESF_CASEFORCE;
+
+			if (secondary.empty())
+				style.case_force = SC_CASE_MIXED;
+			else if (secondary.at(0) == 'u')
+				style.case_force = SC_CASE_UPPER;
+			else if (secondary.at(0) == 'l')
+				style.case_force = SC_CASE_LOWER;
+		}
+	}
+	return style;
 }
 
 CEditorCtrl::IndentationStatus CEditorCtrl::GetIndentState(Line line)
@@ -432,17 +480,6 @@ bool CEditorCtrl::Find(bool next)
 	return false;
 }
 
-bool CEditorCtrl::GetPropertyEx(const std::string& key, std::string& out)
-{
-	out.clear();
-	const int len = GetPropertyExpanded(key.c_str(), nullptr);
-	if (len == 0) return false;
-
-	out.assign(len, '\0');
-	GetPropertyExpanded(key.c_str(), out.data());
-	return true;
-}
-
 bool CEditorCtrl::Includes(const StyleAndWords& symbols, const std::string& value)
 {
 	if (symbols.IsEmpty())
@@ -481,83 +518,6 @@ bool CEditorCtrl::Includes(const StyleAndWords& symbols, const std::string& valu
 		return Contains(value, symbols.words[0]);
 	}
 	return false;
-}
-
-bool CEditorCtrl::ParseStyle(const std::string& definition, EditorStyle& style)
-{
-	if (definition.empty()) return false;
-
-	for (const std::string& value : helpers::split_string(definition, ","))
-	{
-		Strings tmp = helpers::split_string(value, ":");
-		std::string primary = tmp[0];
-		std::string secondary = tmp.size() == 2 ? tmp[1] : "";
-
-		if (primary.compare("italics") == 0)
-		{
-			style.flags |= ESF_ITALICS;
-			style.italics = true;
-		}
-		else if (primary.compare("notitalics") == 0)
-		{
-			style.flags |= ESF_ITALICS;
-			style.italics = false;
-		}
-		else if (primary.compare("bold") == 0)
-		{
-			style.flags |= ESF_BOLD;
-			style.bold = true;
-		}
-		else if (primary.compare("notbold") == 0)
-		{
-			style.flags |= ESF_BOLD;
-			style.bold = false;
-		}
-		else if (primary.compare("font") == 0)
-		{
-			style.flags |= ESF_FONT;
-			style.font = secondary;
-		}
-		else if (primary.compare("fore") == 0)
-		{
-			style.flags |= ESF_FORE;
-			style.fore = ParseHex(secondary);
-		}
-		else if (primary.compare("back") == 0)
-		{
-			style.flags |= ESF_BACK;
-			style.back = ParseHex(secondary);
-		}
-		else if (primary.compare("size") == 0 && secondary.length())
-		{
-			style.flags |= ESF_SIZE;
-			style.size = atoi(secondary.c_str());
-		}
-		else if (primary.compare("underlined") == 0)
-		{
-			style.flags |= ESF_UNDERLINED;
-			style.underlined = true;
-		}
-		else if (primary.compare("notunderlined") == 0)
-		{
-			style.flags |= ESF_UNDERLINED;
-			style.underlined = false;
-		}
-		else if (primary.compare("case") == 0)
-		{
-			style.flags |= ESF_CASEFORCE;
-			style.case_force = SC_CASE_MIXED;
-
-			if (secondary.length())
-			{
-				if (secondary.at(0) == 'u')
-					style.case_force = SC_CASE_UPPER;
-				else if (secondary.at(0) == 'l')
-					style.case_force = SC_CASE_LOWER;
-			}
-		}
-	}
-	return true;
 }
 
 bool CEditorCtrl::RangeIsAllWhitespace(Position start, Position end)
@@ -873,65 +833,71 @@ void CEditorCtrl::Init()
 	SetMarginWidthN(4, 0);
 	SetMarginTypeN(0, SC_MARGIN_NUMBER);
 
-	// Load properties
-	for (const auto& [key, value] : g_config.m_data)
-	{
-		SetProperty(key, value);
-	}
-
 	// Clear and reset all styles
 	ClearDocumentStyle();
 	StyleResetDefault();
 
 	// Style
-	SetCaretLineBackAlpha(GetPropertyInt("style.caret.line.back.alpha", SC_ALPHA_NOALPHA));
+	SetCaretLineBackAlpha(SC_ALPHA_NOALPHA);
 	SetCaretLineVisible(false);
-	SetCaretWidth(GetPropertyInt("style.caret.width", 1));
-	SetSelAlpha(GetPropertyInt("style.selection.alpha", SC_ALPHA_NOALPHA));
+	SetCaretWidth(1);
+	SetSelAlpha(SC_ALPHA_NOALPHA);
 	SetSelFore(false, 0);
 
-	std::string colour;
-
-	if (GetPropertyEx("style.selection.fore", colour))
+	for (const auto& [key, value] : g_config.m_data)
 	{
-		SetSelFore(true, ParseHex(colour));
-		SetSelBack(true, RGB(0xc0, 0xc0, 0xc0));
-	}
+		if (value.empty()) continue;
 
-	if (GetPropertyEx("style.selection.back", colour))
-	{
-		SetSelBack(true, ParseHex(colour));
-	}
-
-	if (GetPropertyEx("style.caret.fore", colour))
-	{
-		SetCaretFore(ParseHex(colour));
-	}
-
-	if (GetPropertyEx("style.caret.line.back", colour))
-	{
-		SetCaretLineVisible(true);
-		SetCaretLineBack(ParseHex(colour));
-	}
-
-	for (const auto& [id, name] : styles)
-	{
-		std::string value;
-		if (GetPropertyEx(name, value))
+		if (styles.count(key))
 		{
-			EditorStyle style;
-			if (!ParseStyle(value, style)) continue;
+			EditorStyle style = ParseStyle(value);
 
-			if (style.flags & ESF_FONT) StyleSetFont(id, style.font.c_str());
-			if (style.flags & ESF_SIZE) StyleSetSize(id, style.size);
-			if (style.flags & ESF_FORE) StyleSetFore(id, style.fore);
-			if (style.flags & ESF_BACK) StyleSetBack(id, style.back);
-			if (style.flags & ESF_ITALICS) StyleSetItalic(id, style.italics);
-			if (style.flags & ESF_BOLD) StyleSetBold(id, style.bold);
-			if (style.flags & ESF_UNDERLINED) StyleSetUnderline(id, style.underlined);
-			if (style.flags & ESF_CASEFORCE) StyleSetCase(id, style.case_force);
+			for (const int id : styles.at(key))
+			{
+				if (style.flags & ESF_FONT) StyleSetFont(id, style.font.c_str());
+				if (style.flags & ESF_SIZE) StyleSetSize(id, style.size);
+				if (style.flags & ESF_FORE) StyleSetFore(id, style.fore);
+				if (style.flags & ESF_BACK) StyleSetBack(id, style.back);
+				if (style.flags & ESF_ITALICS) StyleSetItalic(id, style.italics);
+				if (style.flags & ESF_BOLD) StyleSetBold(id, style.bold);
+				if (style.flags & ESF_UNDERLINED) StyleSetUnderline(id, style.underlined);
+				if (style.flags & ESF_CASEFORCE) StyleSetCase(id, style.case_force);
+				if (id == STYLE_DEFAULT) StyleClearAll();
+			}
 		}
-		if (id == STYLE_DEFAULT) StyleClearAll();
+		else
+		{
+			if (key == "style.caret.width" && pfc::string_is_numeric(value.c_str()))
+			{
+				SetCaretWidth(std::stoi(value));
+			}
+			else if (key == "style.caret.fore")
+			{
+				SetCaretFore(ParseHex(value));
+			}
+			else if (key == "style.caret.line.back")
+			{
+				SetCaretLineVisible(true);
+				SetCaretLineBack(ParseHex(value));
+			}
+			else if (key == "style.caret.line.back.alpha" && pfc::string_is_numeric(value.c_str()))
+			{
+				SetCaretLineBackAlpha(std::stoi(value));
+			}
+			else if (key == "style.selection.fore")
+			{
+				SetSelFore(true, ParseHex(value));
+				SetSelBack(true, RGB(0xc0, 0xc0, 0xc0));
+			}
+			else if (key == "style.selection.back")
+			{
+				SetSelBack(true, ParseHex(value));
+			}
+			else if (key == "style.selection.alpha" && pfc::string_is_numeric(value.c_str()))
+			{
+				SetSelAlpha(std::stoi(value));
+			}
+		}
 	}
 }
 

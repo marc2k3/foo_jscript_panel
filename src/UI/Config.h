@@ -7,10 +7,10 @@ public:
 
 	struct SimpleKeyVal
 	{
-		pfc::string_simple key, value;
+		std::string key, value;
 	};
 
-	using SimpleMap = std::map<pfc::string_simple, pfc::string_simple, StricmpAscii>;
+	using SimpleMap = std::map<std::string, std::string>;
 
 	void get_data_raw(stream_writer* writer, abort_callback& abort) override;
 	void import(stringp content);
