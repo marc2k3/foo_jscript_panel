@@ -24,14 +24,14 @@ BOOL CDialogProperties::OnInitDialog(CWindow, LPARAM)
 	pfc::setWindowText(m_hWnd, m_caption);
 
 	// Apply window placement
-	if (g_config.m_property_wndpl.length == 0)
+	if (g_config.m_wndpl.length == 0)
 	{
-		g_config.m_property_wndpl.length = sizeof(WINDOWPLACEMENT);
-		memset(&g_config.m_property_wndpl, 0, sizeof(WINDOWPLACEMENT));
+		g_config.m_wndpl.length = sizeof(WINDOWPLACEMENT);
+		memset(&g_config.m_wndpl, 0, sizeof(WINDOWPLACEMENT));
 	}
 	else
 	{
-		SetWindowPlacement(&g_config.m_property_wndpl);
+		SetWindowPlacement(&g_config.m_wndpl);
 	}
 
 	m_btn_clear = GetDlgItem(IDC_BTN_CLEAR);
@@ -137,7 +137,7 @@ void CDialogProperties::OnClearBnClicked(UINT, int, CWindow)
 
 void CDialogProperties::OnCloseCmd(UINT, int nID, CWindow)
 {
-	GetWindowPlacement(&g_config.m_property_wndpl);
+	GetWindowPlacement(&g_config.m_wndpl);
 
 	switch (nID)
 	{

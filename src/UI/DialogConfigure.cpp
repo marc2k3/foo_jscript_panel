@@ -33,14 +33,14 @@ BOOL CDialogConfigure::OnInitDialog(CWindow, LPARAM)
 	BuildMenu();
 
 	// Apply window placement
-	if (g_config.m_conf_wndpl.length == 0)
+	if (g_config.m_wndpl.length == 0)
 	{
-		g_config.m_conf_wndpl.length = sizeof(WINDOWPLACEMENT);
-		memset(&g_config.m_conf_wndpl, 0, sizeof(WINDOWPLACEMENT));
+		g_config.m_wndpl.length = sizeof(WINDOWPLACEMENT);
+		memset(&g_config.m_wndpl, 0, sizeof(WINDOWPLACEMENT));
 	}
 	else
 	{
-		SetWindowPlacement(&g_config.m_conf_wndpl);
+		SetWindowPlacement(&g_config.m_wndpl);
 	}
 
 	// Edge Style
@@ -165,7 +165,7 @@ void CDialogConfigure::BuildMenu()
 
 void CDialogConfigure::OnCloseCmd(UINT, int nID, CWindow)
 {
-	GetWindowPlacement(&g_config.m_conf_wndpl);
+	GetWindowPlacement(&g_config.m_wndpl);
 
 	switch (nID)
 	{

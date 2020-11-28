@@ -16,10 +16,10 @@ public:
 	void import(stringp content);
 	void init_data();
 	void load_preset(int idx);
-	void merge_data(const SimpleMap& data_map);
+	void merge_data(const SimpleMap& data);
 	void set_data_raw(stream_reader* reader, size_t sizehint, abort_callback& abort) override;
 
-	WINDOWPLACEMENT m_conf_wndpl{}, m_property_wndpl{};
+	WINDOWPLACEMENT m_wndpl{};
 	std::vector<SimpleKeyVal> m_data;
 };
 
