@@ -246,7 +246,7 @@
     <ClInclude Include="UI\EditorCtrl.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="UI\PropertyCtrl.h">
+    <ClInclude Include="UI\PropertyList.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="db.h">

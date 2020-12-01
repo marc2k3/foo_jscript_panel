@@ -20,8 +20,7 @@ CDialogProperties::CDialogProperties(PanelWindow* panel) : m_panel(panel), m_res
 BOOL CDialogProperties::OnInitDialog(CWindow, LPARAM)
 {
 	// Set caption text
-	m_caption << jsp::component_name << " Properties (id:" << m_panel->m_id << ")";
-	pfc::setWindowText(m_hWnd, m_caption);
+	pfc::setWindowText(m_hWnd, PFC_string_formatter() << jsp::component_name << " Properties (id:" << m_panel->m_id << ")");
 
 	// Apply window placement
 	if (g_config.m_wndpl.length == 0)
@@ -44,13 +43,13 @@ BOOL CDialogProperties::OnInitDialog(CWindow, LPARAM)
 
 void CDialogProperties::Apply()
 {
-	m_dup_prop_map.clear();
+	m_dup_data.clear();
 
 	for (const PropertyList::ListItem& item : m_properties.m_data)
 	{
 		if (item.is_bool)
 		{
-			m_dup_prop_map.emplace(item.key, _variant_t(item.bool_value));
+			m_dup_data.emplace(item.key, _variant_t(item.bool_value));
 		}
 		else
 		{
@@ -59,16 +58,16 @@ void CDialogProperties::Apply()
 
 			if (!item.is_string && SUCCEEDED(VariantChangeType(&dest, &source, 0, VT_R8)))
 			{
-				m_dup_prop_map.emplace(item.key, dest);
+				m_dup_data.emplace(item.key, dest);
 			}
 			else
 			{
-				m_dup_prop_map.emplace(item.key, source);
+				m_dup_data.emplace(item.key, source);
 			}
 		}
 	}
 
-	m_panel->m_config->m_properties->m_map = m_dup_prop_map;
+	m_panel->m_config->m_properties->m_data = m_dup_data;
 	m_panel->update_script();
 	LoadProperties();
 }
@@ -79,10 +78,10 @@ void CDialogProperties::LoadProperties(bool reload)
 
 	if (reload)
 	{
-		m_dup_prop_map = m_panel->m_config->m_properties->m_map;
+		m_dup_data = m_panel->m_config->m_properties->m_data;
 	}
 
-	for (const auto& [key, value] : m_dup_prop_map)
+	for (const auto& [key, value] : m_dup_data)
 	{
 		PropertyList::ListItem item;
 		item.key = key;
@@ -162,7 +161,7 @@ void CDialogProperties::OnExportBnClicked(UINT, int, CWindow)
 		{
 			file_ptr io;
 			filesystem::g_open_write_new(io, path, fb2k::noAbort);
-			PanelProperties::g_get(m_dup_prop_map, io.get_ptr(), fb2k::noAbort);
+			PanelProperties::g_get(io.get_ptr(), m_dup_data, fb2k::noAbort);
 		}
 		catch (...) {}
 	}
@@ -178,7 +177,7 @@ void CDialogProperties::OnImportBnClicked(UINT, int, CWindow)
 		{
 			file_ptr io;
 			filesystem::g_open_read(io, path, fb2k::noAbort);
-			PanelProperties::g_set(m_dup_prop_map, io.get_ptr(), fb2k::noAbort);
+			PanelProperties::g_set(io.get_ptr(), m_dup_data, fb2k::noAbort);
 			LoadProperties(false);
 		}
 		catch (...) {}

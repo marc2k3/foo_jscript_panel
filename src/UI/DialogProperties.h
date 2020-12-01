@@ -1,6 +1,6 @@
 #pragma once
 #include "PanelWindow.h"
-#include "PropertyCtrl.h"
+#include "PropertyList.h"
 
 #include <libPPUI/CDialogResizeHelper.h>
 
@@ -32,8 +32,7 @@ public:
 private:
 	CButton m_btn_clear, m_btn_export;
 	CDialogResizeHelper m_resizer;
-	PanelProperties::PropertyMap m_dup_prop_map;
+	PanelProperties::PropertyData m_dup_data;
 	PanelWindow* m_panel;
 	PropertyList m_properties;
-	string8 m_caption;
 };

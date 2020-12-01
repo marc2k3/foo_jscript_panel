@@ -66,6 +66,7 @@ private:
 	Colour ParseHex(const std::string& hex);
 	EditorStyle ParseStyle(const std::string& str);
 	IndentationStatus GetIndentState(Line line);
+	Line GetCurrentLineNumber();
 	LRESULT OnChange(UINT, int, CWindow);
 	LRESULT OnCharAdded(LPNMHDR);
 	LRESULT OnKeyDown(UINT, WPARAM, LPARAM, BOOL&);
@@ -79,7 +80,6 @@ private:
 	bool FindBraceMatchPos(Position& braceAtCaret, Position& braceOpposite);
 	bool RangeIsAllWhitespace(Position start, Position end);
 	int IndentOfBlock(Line line);
-	Line GetCurrentLineNumber();
 	std::string GetCurrentLine();
 	std::string GetNearestWord(const std::string& wordStart, size_t searchLen, int wordIndex);
 	std::string GetNearestWords(const std::string& wordStart, size_t searchLen);

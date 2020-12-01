@@ -1,5 +1,4 @@
 #pragma once
-#include "EditorCtrl.h"
 
 class CDialogGoto : public CDialogImpl<CDialogGoto>
 {

@@ -90,16 +90,12 @@ LRESULT CDialogConfigure::OnNotify(int, LPNMHDR pnmh)
 	switch (pnmh->code)
 	{
 	case SCN_SAVEPOINTLEFT:
-		{
-			string8 caption = PFC_string_formatter() << "*" << m_caption;
-			pfc::setWindowText(m_hWnd, caption);
-		}
+		pfc::setWindowText(m_hWnd, PFC_string_formatter() << "*" << m_caption);
 		break;
 	case SCN_SAVEPOINTREACHED:
 		pfc::setWindowText(m_hWnd, m_caption);
 		break;
 	}
-
 	SetMsgHandled(FALSE);
 	return 0;
 }
@@ -136,7 +132,7 @@ void CDialogConfigure::BuildMenu()
 	};
 
 	const std::string component_folder = helpers::get_fb2k_component_path().get_ptr();
-	m_menu = GetMenu();
+	CMenu menu = GetMenu();
 
 	CMenu samples = CreateMenu();
 	size_t counter = 0;
@@ -152,7 +148,7 @@ void CDialogConfigure::BuildMenu()
 		}
 		uAppendMenu(samples, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(sub.m_hMenu), folder.substr(folder.find_last_of("\\") + 1).c_str());
 	}
-	uAppendMenu(m_menu, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(samples.m_hMenu), "Samples");
+	uAppendMenu(menu, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(samples.m_hMenu), "Samples");
 
 	CMenu docs = CreateMenu();
 	m_docs = helpers::list_files(component_folder + "docs");
@@ -160,7 +156,7 @@ void CDialogConfigure::BuildMenu()
 	{
 		uAppendMenu(docs, MF_STRING, ID_DOCS_BEGIN + i, display(m_docs[i]));
 	}
-	uAppendMenu(m_menu, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(docs.m_hMenu), "Docs");
+	uAppendMenu(menu, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(docs.m_hMenu), "Docs");
 }
 
 void CDialogConfigure::OnCloseCmd(UINT, int nID, CWindow)

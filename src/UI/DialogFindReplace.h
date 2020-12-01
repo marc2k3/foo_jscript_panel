@@ -59,8 +59,8 @@ public:
 	string8 m_find_text, m_replace_text;
 
 private:
-	bool m_havefound = false;
 	CEditorCtrl* m_parent;
+	bool m_havefound = false;
 	std::map<int, CWindow> m_window;
 	std::vector<KeyHack> m_hacks;
 };

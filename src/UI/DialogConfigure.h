@@ -43,7 +43,6 @@ private:
 	CCheckBox m_check_transparent;
 	CComboBox m_combo_edge;
 	CDialogResizeHelper m_resizer;
-	CMenu m_menu;
 	CEditorCtrl m_editorctrl;
 	PanelWindow* m_panel;
 	Strings m_docs, m_samples;

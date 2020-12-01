@@ -21,14 +21,6 @@ namespace jsp
 
 #define FIND_IF(blah, func) std::find_if(std::begin(blah), std::end(blah), func)
 
-struct StricmpAscii
-{
-	bool operator()(const pfc::string_simple& a, const pfc::string_simple& b) const
-	{
-		return pfc::stricmp_ascii(a, b) < 0;
-	}
-};
-
 template <typename T>
 static bool ensure_gdiplus_object(const std::unique_ptr<T>& obj) { return obj && obj->GetLastStatus() == Gdiplus::Ok; }
 

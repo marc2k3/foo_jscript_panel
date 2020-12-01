@@ -179,7 +179,7 @@ copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%\"</Command>
     <ClInclude Include="UI\DialogInputBox.h" />
     <ClInclude Include="UI\DialogProperties.h" />
     <ClInclude Include="UI\EditorCtrl.h" />
-    <ClInclude Include="UI\PropertyCtrl.h" />
+    <ClInclude Include="UI\PropertyList.h" />
     <ClInclude Include="db.h" />
     <ClInclude Include="foo_jscript_panel.h" />
     <ClInclude Include="guids.h" />

@@ -3,9 +3,9 @@
 
 bool PanelProperties::get_property(const char* key, VARIANT& out)
 {
-	if (m_map.count(key))
+	if (m_data.count(key))
 	{
-		return SUCCEEDED(VariantCopy(&out, &m_map.at(key)));
+		return SUCCEEDED(VariantCopy(&out, &m_data.at(key)));
 	}
 	return false;
 }
@@ -37,7 +37,7 @@ int PanelProperties::g_sizeof(VARTYPE vt)
 	}
 }
 
-void PanelProperties::g_get(const PropertyMap& data, stream_writer* writer, abort_callback& abort) throw()
+void PanelProperties::g_get(stream_writer* writer, const PropertyData& data, abort_callback& abort) throw()
 {
 	try
 	{
@@ -62,7 +62,7 @@ void PanelProperties::g_get(const PropertyMap& data, stream_writer* writer, abor
 	catch (...) {}
 }
 
-void PanelProperties::g_set(PropertyMap& data, stream_reader* reader, abort_callback& abort) throw()
+void PanelProperties::g_set(stream_reader* reader, PropertyData& data, abort_callback& abort) throw()
 {
 	data.clear();
 
@@ -102,22 +102,22 @@ void PanelProperties::g_set(PropertyMap& data, stream_reader* reader, abort_call
 
 void PanelProperties::get(stream_writer* writer, abort_callback& abort) const throw()
 {
-	g_get(m_map, writer, abort);
+	g_get(writer, m_data, abort);
 }
 
 void PanelProperties::set(stream_reader* reader, abort_callback& abort) throw()
 {
-	g_set(m_map, reader, abort);
+	g_set(reader, m_data, abort);
 }
 
 void PanelProperties::set_property(const char* key, const VARIANT& val)
 {
 	if (g_sizeof(val.vt) != -1)
 	{
-		m_map[key] = val;
+		m_data[key] = val;
 	}
 	else
 	{
-		m_map.erase(key);
+		m_data.erase(key);
 	}
 }

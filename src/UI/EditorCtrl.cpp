@@ -34,9 +34,9 @@ static const std::map<std::string, std::set<int>> styles =
 	{ "style.operator", { SCE_C_OPERATOR } },
 };
 
-struct StringComparePartialNC
+struct StringComparePartial
 {
-	StringComparePartialNC(size_t len) : m_len(len) {}
+	StringComparePartial(size_t len) : m_len(len) {}
 
 	int operator()(const std::string& s1, const std::string& s2) const
 	{
@@ -178,6 +178,11 @@ CEditorCtrl::IndentationStatus CEditorCtrl::GetIndentState(Line line)
 			indentState = IndentationStatus::isBlockStart;
 	}
 	return indentState;
+}
+
+CEditorCtrl::Line CEditorCtrl::GetCurrentLineNumber()
+{
+	return LineFromPosition(GetCurrentPos());
 }
 
 LRESULT CEditorCtrl::OnChange(UINT, int, CWindow)
@@ -576,11 +581,6 @@ int CEditorCtrl::IndentOfBlock(Line line)
 	return indentBlock;
 }
 
-CEditorCtrl::Line CEditorCtrl::GetCurrentLineNumber()
-{
-	return LineFromPosition(GetCurrentPos());
-}
-
 std::string CEditorCtrl::GetCurrentLine()
 {
 	const int len = GetCurLine(0, nullptr);
@@ -591,7 +591,7 @@ std::string CEditorCtrl::GetCurrentLine()
 
 std::string CEditorCtrl::GetNearestWord(const std::string& wordStart, size_t searchLen, int wordIndex)
 {
-	auto it = FIND_IF(apis, [=](const API& item) { return StringComparePartialNC(searchLen)(wordStart, item.text) == 0; });
+	auto it = FIND_IF(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text) == 0; });
 	for (; it < apis.end(); ++it)
 	{
 		if (searchLen >= it->text.length() || !Contains(WordCharacters, it->text.at(searchLen)))
@@ -609,10 +609,10 @@ std::string CEditorCtrl::GetNearestWord(const std::string& wordStart, size_t sea
 std::string CEditorCtrl::GetNearestWords(const std::string& wordStart, size_t searchLen)
 {
 	std::string words;
-	auto it = FIND_IF(apis, [=](const API& item) { return StringComparePartialNC(searchLen)(wordStart, item.text) == 0; });
+	auto it = FIND_IF(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text) == 0; });
 	for (; it < apis.end(); ++it)
 	{
-		if (StringComparePartialNC(searchLen)(wordStart, it->text) != 0)
+		if (StringComparePartial(searchLen)(wordStart, it->text) != 0)
 		{
 			break;
 		}

@@ -127,7 +127,7 @@ STDMETHODIMP Window::Reload(VARIANT_BOOL clear_properties)
 {
 	if (to_bool(clear_properties))
 	{
-		m_panel->m_config->m_properties->m_map.clear();
+		m_panel->m_config->m_properties->m_data.clear();
 	}
 	m_panel->update_script();
 	return S_OK;
