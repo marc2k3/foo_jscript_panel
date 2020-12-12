@@ -88,10 +88,9 @@ public:
 		return m_psa;
 	}
 
-	bool create(LONG count)
+	bool create(ULONG count)
 	{
-		m_count = count;
-		m_psa = SafeArrayCreateVector(VT_VARIANT, 0, count);
+		m_psa = SafeArrayCreateVector(VT_VARIANT, 0L, count);
 		return m_psa != nullptr;
 	}
 
@@ -105,25 +104,13 @@ public:
 
 	bool put_item(LONG idx, VARIANT& var)
 	{
-		if (SUCCEEDED(SafeArrayPutElement(m_psa, &idx, &var)))
-		{
-			return true;
-		}
-		reset();
+		if (!m_psa) return false;
+		if (SUCCEEDED(SafeArrayPutElement(m_psa, &idx, &var))) return true;
+		SafeArrayDestroy(m_psa);
+		m_psa = nullptr;
 		return false;
 	}
 
 private:
-	void reset()
-	{
-		m_count = 0;
-		if (m_psa)
-		{
-			SafeArrayDestroy(m_psa);
-			m_psa = nullptr;
-		}
-	}
-
-	LONG m_count = 0;
 	SAFEARRAY* m_psa = nullptr;
 };
