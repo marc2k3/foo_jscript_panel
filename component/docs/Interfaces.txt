@@ -256,7 +256,7 @@ interface IFb {
 
 			interface IProfiler {
 				Properties:
-					Time (int) // milliseconds
+					Time (int64) // milliseconds
 
 				Methods:
 					Reset() (void)

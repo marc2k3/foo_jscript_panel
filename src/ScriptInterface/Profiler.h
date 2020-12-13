@@ -9,9 +9,9 @@ protected:
 public:
 	STDMETHODIMP Print() override;
 	STDMETHODIMP Reset() override;
-	STDMETHODIMP get_Time(int* out) override;
+	STDMETHODIMP get_Time(__int64* out) override;
 
 private:
-	pfc::hires_timer m_timer;
+	Timer m_timer;
 	string8 m_name;
 };

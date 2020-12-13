@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <list>
@@ -40,6 +41,7 @@ using json = nlohmann::json;
 #include "foo_jscript_panel.h"
 #include "guids.h"
 #include "ThreadPool.h"
+#include "Timer.h"
 #include "ScriptInterface.h"
 #include "CallbackID.h"
 #include "CallbackData.h"

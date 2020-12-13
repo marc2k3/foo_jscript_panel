@@ -114,6 +114,9 @@
     <ClInclude Include="Helpers\ThreadPool.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="Helpers\Timer.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
     <ClInclude Include="Panel\CallbackData.h">
       <Filter>Header Files\Panel</Filter>
     </ClInclude>

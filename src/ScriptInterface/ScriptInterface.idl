@@ -235,7 +235,7 @@ library foo_jscript_panel
 	{
 		HRESULT Reset();
 		HRESULT Print();
-		[propget] HRESULT Time([out, retval] int* out);
+		[propget] HRESULT Time([out, retval] __int64* out);
 	};
 
 	[object,dual,pointer_default(unique),custom(8AFCDA7F-33B7-3120-86A8-754D2C0C0578,"library_block"),uuid(8a14d6a2-4582-4398-a6af-2206f2dabbbe)]

@@ -498,8 +498,7 @@ void PanelWindow::execute_context_menu_command(int id, int id_base)
 
 void PanelWindow::load_script()
 {
-	pfc::hires_timer timer;
-	timer.start();
+	Timer timer;
 
 	if (!m_is_default_ui)
 	{
@@ -529,7 +528,7 @@ void PanelWindow::load_script()
 
 	on_size();
 
-	FB2K_console_formatter() << m_script_host->m_info->m_build_string << ": initialised in " << static_cast<int>(timer.query() * 1000) << " ms";
+	FB2K_console_formatter() << m_script_host->m_info->m_build_string << ": initialised in " << timer.query() << " ms";
 }
 
 void PanelWindow::on_context_menu(LPARAM lp)
