@@ -124,10 +124,10 @@ void CDialogConfigure::Apply()
 
 void CDialogConfigure::BuildMenu()
 {
-	auto display = [](const std::string& path)
+	auto display = [](const std::wstring& path)
 	{
 		string8 command;
-		uFixAmpersandChars_v2(pfc::string_filename(path.c_str()), command);
+		uFixAmpersandChars_v2(pfc::string_filename(from_wide(path)), command);
 		return command;
 	};
 
@@ -137,16 +137,16 @@ void CDialogConfigure::BuildMenu()
 	CMenu samples = CreateMenu();
 	size_t counter = 0;
 
-	for (const std::string& folder : FileHelper(component_folder + "samples").list_folders())
+	for (const std::wstring& folder : FileHelper(component_folder + "samples").list_folders())
 	{
 		CMenu sub = CreatePopupMenu();
-		for (const std::string& file : FileHelper(folder).list_files())
+		for (const std::wstring& file : FileHelper(folder).list_files())
 		{
 			m_samples.emplace_back(file);
 			uAppendMenu(sub, MF_STRING, ID_SAMPLES_BEGIN + counter, display(file));
 			counter++;
 		}
-		uAppendMenu(samples, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(sub.m_hMenu), folder.substr(folder.find_last_of("\\") + 1).c_str());
+		uAppendMenu(samples, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(sub.m_hMenu), from_wide(folder.substr(folder.find_last_of(L"\\") + 1)));
 	}
 	uAppendMenu(menu, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(samples.m_hMenu), "Samples");
 
@@ -182,7 +182,7 @@ void CDialogConfigure::OnCloseCmd(UINT, int nID, CWindow)
 
 void CDialogConfigure::OnDocs(UINT, int nID, CWindow)
 {
-	ShellExecute(nullptr, L"open", to_wide(m_docs[nID - ID_DOCS_BEGIN].c_str()).data(), nullptr, nullptr, SW_SHOW);
+	ShellExecute(nullptr, L"open", m_docs[nID - ID_DOCS_BEGIN].data(), nullptr, nullptr, SW_SHOW);
 }
 
 void CDialogConfigure::OnFileImport(UINT, int, CWindow)

@@ -35,6 +35,7 @@ namespace Gdiplus
 using pfc::string8;
 using pfc::stringp;
 using Strings = std::vector<std::string>;
+using WStrings = std::vector<std::wstring>;
 using json = nlohmann::json;
 
 #include "foo_jscript_panel.h"

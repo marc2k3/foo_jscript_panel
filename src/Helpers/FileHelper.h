@@ -9,13 +9,13 @@ public:
 	FileHelper(const std::string& path) : m_path(std::filesystem::u8path(path)) {}
 	FileHelper(const std::wstring& wpath) : m_path(wpath), m_wpath(wpath) {}
 
-	Strings list_files(bool recur = false)
+	WStrings list_files(bool recur = false)
 	{
 		if (recur) return list_t<std::filesystem::recursive_directory_iterator>();
 		return list_t();
 	}
 
-	Strings list_folders(bool recur = false)
+	WStrings list_folders(bool recur = false)
 	{
 		if (recur) return list_t<std::filesystem::recursive_directory_iterator>(false);
 		return list_t(false);
@@ -101,17 +101,17 @@ public:
 
 private:
 	template <typename T = std::filesystem::directory_iterator>
-	Strings list_t(bool want_files = true)
+	WStrings list_t(bool want_files = true)
 	{
-		Strings strings;
+		WStrings wstrings;
 		if (std::filesystem::is_directory(m_path))
 		{
 			for (const auto& p : T(m_path, std::filesystem::directory_options::skip_permission_denied))
 			{
-				if ((want_files && p.is_regular_file()) || (!want_files && p.is_directory())) strings.emplace_back(p.path().u8string());
+				if ((want_files && p.is_regular_file()) || (!want_files && p.is_directory())) wstrings.emplace_back(p.path().wstring());
 			}
 		}
-		return strings;
+		return wstrings;
 	}
 
 	size_t guess_codepage(stringp content)

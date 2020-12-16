@@ -45,6 +45,6 @@ private:
 	CDialogResizeHelper m_resizer;
 	CEditorCtrl m_editorctrl;
 	PanelWindow* m_panel;
-	Strings m_docs, m_samples;
+	WStrings m_docs, m_samples;
 	string8 m_caption;
 };

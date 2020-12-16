@@ -37,8 +37,8 @@ static std::vector<T> split_string_t(const T& text, const T& delims)
 	return out;
 }
 
-static std::vector<std::string> split_string(const std::string& text, const std::string& delims) { return split_string_t<std::string>(text, delims); }
-static std::vector<std::wstring> split_string(const std::wstring& text, const std::wstring& delims) { return split_string_t<std::wstring>(text, delims); }
+static Strings split_string(const std::string& text, const std::string& delims) { return split_string_t<std::string>(text, delims); }
+static WStrings split_string(const std::wstring& text, const std::wstring& delims) { return split_string_t<std::wstring>(text, delims); }
 
 template <typename T>
 static bool ensure_gdiplus_object(const std::unique_ptr<T>& obj) { return obj && obj->GetLastStatus() == Gdiplus::Ok; }

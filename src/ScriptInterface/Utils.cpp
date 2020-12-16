@@ -167,7 +167,7 @@ STDMETHODIMP Utils::Glob(BSTR pattern, UINT exc_mask, UINT inc_mask, VARIANT* ou
 {
 	if (!out) return E_POINTER;
 
-	std::vector<std::wstring> strings;
+	WStrings files;
 
 	WIN32_FIND_DATA data;
 	HANDLE hFindFile = FindFirstFile(pattern, &data);
@@ -181,23 +181,19 @@ STDMETHODIMP Utils::Glob(BSTR pattern, UINT exc_mask, UINT inc_mask, VARIANT* ou
 			const DWORD attr = data.dwFileAttributes;
 			if ((attr & inc_mask) && !(attr & exc_mask))
 			{
-				strings.emplace_back(dir + data.cFileName);
+				files.emplace_back(dir + data.cFileName);
 			}
 		} while (FindNextFile(hFindFile, &data));
 		FindClose(hFindFile);
 	}
 
-	const size_t count = strings.size();
+	const size_t count = files.size();
 	ComArrayWriter writer;
 	if (!writer.create(count)) return E_OUTOFMEMORY;
 
 	for (size_t i = 0; i < count; ++i)
 	{
-		_variant_t var;
-		var.vt = VT_BSTR;
-		var.bstrVal = SysAllocString(strings[i].data());
-
-		if (!writer.put_item(i, var)) return E_OUTOFMEMORY;
+		if (!writer.put_item(i, files[i])) return E_OUTOFMEMORY;
 	}
 
 	out->vt = VT_ARRAY | VT_VARIANT;
@@ -265,7 +261,7 @@ STDMETHODIMP Utils::ListFiles(BSTR folder, VARIANT_BOOL recur, VARIANT* out)
 {
 	if (!out) return E_POINTER;
 
-	Strings files = FileHelper(folder).list_files(to_bool(recur));
+	WStrings files = FileHelper(folder).list_files(to_bool(recur));
 	const size_t count = files.size();
 
 	ComArrayWriter writer;
@@ -273,7 +269,7 @@ STDMETHODIMP Utils::ListFiles(BSTR folder, VARIANT_BOOL recur, VARIANT* out)
 
 	for (size_t i = 0; i < count; ++i)
 	{
-		if (!writer.put_item(i, files[i].c_str())) return E_OUTOFMEMORY;
+		if (!writer.put_item(i, files[i])) return E_OUTOFMEMORY;
 	}
 
 	out->vt = VT_ARRAY | VT_VARIANT;
@@ -285,15 +281,16 @@ STDMETHODIMP Utils::ListFolders(BSTR folder, VARIANT_BOOL recur, VARIANT* out)
 {
 	if (!out) return E_POINTER;
 
-	Strings folders = FileHelper(folder).list_folders(to_bool(recur));
+	WStrings folders = FileHelper(folder).list_folders(to_bool(recur));
 	const size_t count = folders.size();
+	static constexpr auto sep = L"\\";
 
 	ComArrayWriter writer;
 	if (!writer.create(count)) return E_OUTOFMEMORY;
 
 	for (size_t i = 0; i < count; ++i)
 	{
-		if (!writer.put_item(i, PFC_string_formatter() << folders[i].c_str() << "\\")) return E_OUTOFMEMORY;
+		if (!writer.put_item(i, folders[i] + sep)) return E_OUTOFMEMORY;
 	}
 
 	out->vt = VT_ARRAY | VT_VARIANT;

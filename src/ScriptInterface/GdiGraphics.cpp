@@ -171,8 +171,7 @@ STDMETHODIMP GdiGraphics::EstimateLineWrap(BSTR str, IGdiFont* font, UINT width,
 
 	{
 		SelectObjectScope scope(dc, hFont);
-		::EstimateLineWrap helper(dc, width);
-		helper.wrap(str, result);
+		::EstimateLineWrap(dc, width).wrap(str, result);
 	}
 
 	m_graphics->ReleaseHDC(dc);
@@ -183,13 +182,11 @@ STDMETHODIMP GdiGraphics::EstimateLineWrap(BSTR str, IGdiFont* font, UINT width,
 
 	for (size_t i = 0; i < count; ++i)
 	{
-		_variant_t var1, var2;
-		var1.vt = VT_BSTR;
-		var1.bstrVal = SysAllocString(result[i].text.data());
-		var2.vt = VT_UI4;
-		var2.ulVal = result[i].width;
-		if (!writer.put_item(i * 2, var1)) return E_OUTOFMEMORY;
-		if (!writer.put_item((i * 2) + 1, var2)) return E_OUTOFMEMORY;
+		_variant_t var;
+		var.vt = VT_UI4;
+		var.ulVal = result[i].width;
+		if (!writer.put_item(i * 2, result[i].text)) return E_OUTOFMEMORY;
+		if (!writer.put_item((i * 2) + 1, var)) return E_OUTOFMEMORY;
 	}
 
 	out->vt = VT_ARRAY | VT_VARIANT;

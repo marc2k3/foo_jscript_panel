@@ -94,6 +94,14 @@ public:
 		return m_psa != nullptr;
 	}
 
+	bool put_item(LONG idx, const std::wstring& str)
+	{
+		_variant_t var;
+		var.vt = VT_BSTR;
+		var.bstrVal = SysAllocString(str.data());
+		return put_item(idx, var);
+	}
+
 	bool put_item(LONG idx, stringp str)
 	{
 		_variant_t var;
