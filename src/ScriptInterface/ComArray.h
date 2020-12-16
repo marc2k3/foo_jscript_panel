@@ -24,7 +24,7 @@ public:
 
 		for (auto& item : m_data)
 		{
-			out.add_item(string_utf8_from_wide(item.bstrVal));
+			out.add_item(from_wide(item.bstrVal));
 		}
 		return true;
 	}

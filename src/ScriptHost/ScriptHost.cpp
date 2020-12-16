@@ -14,7 +14,7 @@ ScriptHost::ScriptHost(PanelWindow* panel)
 
 ScriptHost::~ScriptHost() {}
 
-DWORD ScriptHost::GenerateSourceContext(stringp path)
+DWORD ScriptHost::GenerateSourceContext(const std::string& path)
 {
 	m_context_to_path_map.emplace(++m_last_source_context, path);
 	return m_last_source_context;
@@ -103,7 +103,8 @@ HRESULT ScriptHost::InitScriptEngine()
 HRESULT ScriptHost::ParseScripts(IActiveScriptParsePtr& parser)
 {
 	HRESULT hr = S_OK;
-	string8 path, code;
+	std::string path;
+	string8 code;
 	const size_t count = m_info->m_imports.size();
 	size_t import_errors = 0;
 
@@ -111,8 +112,8 @@ HRESULT ScriptHost::ParseScripts(IActiveScriptParsePtr& parser)
 	{
 		if (i < count) // import
 		{
-			path = m_info->m_imports[i].c_str();
-			code = helpers::read_file(path);
+			path = m_info->m_imports[i];
+			code = FileHelper(path).read();
 			if (code.is_empty())
 			{
 				if (import_errors == 0)
@@ -120,7 +121,7 @@ HRESULT ScriptHost::ParseScripts(IActiveScriptParsePtr& parser)
 					FB2K_console_formatter() << m_info->m_build_string;
 					import_errors++;
 				}
-				FB2K_console_formatter() << "Error: Failed to load " << path;
+				FB2K_console_formatter() << "Error: Failed to load " << path.c_str();
 			}
 		}
 		else // main
@@ -230,13 +231,13 @@ STDMETHODIMP ScriptHost::OnScriptError(IActiveScriptError* err)
 
 		if (excep.bstrSource)
 		{
-			formatter << string_utf8_from_wide(excep.bstrSource) << ":\n";
+			formatter << from_wide(excep.bstrSource) << ":\n";
 			SysFreeString(excep.bstrSource);
 		}
 
 		if (excep.bstrDescription)
 		{
-			formatter << string_utf8_from_wide(excep.bstrDescription) << "\n";
+			formatter << from_wide(excep.bstrDescription) << "\n";
 			SysFreeString(excep.bstrDescription);
 		}
 		else
@@ -262,14 +263,14 @@ STDMETHODIMP ScriptHost::OnScriptError(IActiveScriptError* err)
 	{
 		if (m_context_to_path_map.count(ctx))
 		{
-			formatter << "File: " << m_context_to_path_map.at(ctx) << "\n";
+			formatter << "File: " << m_context_to_path_map.at(ctx).c_str() << "\n";
 		}
 		formatter << "Line: " << (line + 1) << ", Col: " << (charpos + 1) << "\n";
 	}
 
 	if (SUCCEEDED(err->GetSourceLineText(sourceline.GetAddress())))
 	{
-		formatter << string_utf8_from_wide(sourceline);
+		formatter << from_wide(sourceline.GetBSTR());
 	}
 
 	FB2K_console_formatter() << formatter;

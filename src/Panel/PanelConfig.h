@@ -57,7 +57,7 @@ public:
 
 	void reset()
 	{
-		m_code = helpers::get_resource_text(IDR_SCRIPT);
+		m_code = Component::get_resource_text(IDR_SCRIPT);
 		m_engine = "Chakra";
 		m_style = EdgeStyle::none;
 		m_transparent = false;

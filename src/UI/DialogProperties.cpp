@@ -110,12 +110,12 @@ void CDialogProperties::LoadProperties(bool reload)
 		case VT_BSTR:
 			item.is_string = true;
 			var.ChangeType(VT_BSTR, &value);
-			item.value = string_utf8_from_wide(var.bstrVal);
+			item.value = from_wide(var.bstrVal);
 			break;
 
 		default:
 			var.ChangeType(VT_BSTR, &value);
-			item.value = string_utf8_from_wide(var.bstrVal);
+			item.value = from_wide(var.bstrVal);
 			break;
 		}
 

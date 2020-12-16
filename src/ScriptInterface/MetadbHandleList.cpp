@@ -338,7 +338,7 @@ STDMETHODIMP MetadbHandleList::UpdateFileInfoFromJSON(BSTR str)
 	const size_t count = m_handles.get_count();
 	if (count == 0) return E_POINTER;
 
-	json j = json::parse(string_utf8_from_wide(str).get_ptr(), nullptr, false);
+	json j = json::parse(from_wide(str).get_ptr(), nullptr, false);
 
 	if (j.is_array() && j.size() == count)
 	{

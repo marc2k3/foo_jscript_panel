@@ -34,7 +34,6 @@ namespace Gdiplus
 
 using pfc::string8;
 using pfc::stringp;
-using namespace pfc::stringcvt;
 using Strings = std::vector<std::string>;
 using json = nlohmann::json;
 
@@ -45,6 +44,6 @@ using json = nlohmann::json;
 #include "ScriptInterface.h"
 #include "CallbackID.h"
 #include "CallbackData.h"
-#include "Text.h"
-#include "File.h"
+#include "Component.h"
+#include "FileHelper.h"
 #include "Image.h"

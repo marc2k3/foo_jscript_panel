@@ -15,8 +15,8 @@ STDMETHODIMP Console::Log(SAFEARRAY* sa)
 		_variant_t var;
 		if (FAILED(SafeArrayGetElement(sa, &i, &var))) continue;
 		if (FAILED(VariantChangeType(&var, &var, VARIANT_ALPHABOOL, VT_BSTR))) continue;
-		auto tmp = string_utf8_from_wide(var.bstrVal);
-		if (tmp.length())
+		const string8 tmp = from_wide(var.bstrVal);
+		if (tmp.get_length())
 		{
 			if (str.get_length()) str.add_byte(' ');
 			str.add_string(tmp);

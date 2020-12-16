@@ -81,7 +81,7 @@ STDMETHODIMP MetadbHandle::SetFirstPlayed(BSTR first_played)
 	if (db::hashHandle(m_handle, hash))
 	{
 		db::Fields tmp = db::get(hash);
-		auto fp = string_utf8_from_wide(first_played);
+		const string8 fp = from_wide(first_played);
 		if (!tmp.first_played.equals(fp))
 		{
 			tmp.first_played = fp;
@@ -99,7 +99,7 @@ STDMETHODIMP MetadbHandle::SetLastPlayed(BSTR last_played)
 	if (db::hashHandle(m_handle, hash))
 	{
 		db::Fields tmp = db::get(hash);
-		auto lp = string_utf8_from_wide(last_played);
+		const string8 lp = from_wide(last_played);
 		if (!tmp.last_played.equals(lp))
 		{
 			tmp.last_played = lp;

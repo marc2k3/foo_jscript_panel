@@ -1,7 +1,14 @@
 #include "stdafx.h"
 #include "ScriptInfo.h"
 
-ScriptInfo::ScriptInfo() {}
+ScriptInfo::ScriptInfo()
+{
+	m_replacements =
+	{
+		{ "%fb2k_profile_path%", Component::get_profile_path().get_ptr() },
+		{ "%fb2k_component_path%", Component::get_path().get_ptr() },
+	};
+}
 
 std::string ScriptInfo::expand_import(const std::string& path)
 {
@@ -48,9 +55,9 @@ void ScriptInfo::update(size_t id, stringp code)
 	{
 		std::string pre = source.substr(start + 21, end - start - 21);
 
-		for (const std::string& line : helpers::split_string(pre, CRLF))
+		for (const std::string& line : split_string(pre, CRLF))
 		{
-			const auto len = line.length();
+			const size_t len = line.length();
 			if (line.find("@name") < len)
 			{
 				m_name = extract_value(line).c_str();

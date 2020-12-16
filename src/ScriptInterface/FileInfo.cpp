@@ -16,7 +16,7 @@ STDMETHODIMP FileInfo::InfoFind(BSTR name, int* out)
 {
 	if (m_info.is_empty() || !out) return E_POINTER;
 
-	*out = to_int(m_info->info().info_find(string_utf8_from_wide(name)));
+	*out = to_int(m_info->info().info_find(from_wide(name)));
 	return S_OK;
 }
 
@@ -48,7 +48,7 @@ STDMETHODIMP FileInfo::MetaFind(BSTR name, int* out)
 {
 	if (m_info.is_empty() || !out) return E_POINTER;
 
-	*out = to_int(m_info->info().meta_find(string_utf8_from_wide(name)));
+	*out = to_int(m_info->info().meta_find(from_wide(name)));
 	return S_OK;
 }
 

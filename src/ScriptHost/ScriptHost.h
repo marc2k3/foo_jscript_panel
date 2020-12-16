@@ -28,7 +28,7 @@ public:
 	std::unique_ptr<ScriptInfo> m_info;
 
 private:
-	DWORD GenerateSourceContext(stringp path);
+	DWORD GenerateSourceContext(const std::string& path);
 	HRESULT InitCallbackMap();
 	HRESULT InitScriptEngine();
 	HRESULT ParseScripts(IActiveScriptParsePtr& parser);
@@ -45,6 +45,6 @@ private:
 	pfc::com_ptr_t<Utils> m_utils;
 	pfc::com_ptr_t<Window> m_window;
 	PanelWindow* m_panel;
-	std::unordered_map<DWORD, string8> m_context_to_path_map;
+	std::unordered_map<DWORD, std::string> m_context_to_path_map;
 	std::unordered_map<CallbackID, DISPID> m_callback_map;
 };

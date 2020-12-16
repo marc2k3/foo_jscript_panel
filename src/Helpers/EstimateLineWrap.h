@@ -18,7 +18,7 @@ public:
 		std::wstring delims = PFC_WIDESTRING(CRLF);
 		if (text.find(delims) == std::wstring::npos) delims = PFC_WIDESTRING(LF);
 
-		for (const std::wstring& str : helpers::split_string(text, delims))
+		for (const std::wstring& str : split_string(text, delims))
 		{
 			wrap_recur(str, out);
 		}

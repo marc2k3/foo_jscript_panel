@@ -75,6 +75,9 @@
     <ClInclude Include="Helpers\AsyncImageTask.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="Helpers\Component.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
     <ClInclude Include="Helpers\CustomSort.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
@@ -84,7 +87,7 @@
     <ClInclude Include="Helpers\EstimateLineWrap.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Helpers\File.h">
+    <ClInclude Include="Helpers\FileHelper.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Helpers\FileInfoFilter.h">
@@ -106,9 +109,6 @@
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Helpers\StackBlur.h">
-      <Filter>Header Files\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers\Text.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Helpers\ThreadPool.h">

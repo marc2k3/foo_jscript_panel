@@ -131,16 +131,16 @@ void CDialogConfigure::BuildMenu()
 		return command;
 	};
 
-	const std::string component_folder = helpers::get_fb2k_component_path().get_ptr();
+	const std::string component_folder = Component::get_path().get_ptr();
 	CMenu menu = GetMenu();
 
 	CMenu samples = CreateMenu();
 	size_t counter = 0;
 
-	for (const std::string& folder : helpers::list_folders(component_folder + "samples"))
+	for (const std::string& folder : FileHelper(component_folder + "samples").list_folders())
 	{
 		CMenu sub = CreatePopupMenu();
-		for (const std::string& file : helpers::list_files(folder))
+		for (const std::string& file : FileHelper(folder).list_files())
 		{
 			m_samples.emplace_back(file);
 			uAppendMenu(sub, MF_STRING, ID_SAMPLES_BEGIN + counter, display(file));
@@ -151,7 +151,7 @@ void CDialogConfigure::BuildMenu()
 	uAppendMenu(menu, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(samples.m_hMenu), "Samples");
 
 	CMenu docs = CreateMenu();
-	m_docs = helpers::list_files(component_folder + "docs");
+	m_docs = FileHelper(component_folder + "docs").list_files();
 	for (size_t i = 0; i < m_docs.size(); ++i)
 	{
 		uAppendMenu(docs, MF_STRING, ID_DOCS_BEGIN + i, display(m_docs[i]));
@@ -190,7 +190,7 @@ void CDialogConfigure::OnFileImport(UINT, int, CWindow)
 	string8 filename;
 	if (uGetOpenFileName(m_hWnd, "Text files|*.txt|JScript files|*.js|All files|*.*", 0, "txt", "Import from", nullptr, filename, FALSE))
 	{
-		m_editorctrl.SetContent(helpers::read_file(filename));
+		m_editorctrl.SetContent(FileHelper(filename).read());
 	}
 }
 
@@ -199,7 +199,7 @@ void CDialogConfigure::OnFileExport(UINT, int, CWindow)
 	string8 filename;
 	if (uGetOpenFileName(m_hWnd, "Text files|*.txt|All files|*.*", 0, "txt", "Save as", nullptr, filename, TRUE))
 	{
-		helpers::write_file(filename, GetText());
+		FileHelper(filename).write(GetText());
 	}
 }
 
@@ -207,10 +207,10 @@ void CDialogConfigure::OnReset(UINT, int, CWindow)
 {
 	m_combo_edge.SetCurSel(0);
 	m_check_transparent.SetCheck(false);
-	m_editorctrl.SetContent(helpers::get_resource_text(IDR_SCRIPT));
+	m_editorctrl.SetContent(Component::get_resource_text(IDR_SCRIPT));
 }
 
 void CDialogConfigure::OnSamples(UINT, int nID, CWindow)
 {
-	m_editorctrl.SetContent(helpers::read_file(m_samples[nID - ID_SAMPLES_BEGIN].c_str()));
+	m_editorctrl.SetContent(FileHelper(m_samples[nID - ID_SAMPLES_BEGIN]).read());
 }

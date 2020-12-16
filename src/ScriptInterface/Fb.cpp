@@ -100,7 +100,7 @@ STDMETHODIMP Fb::CreateProfiler(BSTR name, IProfiler** out)
 {
 	if (!out) return E_POINTER;
 
-	*out = new ComObjectImpl<Profiler>(string_utf8_from_wide(name));
+	*out = new ComObjectImpl<Profiler>(from_wide(name));
 	return S_OK;
 }
 
@@ -244,7 +244,7 @@ STDMETHODIMP Fb::GetQueryItems(IMetadbHandleList* handles, BSTR query, IMetadbHa
 
 	try
 	{
-		filter = search_filter_manager_v2::get()->create_ex(string_utf8_from_wide(query), fb2k::service_new<completion_notify_dummy>(), search_filter_manager_v2::KFlagSuppressNotify);
+		filter = search_filter_manager_v2::get()->create_ex(from_wide(query), fb2k::service_new<completion_notify_dummy>(), search_filter_manager_v2::KFlagSuppressNotify);
 	}
 	catch (...) {}
 
@@ -362,7 +362,7 @@ STDMETHODIMP Fb::RunContextCommand(BSTR command, VARIANT_BOOL* out)
 		contextmenu_manager::ptr cm;
 		contextmenu_manager::g_create(cm);
 		cm->init_context_now_playing(contextmenu_manager::flag_view_full);
-		*out = to_variant_bool(helpers::execute_context_command_recur(cm->get_root(), string_utf8_from_wide(command)));
+		*out = to_variant_bool(helpers::execute_context_command_recur(cm->get_root(), from_wide(command)));
 	}
 	return S_OK;
 }
@@ -403,7 +403,7 @@ STDMETHODIMP Fb::RunContextCommandWithMetadb(BSTR command, VARIANT handle, VARIA
 		contextmenu_manager::ptr cm;
 		contextmenu_manager::g_create(cm);
 		cm->init_context(handle_list, contextmenu_manager::flag_view_full);
-		*out = to_variant_bool(helpers::execute_context_command_recur(cm->get_root(), string_utf8_from_wide(command)));
+		*out = to_variant_bool(helpers::execute_context_command_recur(cm->get_root(), from_wide(command)));
 	}
 	return S_OK;
 }
@@ -412,7 +412,7 @@ STDMETHODIMP Fb::RunMainMenuCommand(BSTR command, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_variant_bool(helpers::execute_mainmenu_command(string_utf8_from_wide(command)));
+	*out = to_variant_bool(helpers::execute_mainmenu_command(from_wide(command)));
 	return S_OK;
 }
 
@@ -454,14 +454,14 @@ STDMETHODIMP Fb::ShowLibrarySearchUI(BSTR query)
 {
 	if (!query) return E_INVALIDARG;
 
-	library_search_ui::get()->show(string_utf8_from_wide(query));
+	library_search_ui::get()->show(from_wide(query));
 	return S_OK;
 }
 
 STDMETHODIMP Fb::ShowPopupMessage(BSTR msg, BSTR title)
 {
-	auto umsg = string_utf8_from_wide(msg);
-	auto utitle = string_utf8_from_wide(title);
+	const string8 umsg = from_wide(msg);
+	const string8 utitle = from_wide(title);
 	fb2k::inMainThread([=]()
 		{
 			popup_message::g_show(umsg, utitle);
@@ -485,7 +485,7 @@ STDMETHODIMP Fb::TitleFormat(BSTR pattern, ITitleFormat** out)
 {
 	if (!out) return E_POINTER;
 
-	*out = new ComObjectImpl<::TitleFormat>(string_utf8_from_wide(pattern));
+	*out = new ComObjectImpl<::TitleFormat>(from_wide(pattern));
 	return S_OK;
 }
 
@@ -519,7 +519,7 @@ STDMETHODIMP Fb::get_ComponentPath(BSTR* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_bstr(helpers::get_fb2k_component_path());
+	*out = to_bstr(Component::get_path());
 	return S_OK;
 }
 
@@ -535,7 +535,7 @@ STDMETHODIMP Fb::get_FoobarPath(BSTR* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_bstr(helpers::get_fb2k_path());
+	*out = to_bstr(Component::get_fb2k_path());
 	return S_OK;
 }
 
@@ -583,7 +583,7 @@ STDMETHODIMP Fb::get_ProfilePath(BSTR* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_bstr(helpers::get_profile_path());
+	*out = to_bstr(Component::get_profile_path());
 	return S_OK;
 }
 

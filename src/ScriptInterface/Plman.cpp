@@ -58,7 +58,7 @@ STDMETHODIMP Plman::CreateAutoPlaylist(UINT playlistIndex, BSTR name, BSTR query
 
 	*out = -1;
 
-	auto uquery = string_utf8_from_wide(query);
+	const string8 uquery = from_wide(query);
 	search_filter_v2::ptr filter;
 
 	try
@@ -71,7 +71,7 @@ STDMETHODIMP Plman::CreateAutoPlaylist(UINT playlistIndex, BSTR name, BSTR query
 	{
 		size_t pos;
 		CreatePlaylist(playlistIndex, name, &pos);
-		autoplaylist_manager::get()->add_client_simple(uquery, string_utf8_from_wide(sort), pos, flags);
+		autoplaylist_manager::get()->add_client_simple(uquery, from_wide(sort), pos, flags);
 		*out = to_int(pos);
 	}
 	return S_OK;
@@ -82,11 +82,11 @@ STDMETHODIMP Plman::CreatePlaylist(UINT playlistIndex, BSTR name, UINT* out)
 	if (!out) return E_POINTER;
 
 	auto api = playlist_manager::get();
-	auto uname = string_utf8_from_wide(name);
+	const string8 uname = from_wide(name);
 
-	if (uname.length())
+	if (uname.get_length())
 	{
-		*out = api->create_playlist(uname, uname.length(), playlistIndex);
+		*out = api->create_playlist(uname, uname.get_length(), playlistIndex);
 	}
 	else
 	{
@@ -106,7 +106,7 @@ STDMETHODIMP Plman::DuplicatePlaylist(UINT playlistIndex, BSTR name, UINT* out)
 		metadb_handle_list items;
 		api->playlist_get_all_items(playlistIndex, items);
 
-		string8 uname = string_utf8_from_wide(name).get_ptr();
+		string8 uname = from_wide(name);
 		if (uname.is_empty())
 		{
 			api->playlist_get_name(playlistIndex, uname);
@@ -143,7 +143,7 @@ STDMETHODIMP Plman::FindOrCreatePlaylist(BSTR name, VARIANT_BOOL unlocked, UINT*
 	if (!out) return E_POINTER;
 
 	auto api = playlist_manager::get();
-	auto uname = string_utf8_from_wide(name);
+	const string8 uname = from_wide(name);
 
 	if (to_bool(unlocked))
 	{
@@ -175,7 +175,7 @@ STDMETHODIMP Plman::FindPlaylist(BSTR name, int* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_int(playlist_manager::get()->find_playlist(string_utf8_from_wide(name)));
+	*out = to_int(playlist_manager::get()->find_playlist(from_wide(name)));
 	return S_OK;
 }
 
@@ -498,8 +498,8 @@ STDMETHODIMP Plman::RenamePlaylist(UINT playlistIndex, BSTR name, VARIANT_BOOL* 
 {
 	if (!out) return E_POINTER;
 
-	auto uname = string_utf8_from_wide(name);
-	*out = to_variant_bool(playlist_manager::get()->playlist_rename(playlistIndex, uname, uname.length()));
+	const string8 uname = from_wide(name);
+	*out = to_variant_bool(playlist_manager::get()->playlist_rename(playlistIndex, uname, uname.get_length()));
 	return S_OK;
 }
 
@@ -567,8 +567,8 @@ STDMETHODIMP Plman::SortByFormat(UINT playlistIndex, BSTR pattern, VARIANT_BOOL 
 {
 	if (!out) return E_POINTER;
 
-	auto upattern = string_utf8_from_wide(pattern);
-	*out = to_variant_bool(playlist_manager::get()->playlist_sort_by_format(playlistIndex, upattern.length() ? upattern.get_ptr() : nullptr, to_bool(selOnly)));
+	const string8 upattern = from_wide(pattern);
+	*out = to_variant_bool(playlist_manager::get()->playlist_sort_by_format(playlistIndex, upattern.get_length() ? upattern.get_ptr() : nullptr, to_bool(selOnly)));
 	return S_OK;
 }
 
@@ -585,7 +585,7 @@ STDMETHODIMP Plman::SortByFormatV2(UINT playlistIndex, BSTR pattern, int directi
 	CustomSort::Order order(count);
 
 	titleformat_object::ptr obj;
-	titleformat_compiler::get()->compile_safe(obj, string_utf8_from_wide(pattern));
+	titleformat_compiler::get()->compile_safe(obj, from_wide(pattern));
 
 	metadb_handle_list_helper::sort_by_format_get_order_v2(items, order.data(), obj, nullptr, direction, fb2k::noAbort);
 

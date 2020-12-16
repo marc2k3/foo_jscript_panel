@@ -103,7 +103,7 @@ STDMETHODIMP Window::GetProperty(BSTR name, VARIANT defaultval, VARIANT* out)
 {
 	if (!out) return E_POINTER;
 
-	auto uname = string_utf8_from_wide(name);
+	const string8 uname = from_wide(name);
 	if (m_panel->m_config->m_properties->get_property(uname, *out))
 	{
 		return S_OK;
@@ -161,7 +161,7 @@ STDMETHODIMP Window::SetInterval(IDispatch* func, int delay, UINT* out)
 
 STDMETHODIMP Window::SetProperty(BSTR name, VARIANT val)
 {
-	m_panel->m_config->m_properties->set_property(string_utf8_from_wide(name), val);
+	m_panel->m_config->m_properties->set_property(from_wide(name), val);
 	return S_OK;
 }
 

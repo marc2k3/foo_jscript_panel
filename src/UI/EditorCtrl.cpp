@@ -101,9 +101,9 @@ CEditorCtrl::EditorStyle CEditorCtrl::ParseStyle(const std::string& str)
 {
 	EditorStyle style;
 
-	for (const std::string& value : helpers::split_string(str, ","))
+	for (const std::string& value : split_string(str, ","))
 	{
-		Strings tmp = helpers::split_string(value, ":");
+		Strings tmp = split_string(value, ":");
 		std::string primary = tmp[0];
 		std::string secondary = tmp.size() == 2 ? tmp[1] : "";
 
@@ -926,9 +926,9 @@ void CEditorCtrl::OpenReplaceDialog()
 
 void CEditorCtrl::ReadAPIs()
 {
-	std::string content = helpers::get_resource_text(IDR_API).get_ptr();
+	std::string content = Component::get_resource_text(IDR_API).get_ptr();
 
-	for (const std::string& line : helpers::split_string(content, CRLF))
+	for (const std::string& line : split_string(content, CRLF))
 	{
 		if (line.empty()) continue;
 		API item = { line, std::min({line.find('('), line.find(' '), line.length()}) };

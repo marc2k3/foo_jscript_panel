@@ -57,7 +57,7 @@ namespace
 				{
 					content << key.c_str() << "=" << value.c_str() << CRLF;
 				}
-				helpers::write_file(filename, content);
+				FileHelper(filename).write(content);
 			}
 		}
 
@@ -66,7 +66,7 @@ namespace
 			string8 filename;
 			if (uGetOpenFileName(m_hWnd, "Configuration files|*.cfg|All files|*.*", 0, "cfg", "Import from", nullptr, filename, FALSE))
 			{
-				g_config.import(helpers::read_file(filename));
+				g_config.import(FileHelper(filename).read());
 				m_list.ReloadData();
 			}
 		}

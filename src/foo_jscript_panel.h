@@ -22,6 +22,25 @@ namespace jsp
 #define FIND_IF(blah, func) std::find_if(std::begin(blah), std::end(blah), func)
 
 template <typename T>
+static std::vector<T> split_string_t(const T& text, const T& delims)
+{
+	std::vector<T> out;
+	size_t pos = 0;
+	while (true)
+	{
+		size_t old_pos = pos;
+		pos = text.find(delims, old_pos);
+		out.emplace_back(text.substr(old_pos, pos - old_pos));
+		if (pos == T::npos) break;
+		pos += delims.length();
+	}
+	return out;
+}
+
+static std::vector<std::string> split_string(const std::string& text, const std::string& delims) { return split_string_t<std::string>(text, delims); }
+static std::vector<std::wstring> split_string(const std::wstring& text, const std::wstring& delims) { return split_string_t<std::wstring>(text, delims); }
+
+template <typename T>
 static bool ensure_gdiplus_object(const std::unique_ptr<T>& obj) { return obj && obj->GetLastStatus() == Gdiplus::Ok; }
 
 template <typename T>
@@ -32,6 +51,14 @@ static COLORREF to_colorref(T argb) { return Gdiplus::Color(to_uint(argb)).ToCOL
 
 template <typename T>
 static VARIANT_BOOL to_variant_bool(T b) { return b ? VARIANT_TRUE : VARIANT_FALSE; }
+
+static string8 from_wide(const std::wstring& str)
+{
+	std::string ret;
+	ret.resize(WideCharToMultiByte(CP_UTF8, 0, str.data(), str.size(), nullptr, 0, nullptr, nullptr));
+	WideCharToMultiByte(CP_UTF8, 0, str.data(), str.size(), ret.data(), ret.size(), nullptr, nullptr);
+	return ret.c_str();
+}
 
 static std::wstring to_wide(stringp str)
 {

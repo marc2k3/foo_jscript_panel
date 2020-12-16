@@ -47,7 +47,7 @@ void Config::get_data_raw(stream_writer* writer, abort_callback& abort)
 void Config::import(stringp content)
 {
 	SimpleMap data;
-	for (const std::string& line : helpers::split_string(content.get_ptr(), CRLF))
+	for (const std::string& line : split_string(content.get_ptr(), CRLF))
 	{
 		const size_t pos = line.find('=');
 		if (pos == 0 || pos == std::string::npos) continue;
@@ -65,7 +65,7 @@ void Config::init_data()
 
 void Config::load_preset(int idx)
 {
-	import(helpers::get_resource_text(idx));
+	import(Component::get_resource_text(idx));
 }
 
 void Config::merge_data(const SimpleMap& data)

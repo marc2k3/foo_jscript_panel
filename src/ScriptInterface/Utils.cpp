@@ -12,7 +12,7 @@ STDMETHODIMP Utils::Chardet(BSTR filename, UINT* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = helpers::guess_codepage(helpers::read_file(string_utf8_from_wide(filename)));
+	*out = FileHelper(filename).guess_codepage();
 	return S_OK;
 }
 
@@ -20,7 +20,7 @@ STDMETHODIMP Utils::CheckComponent(BSTR name, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
 
-	auto uname = string_utf8_from_wide(name);
+	const string8 uname = from_wide(name);
 
 	*out = VARIANT_FALSE;
 
@@ -79,7 +79,7 @@ STDMETHODIMP Utils::DateStringToTimestamp(BSTR str, UINT64* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = pfc::fileTimeWtoU(filetimestamp_from_string(string_utf8_from_wide(str).get_ptr()));
+	*out = pfc::fileTimeWtoU(filetimestamp_from_string(from_wide(str)));
 	return S_OK;
 }
 
@@ -115,7 +115,7 @@ STDMETHODIMP Utils::GetAlbumArtEmbedded(BSTR rawpath, UINT art_id, IGdiBitmap** 
 {
 	if (!out) return E_POINTER;
 
-	*out = helpers::get_album_art_embedded(string_utf8_from_wide(rawpath), art_id);
+	*out = helpers::get_album_art_embedded(from_wide(rawpath), art_id);
 	return S_OK;
 }
 
@@ -215,9 +215,9 @@ STDMETHODIMP Utils::InputBox(UINT window_id, BSTR prompt, BSTR caption, BSTR def
 		HWND hwnd = reinterpret_cast<HWND>(window_id);
 		scope.initialize(hwnd);
 
-		auto uprompt = string_utf8_from_wide(prompt);
-		auto ucaption = string_utf8_from_wide(caption);
-		auto udef = string_utf8_from_wide(def);
+		const string8 uprompt = from_wide(prompt);
+		const string8 ucaption = from_wide(caption);
+		const string8 udef = from_wide(def);
 
 		CInputBox dlg(uprompt, ucaption, udef);
 		const int status = dlg.DoModal(hwnd);
@@ -231,7 +231,7 @@ STDMETHODIMP Utils::InputBox(UINT window_id, BSTR prompt, BSTR caption, BSTR def
 			{
 				return E_FAIL;
 			}
-			*out = SysAllocString(def);
+			*out = to_bstr(udef);
 		}
 	}
 	return S_OK;
@@ -265,7 +265,7 @@ STDMETHODIMP Utils::ListFiles(BSTR folder, VARIANT_BOOL recur, VARIANT* out)
 {
 	if (!out) return E_POINTER;
 
-	Strings files = helpers::list_files(string_utf8_from_wide(folder).get_ptr(), to_bool(recur));
+	Strings files = FileHelper(folder).list_files(to_bool(recur));
 	const size_t count = files.size();
 
 	ComArrayWriter writer;
@@ -285,7 +285,7 @@ STDMETHODIMP Utils::ListFolders(BSTR folder, VARIANT_BOOL recur, VARIANT* out)
 {
 	if (!out) return E_POINTER;
 
-	Strings folders = helpers::list_folders(string_utf8_from_wide(folder).get_ptr(), to_bool(recur));
+	Strings folders = FileHelper(folder).list_folders(to_bool(recur));
 	const size_t count = folders.size();
 
 	ComArrayWriter writer;
@@ -339,7 +339,7 @@ STDMETHODIMP Utils::ReadTextFile(BSTR filename, UINT codepage, BSTR* out)
 	if (!out) return E_POINTER;
 
 	std::wstring content;
-	helpers::read_file_wide(filename, codepage, content);
+	FileHelper(filename).read_wide(codepage, content);
 	*out = SysAllocString(content.data());
 	return S_OK;
 }
@@ -348,7 +348,7 @@ STDMETHODIMP Utils::ReadUTF8(BSTR filename, BSTR* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_bstr(helpers::read_file(string_utf8_from_wide(filename)));
+	*out = to_bstr(FileHelper(filename).read());
 	return S_OK;
 }
 
@@ -375,7 +375,7 @@ STDMETHODIMP Utils::WriteTextFile(BSTR filename, BSTR content, VARIANT_BOOL* out
 	*out = VARIANT_FALSE;
 	if (content != nullptr)
 	{
-		*out = to_variant_bool(helpers::write_file(string_utf8_from_wide(filename).get_ptr(), string_utf8_from_wide(content).get_ptr()));
+		*out = to_variant_bool(FileHelper(filename).write(from_wide(content)));
 	}
 	return S_OK;
 }

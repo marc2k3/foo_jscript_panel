@@ -55,7 +55,7 @@ void PanelProperties::g_get(stream_writer* writer, const PropertyData& data, abo
 			}
 			else if (cbWrite == 0)
 			{
-				writer->write_string(string_utf8_from_wide(value.bstrVal), abort);
+				writer->write_string(from_wide(value.bstrVal), abort);
 			}
 		}
 	}
