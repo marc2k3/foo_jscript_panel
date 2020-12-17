@@ -7,18 +7,18 @@ class FileHelper
 public:
 	FileHelper(const string8& path) : m_path(std::filesystem::u8path(path.get_ptr())) {}
 	FileHelper(const std::string& path) : m_path(std::filesystem::u8path(path)) {}
-	FileHelper(const std::wstring& wpath) : m_path(wpath), m_wpath(wpath) {}
+	FileHelper(const std::wstring& path) : m_path(path) {}
 
 	WStrings list_files(bool recur = false)
 	{
-		if (recur) return list_t<std::filesystem::recursive_directory_iterator>();
-		return list_t();
+		if (recur) return list_t<std::filesystem::recursive_directory_iterator>(is_file);
+		return list_t(is_file);
 	}
 
 	WStrings list_folders(bool recur = false)
 	{
-		if (recur) return list_t<std::filesystem::recursive_directory_iterator>(false);
-		return list_t(false);
+		if (recur) return list_t<std::filesystem::recursive_directory_iterator>(is_folder);
+		return list_t(is_folder);
 	}
 
 	bool write(stringp content)
@@ -56,7 +56,7 @@ public:
 
 	void read_wide(size_t codepage, std::wstring& content)
 	{
-		CloseHandleScope hFile = CreateFile(m_wpath.data(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+		CloseHandleScope hFile = CreateFile(m_path.wstring().data(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 		if (hFile.Get() == INVALID_HANDLE_VALUE) return;
 
 		const DWORD dwFileSize = GetFileSize(hFile.Get(), nullptr);
@@ -100,15 +100,25 @@ public:
 	}
 
 private:
+	static bool is_file(const std::filesystem::directory_entry& entry)
+	{
+		return entry.is_regular_file();
+	}
+
+	static bool is_folder(const std::filesystem::directory_entry& entry)
+	{
+		return entry.is_directory();
+	}
+
 	template <typename T = std::filesystem::directory_iterator>
-	WStrings list_t(bool want_files = true)
+	WStrings list_t(std::function<bool(const std::filesystem::directory_entry&)> check_entry)
 	{
 		WStrings wstrings;
 		if (std::filesystem::is_directory(m_path))
 		{
 			for (const auto& p : T(m_path, std::filesystem::directory_options::skip_permission_denied))
 			{
-				if ((want_files && p.is_regular_file()) || (!want_files && p.is_directory())) wstrings.emplace_back(p.path().wstring());
+				if (check_entry(p)) wstrings.emplace_back(p.path().wstring());
 			}
 		}
 		return wstrings;
@@ -133,5 +143,4 @@ private:
 	}
 
 	std::filesystem::path m_path;
-	std::wstring m_wpath;
 };

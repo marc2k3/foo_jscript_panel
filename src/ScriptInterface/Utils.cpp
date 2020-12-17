@@ -173,8 +173,7 @@ STDMETHODIMP Utils::Glob(BSTR pattern, UINT exc_mask, UINT inc_mask, VARIANT* ou
 	HANDLE hFindFile = FindFirstFile(pattern, &data);
 	if (hFindFile != INVALID_HANDLE_VALUE)
 	{
-		std::wstring path = pattern;
-		std::wstring dir = path.substr(0, path.find_last_of(L"\\") + 1);
+		std::wstring dir = std::filesystem::path(pattern).parent_path().wstring();
 
 		do
 		{
@@ -237,7 +236,7 @@ STDMETHODIMP Utils::IsFile(BSTR filename, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_variant_bool(!PathIsDirectory(filename) && PathFileExists(filename));
+	*out = to_variant_bool(std::filesystem::is_regular_file(std::filesystem::path(filename)));
 	return S_OK;
 }
 
@@ -245,7 +244,7 @@ STDMETHODIMP Utils::IsFolder(BSTR folder, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_variant_bool(PathIsDirectory(folder));
+	*out = to_variant_bool(std::filesystem::is_directory(std::filesystem::path(folder)));
 	return S_OK;
 }
 
