@@ -38,11 +38,11 @@ public:
 		point = this->GetContextMenuPoint(point);
 		CMenu menu;
 		menu.CreatePopupMenu();
-		uAppendMenu(menu, MF_STRING, ID_SELECTALL, "Select all\tCtrl+A");
-		uAppendMenu(menu, MF_STRING, ID_SELECTNONE, "Select none");
-		uAppendMenu(menu, MF_STRING, ID_INVERTSEL, "Invert selection");
+		menu.AppendMenu(MF_STRING, ID_SELECTALL, L"Select all\tCtrl+A");
+		menu.AppendMenu(MF_STRING, ID_SELECTNONE, L"Select none");
+		menu.AppendMenu(MF_STRING, ID_INVERTSEL, L"Invert selection");
 		menu.AppendMenu(MF_SEPARATOR);
-		uAppendMenu(menu, GetSelectedCount() ? MF_STRING : MF_GRAYED, ID_REMOVE, "Remove\tDel");
+		menu.AppendMenu(GetSelectedCount() ? MF_STRING : MF_GRAYED, ID_REMOVE, L"Remove\tDel");
 
 		const int idx = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, m_hWnd, nullptr);
 		switch (idx)

@@ -74,10 +74,9 @@ namespace
 		void OnPresetsBnClicked(UINT, int, CWindow)
 		{
 			CMenu menu = CreatePopupMenu();
-
-			uAppendMenu(menu, MF_STRING, IDR_BRIGHT, "Bright");
-			uAppendMenu(menu, MF_STRING, IDR_DARK, "Dark");
-			uAppendMenu(menu, MF_STRING, IDR_RUBY, "Ruby Blue");
+			menu.AppendMenu(MF_STRING, IDR_BRIGHT, L"Bright");
+			menu.AppendMenu(MF_STRING, IDR_DARK, L"Dark");
+			menu.AppendMenu(MF_STRING, IDR_RUBY, L"Ruby Blue");
 
 			CRect rect;
 			GetDlgItem(IDC_BTN_PRESETS).GetWindowRect(&rect);

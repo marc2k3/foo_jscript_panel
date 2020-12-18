@@ -441,10 +441,10 @@ bool PanelWindow::is_transparent()
 
 void PanelWindow::build_context_menu(HMENU menu, int id_base)
 {
-	uAppendMenu(menu, MF_STRING, id_base + 1, "&Reload");
-	uAppendMenu(menu, MF_SEPARATOR, 0, 0);
-	uAppendMenu(menu, MF_STRING, id_base + 2, "&Properties");
-	uAppendMenu(menu, MF_STRING, id_base + 3, "&Configure...");
+	AppendMenu(menu, MF_STRING, id_base + 1, L"&Reload");
+	AppendMenu(menu, MF_SEPARATOR, 0, 0);
+	AppendMenu(menu, MF_STRING, id_base + 2, L"&Properties");
+	AppendMenu(menu, MF_STRING, id_base + 3, L"&Configure...");
 }
 
 void PanelWindow::create_context()
