@@ -124,7 +124,7 @@ public:
 	{
 		std::scoped_lock lock(mutex);
 		workers.erase(std::this_thread::get_id());
-		if (workers.size() == 0) SetEvent(empty_worker);
+		if (workers.empty()) SetEvent(empty_worker);
 	}
 
 	HANDLE empty_worker;
