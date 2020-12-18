@@ -5,9 +5,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files\Drop">
-      <UniqueIdentifier>{e244f83e-f502-4599-bb57-eab0bd06ac03}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Helpers">
       <UniqueIdentifier>{d04eeaa5-1de1-4f91-81e4-8371e3bc8eb9}</UniqueIdentifier>
     </Filter>
@@ -63,12 +60,6 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Drop\DropSourceImpl.h">
-      <Filter>Header Files\Drop</Filter>
-    </ClInclude>
-    <ClInclude Include="Drop\DropTargetImpl.h">
-      <Filter>Header Files\Drop</Filter>
-    </ClInclude>
     <ClInclude Include="Helpers\AsyncArtTask.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
@@ -121,6 +112,12 @@
       <Filter>Header Files\Panel</Filter>
     </ClInclude>
     <ClInclude Include="Panel\CallbackID.h">
+      <Filter>Header Files\Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel\DropSourceImpl.h">
+      <Filter>Header Files\Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel\DropTargetImpl.h">
       <Filter>Header Files\Panel</Filter>
     </ClInclude>
     <ClInclude Include="Panel\PanelConfig.h">
