@@ -14,7 +14,7 @@ std::string ScriptInfo::expand_import(const std::string& path)
 {
 	for (const auto& [what, with] : m_replacements)
 	{
-		if (path.find(what) == 0)
+		if (path.starts_with(what))
 		{
 			return with + path.substr(what.length());
 		}

@@ -286,8 +286,8 @@ STDMETHODIMP Fb::GetSelectionType(UINT* out)
 	if (!out) return E_POINTER;
 
 	const GUID type = ui_selection_manager_v2::get()->get_selection_type(0);
-	const auto it = FIND_IF(guids::selections, [type](const GUID* g) { return *g == type; });
-	*out = it != guids::selections.end() ? std::distance(guids::selections.begin(), it) : 0;
+	const auto it = std::ranges::find_if(guids::selections, [type](const GUID* g) { return *g == type; });
+	*out = it != guids::selections.end() ? std::ranges::distance(guids::selections.begin(), it) : 0;
 	return S_OK;
 }
 

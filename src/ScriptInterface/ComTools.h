@@ -56,7 +56,7 @@ public:
 		for (size_t i = 0; i < cNames; ++i)
 		{
 			const ULONG hash = LHashValOfName(LANG_NEUTRAL, names[i]);
-			if (g_type_info_cache.m_cache.count(hash))
+			if (g_type_info_cache.m_cache.contains(hash))
 			{
 				dispids[i] = g_type_info_cache.m_cache.at(hash);
 			}

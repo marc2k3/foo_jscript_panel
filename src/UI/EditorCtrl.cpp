@@ -591,7 +591,7 @@ std::string CEditorCtrl::GetCurrentLine()
 
 std::string CEditorCtrl::GetNearestWord(const std::string& wordStart, size_t searchLen, int wordIndex)
 {
-	auto it = FIND_IF(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text) == 0; });
+	auto it = std::ranges::find_if(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text) == 0; });
 	for (; it < apis.end(); ++it)
 	{
 		if (searchLen >= it->text.length() || !Contains(WordCharacters, it->text.at(searchLen)))
@@ -609,7 +609,7 @@ std::string CEditorCtrl::GetNearestWord(const std::string& wordStart, size_t sea
 std::string CEditorCtrl::GetNearestWords(const std::string& wordStart, size_t searchLen)
 {
 	std::string words;
-	auto it = FIND_IF(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text) == 0; });
+	auto it = std::ranges::find_if(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text) == 0; });
 	for (; it < apis.end(); ++it)
 	{
 		if (StringComparePartial(searchLen)(wordStart, it->text) != 0)
@@ -848,7 +848,7 @@ void CEditorCtrl::Init()
 	{
 		if (value.empty()) continue;
 
-		if (styles.count(key))
+		if (styles.contains(key))
 		{
 			EditorStyle style = ParseStyle(value);
 
@@ -935,7 +935,7 @@ void CEditorCtrl::ReadAPIs()
 		apis.emplace_back(item);
 	}
 
-	std::sort(apis.begin(), apis.end(), [](const API& a, const API& b) -> bool
+	std::ranges::sort(apis, [](const API& a, const API& b) -> bool
 		{
 			return _stricmp(a.text.c_str(), b.text.c_str()) < 0;
 		});

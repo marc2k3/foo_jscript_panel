@@ -5,8 +5,8 @@ _COM_SMARTPTR_TYPEDEF(IMultiLanguage2, IID_IMultiLanguage2);
 class FileHelper
 {
 public:
-	FileHelper(const string8& path) : m_path(std::filesystem::u8path(path.get_ptr())) {}
-	FileHelper(const std::string& path) : m_path(std::filesystem::u8path(path)) {}
+	FileHelper(const string8& path) : m_path(to_wide(path)) {}
+	FileHelper(const std::string& path) : m_path(to_wide(path.c_str())) {}
 	FileHelper(const std::wstring& path) : m_path(path) {}
 
 	WStrings list_files(bool recur = false)

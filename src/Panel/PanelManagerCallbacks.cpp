@@ -34,7 +34,7 @@ namespace
 		void on_watched_object_changed(const config_object::ptr& object) override
 		{
 			const GUID g = object->get_guid();
-			const auto it = FIND_IF(watched_objects, [=](const WatchedObject& item) { return g == *item.guid; });
+			const auto it = std::ranges::find_if(watched_objects, [=](const WatchedObject& item) { return g == *item.guid; });
 			if (it != watched_objects.end())
 			{
 				bool b;

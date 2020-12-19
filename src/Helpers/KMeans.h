@@ -130,7 +130,7 @@ public:
 			if (done) break;
 		}
 
-		std::sort(m_clusters.begin(), m_clusters.end(), [](const Cluster& a, const Cluster& b)
+		std::ranges::sort(m_clusters, [](const Cluster& a, const Cluster& b)
 			{
 				return a.get_total_points() > b.get_total_points();
 			});

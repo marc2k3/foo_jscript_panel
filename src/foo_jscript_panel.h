@@ -19,8 +19,6 @@ namespace jsp
 	X->get__ptr(reinterpret_cast<void**>(&Y)); \
 	if (!Y) return E_INVALIDARG;
 
-#define FIND_IF(blah, func) std::find_if(std::begin(blah), std::end(blah), func)
-
 template <typename T>
 static std::vector<T> split_string_t(const T& text, const T& delims)
 {

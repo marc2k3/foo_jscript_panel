@@ -261,7 +261,7 @@ STDMETHODIMP ScriptHost::OnScriptError(IActiveScriptError* err)
 
 	if (SUCCEEDED(err->GetSourcePosition(&ctx, &line, &charpos)))
 	{
-		if (m_context_to_path_map.count(ctx))
+		if (m_context_to_path_map.contains(ctx))
 		{
 			formatter << "File: " << m_context_to_path_map.at(ctx).c_str() << "\n";
 		}
@@ -311,7 +311,7 @@ bool ScriptHost::Ready()
 
 void ScriptHost::InvokeCallback(CallbackID id, VARIANTARG* argv, size_t argc, VARIANT* ret)
 {
-	if (Ready() && m_callback_map.count(id))
+	if (Ready() && m_callback_map.contains(id))
 	{
 		DISPPARAMS param = { argv, nullptr, argc, 0 };
 		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &param, ret, nullptr, nullptr);

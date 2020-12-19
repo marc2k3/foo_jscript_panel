@@ -15,6 +15,7 @@
 #include <mutex>
 #include <numeric>
 #include <queue>
+#include <ranges>
 #include <set>
 #include <thread>
 #include <vector>

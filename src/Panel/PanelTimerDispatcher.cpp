@@ -114,7 +114,7 @@ size_t PanelTimerDispatcher::create_timer(CWindow hwnd, size_t delay, bool is_re
 	std::scoped_lock lock(m_timer_mutex);
 
 	size_t id = m_cur_timer_id++;
-	while (m_task_map.count(id) && m_timer_map.count(id))
+	while (m_task_map.contains(id) && m_timer_map.contains(id))
 	{
 		id = m_cur_timer_id++;
 	}
@@ -151,7 +151,7 @@ void PanelTimerDispatcher::create_thread()
 
 void PanelTimerDispatcher::invoke_message(size_t timer_id)
 {
-	if (m_task_map.count(timer_id))
+	if (m_task_map.contains(timer_id))
 	{
 		m_task_map.at(timer_id)->invoke();
 	}
@@ -162,13 +162,13 @@ void PanelTimerDispatcher::kill_timer(size_t timer_id)
 	{
 		std::scoped_lock lock(m_timer_mutex);
 
-		if (m_timer_map.count(timer_id))
+		if (m_timer_map.contains(timer_id))
 		{
 			m_timer_map.at(timer_id)->stop();
 		}
 	}
 
-	if (m_task_map.count(timer_id))
+	if (m_task_map.contains(timer_id))
 	{
 		m_task_map.at(timer_id)->release();
 	}

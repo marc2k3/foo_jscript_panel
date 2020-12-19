@@ -72,7 +72,7 @@ void Config::merge_data(const SimpleMap& data)
 {
 	for (auto& [key, value] : m_data)
 	{
-		if (data.count(key))
+		if (data.contains(key))
 		{
 			value = data.at(key);
 		}

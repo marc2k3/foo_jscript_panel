@@ -113,7 +113,7 @@ STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* out)
 	for (size_t i = 0; i < colours_length; ++i)
 	{
 		ColourValues values;
-		std::transform(shifts.begin(), shifts.end(), values.begin(), [colour = colours[i]](const auto& shift)
+		std::ranges::transform(shifts, values.begin(), [colour = colours[i]](const auto& shift)
 			{
 				uint8_t value = (colour >> shift) & UINT8_MAX;
 				return static_cast<double>(value > 251 ? UINT8_MAX : (value + 4) & 0xf8);
@@ -124,9 +124,8 @@ STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* out)
 
 	bitmap->UnlockBits(&bmpdata);
 
-	size_t id = 0;
 	KPoints points;
-	for (const auto& [values, count] : colour_counters)
+	for (size_t id = 0; const auto& [values, count] : colour_counters)
 	{
 		points.emplace_back(KPoint(id++, values, count));
 	}

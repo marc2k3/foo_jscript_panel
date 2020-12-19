@@ -21,9 +21,9 @@ namespace CustomSort
 
 	static Order custom_sort(Items& items, int direction = 1)
 	{
-		Order order;
-		std::sort(items.begin(), items.end(), direction > 0 ? custom_sort_compare<1> : custom_sort_compare<-1>);
-		std::transform(items.begin(), items.end(), std::back_inserter(order), [](const Item& item) { return item.index; });
+		Order order(items.size());
+		std::ranges::sort(items, direction > 0 ? custom_sort_compare<1> : custom_sort_compare<-1>);
+		std::ranges::transform(items, order.begin(), [](const Item& item) { return item.index; });
 		return order;
 	}
 

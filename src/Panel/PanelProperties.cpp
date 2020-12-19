@@ -3,7 +3,7 @@
 
 bool PanelProperties::get_property(const char* key, VARIANT& out)
 {
-	if (m_data.count(key))
+	if (m_data.contains(key))
 	{
 		return SUCCEEDED(VariantCopy(&out, &m_data.at(key)));
 	}
