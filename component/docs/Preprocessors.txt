@@ -1,0 +1,39 @@
+DESCRIPTION
+All preprocessors are started with "==PREPROCESSOR==" and ended with "==/PREPROCESSOR==":
+
+// ==PREPROCESSOR==
+// ...
+// ==/PREPROCESSOR==
+
+And be aware that all preprocessors (directives) are case sensitive.
+
+DIRECTIVES
+Directives should be started with "@", and placed into a single comment.
+
+// @directive "value-here"
+
+IMPORT
+@import "path"
+Load external script from "path". These files should be UTF8 only. You can place
+%fb2k_component_path% and %fb2k_profile_path% in to "path", they
+will be expanded while parsing.
+
+Support for %fb2k_path% was removed in v2.4.1.
+
+NAME
+@name "name"
+
+VERSION
+@version "version"
+
+AUTHOR
+@author "author"
+
+Example:
+// ==PREPROCESSOR==
+// @name "my sooper dooper script"
+// @author "marc"
+// @version "0.1"
+// @import "%fb2k_component_path%docs\Flags.txt"
+// @import "%fb2k_component_path%docs\Helpers.txt"
+// ==/PREPROCESSOR==

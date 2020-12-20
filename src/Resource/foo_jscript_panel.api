@@ -1,0 +1,436 @@
+console.log(message)
+
+fb.AlwaysOnTop
+fb.ComponentPath
+fb.CursorFollowPlayback
+fb.FoobarPath
+fb.IsPaused
+fb.IsPlaying
+fb.PlaybackFollowCursor
+fb.PlaybackLength
+fb.PlaybackTime
+fb.ProfilePath
+fb.ReplaygainMode
+fb.StopAfterCurrent
+fb.Volume
+
+fb.AcquireUiSelectionHolder()
+fb.AddDirectory()
+fb.AddFiles()
+fb.CheckClipboardContents()
+fb.ClearPlaylist()
+fb.CopyHandleListToClipboard()
+fb.CreateContextMenuManager()
+fb.CreateHandleList([handle])
+fb.CreateMainMenuManager()
+fb.CreateProfiler([name])
+fb.DoDragDrop(handle_list, effect)
+fb.Exit()
+fb.GetClipboardContents()
+fb.GetDSPPresets()
+fb.GetFocusItem()
+fb.GetLibraryItems()
+fb.GetNowPlaying()
+fb.GetOutputDevices()
+fb.GetQueryItems(handle_list, query)
+fb.GetSelection()
+fb.GetSelections([flags])
+fb.GetSelectionType()
+fb.IsLibraryEnabled()
+fb.IsMetadbInMediaLibrary(handle)
+fb.LoadPlaylist()
+fb.Next()
+fb.Pause()
+fb.Play()
+fb.PlayOrPause()
+fb.Prev()
+fb.Random()
+fb.RunContextCommand(command)
+fb.RunContextCommandWithMetadb(command, handle_or_handles)
+fb.RunMainMenuCommand(command)
+fb.SavePlaylist()
+fb.SetDSPPreset(idx)
+fb.SetOutputDevice(output, device)
+fb.ShowConsole()
+fb.ShowLibrarySearchUI(query)
+fb.ShowPopupMessage(msg[, title])
+fb.ShowPreferences()
+fb.Stop()
+fb.TitleFormat(pattern)
+fb.VolumeDown()
+fb.VolumeMute()
+fb.VolumeUp()
+
+gdi.CreateImage(w, h)
+gdi.Font(font_name, font_size_px[, font_style])
+gdi.Image(path)
+gdi.LoadImageAsync(window_id, path)
+
+plman.ActivePlaylist
+plman.PlaybackOrder
+plman.PlayingPlaylist
+plman.PlaylistCount
+plman.RecyclerCount
+
+plman.AddItemToPlaybackQueue(handle)
+plman.AddLocations(playlistIndex, paths[, select])
+plman.AddPlaylistItemToPlaybackQueue(playlistIndex, playlistItemIndex)
+plman.ClearPlaylist(playlistIndex)
+plman.ClearPlaylistSelection(playlistIndex)
+plman.CreateAutoPlaylist(idx, name, query[, sort, flags])
+plman.CreatePlaylist(playlistIndex, name)
+plman.DuplicatePlaylist(from, name)
+plman.EnsurePlaylistItemVisible(playlistIndex, playlistItemIndex)
+plman.ExecutePlaylistDefaultAction(playlistIndex, playlistItemIndex)
+plman.FindOrCreatePlaylist(name, unlocked)
+plman.FindPlaybackQueueItemIndex(handle, playlistIndex, playlistItemIndex)
+plman.FindPlaylist(name)
+plman.FlushPlaybackQueue()
+plman.GetPlaybackQueueContents()
+plman.GetPlaybackQueueHandles()
+plman.GetPlayingItemLocation()
+plman.GetPlaylistFocusItemIndex(playlistIndex)
+plman.GetPlaylistItems(playlistIndex)
+plman.GetPlaylistLockFilterMask(playlistIndex)
+plman.GetPlaylistName(playlistIndex)
+plman.GetPlaylistSelectedItems(playlistIndex)
+plman.GetRecyclerItems(idx)
+plman.GetRecyclerName(idx)
+plman.InsertPlaylistItems(playlistIndex, base, handle_list[, select])
+plman.InsertPlaylistItemsFilter(playlistIndex, base, handle_list[, select])
+plman.IsAutoPlaylist(playlistIndex)
+plman.IsPlaylistItemSelected(playlistIndex, playlistItemIndex)
+plman.IsPlaylistLocked(playlistIndex)
+plman.MovePlaylist(from, to)
+plman.MovePlaylistSelection(playlistIndex, delta)
+plman.PlaylistItemCount(playlistIndex)
+plman.RecyclerPurge(affectedItems)
+plman.RecyclerRestore(idx)
+plman.RemoveItemFromPlaybackQueue(index)
+plman.RemoveItemsFromPlaybackQueue(affectedItems)
+plman.RemovePlaylist(playlistIndex)
+plman.RemovePlaylists(playlistIndexes)
+plman.RemovePlaylistSelection(playlistIndex[, crop])
+plman.RemovePlaylistSwitch(playlistIndex)
+plman.RenamePlaylist(playlistIndex, name)
+plman.SetActivePlaylistContext()
+plman.SetPlaylistFocusItem(playlistIndex, playlistItemIndex)
+plman.SetPlaylistFocusItemByHandle(playlistIndex, itemHandle)
+plman.SetPlaylistSelection(playlistIndex, affectedItems, state)
+plman.SetPlaylistSelectionSingle(playlistIndex, playlistItemIndex, state)
+plman.ShowAutoPlaylistUI(playlistIndex)
+plman.SortByFormat(playlistIndex, pattern[, selOnly])
+plman.SortByFormatV2(playlistIndex, pattern[, direction])
+plman.SortPlaylistsByName([direction])
+plman.UndoBackup(playlistIndex)
+
+utils.Version
+
+utils.Chardet(filename)
+utils.CheckComponent(name)
+utils.CheckFont(name)
+utils.ColourPicker(window_id, default_colour)
+utils.DateStringToTimestamp(str)
+utils.FormatDuration(seconds)
+utils.FormatFileSize(bytes)
+utils.GetAlbumArtAsync(window_id, handle[, art_id, need_stub, only_embed, no_load])
+utils.GetAlbumArtEmbedded(rawpath[, art_id])
+utils.GetAlbumArtV2(handle[, art_id, need_stub])
+utils.GetFileSize(filename)
+utils.GetSysColour(index)
+utils.GetSystemMetrics(index)
+utils.Glob(pattern[, exc_mask, inc_mask])
+utils.InputBox(window_id, prompt, caption[, defaultval, error_on_cancel])
+utils.IsFile(filename)
+utils.IsFolder(folder)
+utils.IsKeyPressed(vkey)
+utils.ListFiles(folder[, recursive])
+utils.ListFolders(folder[, recursive])
+utils.MapString(text, lcid, flags)
+utils.PathWildcardMatch(pattern, str)
+utils.ReadINI(filename, section, key[, defaultval])
+utils.ReadTextFile(filename[, codepage])
+utils.ReadUTF8(filename)
+utils.ReplaceIllegalChars(str[, modern])
+utils.TimestampToDateString(ts)
+utils.WriteINI(filename, section, key, val)
+utils.WriteTextFile(filename, content)
+
+window.Height
+window.ID
+window.InstanceType
+window.IsTransparent
+window.IsVisible
+window.MaxHeight
+window.MaxWidth
+window.MinHeight
+window.MinWidth
+window.Name
+window.Width
+
+window.ClearInterval(timerID)
+window.ClearTimeout(timerID)
+window.CreatePopupMenu()
+window.CreateThemeManager(classlist)
+window.CreateTooltip([font_name, font_size_px, font_style])
+window.GetColourCUI(type)
+window.GetColourDUI(type)
+window.GetFontCUI(type)
+window.GetFontDUI(type)
+window.GetProperty(name[, defaultval])
+window.NotifyOthers(name, info)
+window.Reload([clear_properties])
+window.Repaint()
+window.RepaintRect(x, y, w, h)
+window.SetCursor(id)
+window.SetInterval(func, delay)
+window.SetProperty(name, val)
+window.SetTimeout(func, delay)
+window.SetTooltipFont(font_name, font_size_px[, font_style])
+window.ShowConfigure()
+window.ShowProperties()
+
+gr.CalcTextHeight(str, IGdiFont)
+gr.CalcTextWidth(str, IGdiFont)
+gr.DrawEllipse(x, y, w, h, line_width, colour)
+gr.DrawImage(IGdiBitmap, dstX, dstY, dstW, dstH, srcX, srcY, srcW, srcH[, angle, alpha])
+gr.DrawLine(x1, y1, x2, y2, line_width, colour)
+gr.DrawPolygon(colour, line_width, points)
+gr.DrawRect(x, y, w, h, line_width, colour)
+gr.DrawRoundRect(x, y, w, h, arc_width, arc_height, line_width, colour)
+gr.DrawString(str, IGdiFont, colour, x, y, w, h[, flags])
+gr.EstimateLineWrap(str, IGdiFont, max_width)
+gr.FillEllipse(x, y, w, h, colour)
+gr.FillGradRect(x, y, w, h, angle, colour1, colour2[, focus])
+gr.FillPolygon(colour, fillmode, points)
+gr.FillRoundRect(x, y, w, h, arc_width, arc_height, colour)
+gr.FillSolidRect(x, y, w, h, colour)
+gr.GdiAlphaBlend(IGdiRawBitmap, dstX, dstY, dstW, dstH, srcX, srcY, srcW, srcH[, alpha])
+gr.GdiDrawBitmap(IGdiRawBitmap, dstX, dstY, dstW, dstH, srcX, srcY, srcW, srcH)
+gr.GdiDrawText(str, IGdiFont, colour, x, y, w, h[, format])
+gr.MeasureString(str, IGdiFont, x, y, w, h[, flags])
+gr.SetInterpolationMode(mode)
+gr.SetSmoothingMode(mode)
+gr.SetTextRenderingHint(mode)
+
+on_always_on_top_changed(state)
+on_char(code)
+on_colours_changed()
+on_cursor_follow_playback_changed(state)
+on_drag_drop(action, x, y, mask)
+on_drag_enter(action, x, y, mask)
+on_drag_leave()
+on_drag_over(action, x, y, mask)
+on_dsp_preset_changed()
+on_focus(is_focused)
+on_font_changed()
+on_get_album_art_done(handle, art_id, image, image_path)
+on_item_focus_change(playlistIndex, from, to)
+on_item_played(handle)
+on_key_down(vkey)
+on_key_up(vkey)
+on_library_items_added(handle_list)
+on_library_items_changed(handle_list)
+on_library_items_removed(handle_list)
+on_load_image_done(cookie, image, image_path)
+on_main_menu(index)
+on_metadb_changed(handle_list)
+on_mouse_lbtn_dblclk(x, y, mask)
+on_mouse_lbtn_down(x, y, mask)
+on_mouse_lbtn_up(x, y, mask)
+on_mouse_leave()
+on_mouse_mbtn_dblclk(x, y, mask)
+on_mouse_mbtn_down(x, y, mask)
+on_mouse_mbtn_up(x, y, mask)
+on_mouse_move(x, y, mask)
+on_mouse_rbtn_dblclk(x, y, mask)
+on_mouse_rbtn_down(x, y, mask)
+on_mouse_rbtn_up(x, y, mask)
+on_mouse_wheel(step)
+on_mouse_wheel_h(step)
+on_notify_data(name, info)
+on_output_device_changed()
+on_paint(gr)
+on_playback_dynamic_info()
+on_playback_dynamic_info_track()
+on_playback_edited(handle)
+on_playback_follow_cursor_changed(state)
+on_playback_new_track(handle)
+on_playback_order_changed(new_order_index)
+on_playback_pause(state)
+on_playback_queue_changed(origin)
+on_playback_seek(time)
+on_playback_starting(cmd, is_paused)
+on_playback_stop(reason)
+on_playback_time(time)
+on_playlist_item_ensure_visible(playlistIndex, playlistItemIndex)
+on_playlist_items_added(playlistIndex)
+on_playlist_items_removed(playlistIndex, new_count)
+on_playlist_items_reordered(playlistIndex)
+on_playlist_items_selection_change()
+on_playlist_stop_after_current_changed(state)
+on_playlist_switch()
+on_playlists_changed()
+on_replaygain_mode_changed(new_mode)
+on_script_unload()
+on_selection_changed()
+on_size()
+on_volume_change(val)
+
+Object()
+Object(mixed value) value: The initial value of the Boolean object.
+Object.toSource() Returns an object literal representing the specified object; you can use this value to create a new object.
+Object.toString() Returns a string representing the specified object.
+Object.valueOf() Returns the primitive value of the specified object.
+Object.prototype
+
+Array()
+Array(arrayLength)
+Array(element0, element1, ..., elementN)
+Array.prototype
+Array.index
+Array.input
+Array.length
+Array.pop() Removes the last element from an array and returns that element.
+Array.push(element1, ..., elementN) Adds one or more elements to the end of an array and returns the new length of the array.
+Array.shift() Removes the first element from an array and returns that element.
+Array.reverse() Reverses the order of the elements of an array -- the first becomes the last, and the last becomes the first.
+Array.sort(compareFunction) Sorts the elements of an array.
+Array.splice(index, howMany, [element1][, ..., elementN]) Adds and/or removes elements from an array.
+Array.unshift(element1, ..., elementN) Adds one or more elements to the front of an array and returns the new length of the array.
+Array.concat(value1, value2, ..., valueN) Returns a new array comprised of this array joined with other array(s) and/or value(s).
+Array.join(separator) Joins all elements of an array into a string.
+Array.splice(begin[,end]) Extracts a section of an array and returns a new array.
+Array.prototype
+
+Boolean(mixed value) value: The initial value of the Boolean object.
+Boolean.prototype
+
+Date()
+Date(milliseconds)
+Date(dateString)
+Date(yr_num, mo_num, day_num[, hr_num, min_num, sec_num, ms_num])
+Date.prototype
+Date.now() Returns the numeric value corresponding to the current time.
+Date.parse(dateString) Parses a string representation of a date, and returns the number of milliseconds since January 1, 1970, 00:00:00, local time.
+Date.getDate() Returns the day of the month for the specified date according to local time.
+Date.getDay() Returns the day of the week for the specified date according to local time.
+Date.getFullYear() Returns the year of the specified date according to local time.
+Date.getHours() Returns the hour in the specified date according to local time.
+Date.getMilliseconds() Returns the milliseconds in the specified date according to local time.
+Date.getMinutes() Returns the minutes in the specified date according to local time.
+Date.getMonth() Returns the month in the specified date according to local time.
+Date.getSeconds() Returns the seconds in the specified date according to local time.
+Date.getTime() Returns the numeric value corresponding to the time for the specified date according to universal time.
+Date.getTimezoneOffset() Returns the time-zone offset in minutes for the current locale.
+Date.getUTCDate() Returns the day (date) of the month in the specified date according to universal time.
+Date.getUTCDay() Returns the day of the week in the specified date according to universal time.
+Date.getUTCFullYear() Returns the year in the specified date according to universal time.
+Date.getUTCHours() Returns the hours in the specified date according to universal time.
+Date.getUTCMilliseconds() Returns the milliseconds in the specified date according to universal time.
+Date.getUTCMinutes() Returns the minutes in the specified date according to universal time.
+Date.getUTCMonth() Returns the month in the specified date according to universal time.
+Date.getUTCSeconds() Returns the seconds in the specified date according to universal time.
+Date.getYear() Deprecated. Returns the year in the specified date according to local time. Use getFullYear instead.
+Date.setDate(dayValue) Sets the day of the month for a specified date according to local time.
+Date.setFullYear(yearValue[, monthValue[, dayValue]]) Sets the full year for a specified date according to local time.
+Date.setHours(hoursValue[, minutesValue[, secondsValue[, msValue]]]) Sets the hours for a specified date according to local time.
+Date.setMilliseconds(millisecondsValue) Sets the milliseconds for a specified date according to local time.
+Date.setMinutes(minutesValue[, secondsValue[, msValue]]) Sets the minutes for a specified date according to local time.
+Date.setMonth(monthValue[, dayValue]) Sets the month for a specified date according to local time.
+Date.setSeconds(secondsValue[, msValue]) Sets the seconds for a specified date according to local time.
+Date.setTime(timeValue) Sets the value of the Date object according to local time.
+Date.setUTCDate(dayValue) Sets the day of the month for a specified date according to universal time.
+Date.setUTCFullYear(yearValue[, monthValue[, dayValue]]) Sets the full year for a specified date according to universal time.
+Date.setUTCHours(hoursValue[, minutesValue[, secondsValue[, msValue]]]) Sets the hour for a specified date according to universal time.
+Date.setUTCMilliseconds(millisecondsValue) Sets the milliseconds for a specified date according to universal time.
+Date.setUTCMinutes(minutesValue[, secondsValue[, msValue]]) Sets the minutes for a specified date according to universal time.
+Date.setUTCMonth(monthValue[, dayValue]) Sets the month for a specified date according to universal time.
+Date.setUTCSeconds(secondsValue[, msValue]) Sets the seconds for a specified date according to universal time.
+Date.setYear(yearValue) Deprecated. Sets the year for a specified date according to local time. Use setFullYear instead.
+Date.toGMTString() Deprecated. Converts a date to a string, using the Internet GMT conventions. Use toUTCString instead.
+Date.toLocaleString() Converts a date to a string, using the current locale's conventions. Overrides the Object.toLocaleString method.
+Date.toLocaleDateString() Returns the "date" portion of the Date as a string, using the current locale's conventions.
+Date.toLocaleTimeString() Returns the "time" portion of the Date as a string, using the current locale's conventions.
+Date.toString() Returns a string representing the specified Date object. Overrides the Object.toString method.
+Date.toUTCString() Converts a date to a string, using the universal time convention.
+Date.valueOf() Returns the primitive value of a Date object. Overrides the Object.valueOf method.
+Date.prototype
+
+Error
+Error(message)
+
+function()
+Function()
+Function([arg1[, arg2[, ... argN]],] functionBody)
+Function.toSource() Returns an object literal representing the specified Function object; you can use this value to create a new object. Overrides the Object.toSource method.
+Function.toString() Returns a string representing the specified Function object. Overrides the Object.toString method.
+Function.valueOf() Returns the primitive value of a Function object. Overrides the Object.valueOf method.
+Function.apply(thisArg[, argArray]) Allows you to apply a method of another object in the context of a different object (the calling object).
+Function.call(thisArg[, arg1[, arg2[, ...]]]) Allows you to call (execute) a method of another object in the context of a different object (the calling object).
+Function.prototype
+
+Math
+Math.prototype
+Math.E
+Math.LN2
+Math.LN10
+Math.LOG2E
+Math.LOG10E
+Math.PI
+Math.SQRT1_2
+Math.SQRT2
+Math.abs(x) Returns the absolute value of a number.
+Math.acos(x) Returns the arccosine (in radians) of a number.
+Math.asin(x) Returns the arcsine (in radians) of a number.
+Math.atan(x) Returns the arctangent (in radians) of a number.
+Math.atan2(x, y) Returns the arctangent of the quotient of its arguments.
+Math.ceil(x) Returns the smallest integer greater than or equal to a number.
+Math.cos(x) Returns the cosine of a number.
+Math.exp(x) Returns Enumber, where number is the argument, and E is Euler's constant, the base of the natural logarithms.
+Math.floor(x) Returns the largest integer less than or equal to a number.
+Math.log(x) Returns the natural logarithm (base E) of a number.
+Math.max([value1[,value2[, ...]]]) Returns the largest of zero or more numbers.
+Math.min([value1[,value2[, ...]]]) Returns the smallest of zero or more numbers.
+Math.pow(base,exponent) Returns base to the exponent power, that is, base exponent.
+Math.random() Returns a pseudo-random number between 0 and 1.
+Math.round(x) Returns the value of a number rounded to the nearest integer.
+Math.sin(x) Returns the sine of a number.
+Math.sqrt(x) Returns the square root of a number.
+Math.tan(x) Returns the tangent of a number.
+
+Number
+Number(value)
+Number.MAX_VALUE
+Number.MIN_VALUE
+Number.NEGATIVE_INFINITY
+Number.POSITIVE_INFINITY
+Number.prototype
+Number.NaN
+
+RegExp
+RegExp("pattern"[, "flags"])
+RegExp.prototype
+RegExp.exec(str) Executes a search for a match in a specified string. Returns a result array, or null.
+RegExp.test(str) Executes the search for a match between a regular expression and a specified string. Returns true or false.
+RegExp.toString() Returns a string representing the specified object.
+
+String
+String(string) Creates a new String Object
+String.charAt(index) Returns the character at the specified index.
+String.charCodeAt(index) Returns a number indicating the Unicode value of the character at the given index.
+String.concat(string2, string3[, ..., stringN]) Combines the text of two strings and returns a new string.
+String.fromCharCode() Converts Unicode values to characters.
+String.indexOf(searchValue[, fromIndex]) Returns the index within the calling String object of the first occurrence of the specified value, or -1 if not found.
+String.lastIndexOf(searchValue[, fromIndex]) Returns the index within the calling String object of the last occurrence of the specified value, or -1 if not found.
+String.match(regexp) Used to match a regular expression against a string.
+String.replace(regexp/substr, newSubStr/function[, flags]) Used to find a match between a regular expression and a string, and to replace the matched substring with a new substring.
+String.search(regexp) Executes the search for a match between a regular expression and a specified string.
+String.slice(beginslice[, endSlice]) Extracts a section of a string and returns a new string.
+String.split([separator[, limit]]) Splits a String object into an array of strings by separating the string into substrings.
+String.substr(start[, length]) Returns the characters in a string beginning at the specified location through the specified number of characters.
+String.substring(indexA [,indexB]) Returns the characters in a string between two indexes into the string.
+String.toLowerCase() Returns the calling string value converted to lowercase.
+String.toString() Returns a string representing the specified object. Overrides the Object.toString method.
+String.toUpperCase() Returns the calling string value converted to uppercase.
+String.valueOf() Returns the primitive value of the specified object. Overrides the Object.valueOf method.

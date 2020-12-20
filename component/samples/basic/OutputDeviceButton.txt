@@ -1,0 +1,36 @@
+// ==PREPROCESSOR==
+// @name "OutputDeviceButton"
+// @author "marc2003"
+// @import "%fb2k_component_path%docs\Flags.txt"
+// @import "%fb2k_component_path%docs\Helpers.txt"
+// ==/PREPROCESSOR==
+
+var img = gdi.Image(fb.ComponentPath + 'samples\\basic\\images\\cog.png');
+
+function on_paint(gr) {
+	gr.DrawImage(img, 0, 0, img.Width, img.Height, 0, 0, img.Width, img.Height);
+}
+
+function on_mouse_lbtn_up(x, y) {
+	if (x > 0 && x < img.Width && y > 0 && y < img.Height) {
+		menu(x, y);
+	}
+}
+
+function menu(x, y) {
+	var menu = window.CreatePopupMenu();
+	var str = fb.GetOutputDevices();
+	var arr = JSON.parse(str);
+	var active = -1;
+	for (var i = 0; i < arr.length; i++) {
+		menu.AppendMenuItem(MF_STRING, i + 1, arr[i].name);
+		if (arr[i].active) active = i;
+	}
+
+	if (active > -1) menu.CheckMenuRadioItem(1, arr.length + 1, active + 1);
+
+	var idx = menu.TrackPopupMenu(x, y);
+	menu.Dispose();
+
+	if (idx > 0) fb.RunMainMenuCommand("Playback/Device/" + arr[idx - 1].name);
+}

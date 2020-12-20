@@ -1,0 +1,290 @@
+// Used with GdiDrawText()
+// https://docs.microsoft.com/en-gb/windows/win32/api/winuser/nf-winuser-drawtext
+var DT_TOP = 0x00000000;
+var DT_LEFT = 0x00000000;
+var DT_CENTER = 0x00000001;
+var DT_RIGHT = 0x00000002;
+var DT_VCENTER = 0x00000004;
+var DT_BOTTOM = 0x00000008;
+var DT_WORDBREAK = 0x00000010;
+var DT_SINGLELINE = 0x00000020;
+var DT_EXPANDTABS = 0x00000040;
+var DT_TABSTOP = 0x00000080;
+var DT_NOCLIP = 0x00000100;
+var DT_EXTERNALLEADING = 0x00000200;
+var DT_CALCRECT = 0x00000400;
+var DT_NOPREFIX = 0x00000800; // NOTE: Please use this flag, or a '&' character will become an underline '_'
+var DT_INTERNAL = 0x00001000;
+var DT_EDITCONTROL = 0x00002000;
+var DT_PATH_ELLIPSIS = 0x00004000;
+var DT_END_ELLIPSIS = 0x00008000;
+// var DT_MODIFYSTRING = 0x00010000; // do not use
+var DT_RTLREADING = 0x00020000;
+var DT_WORD_ELLIPSIS = 0x00040000;
+var DT_NOFULLWIDTHCHARBREAK = 0x00080000;
+var DT_HIDEPREFIX = 0x00100000;
+var DT_PREFIXONLY = 0x00200000;
+
+// Used with AppendMenuItem()
+// https://docs.microsoft.com/en-gb/windows/win32/api/winuser/nf-winuser-appendmenua
+var MF_SEPARATOR = 0x00000800;
+var MF_ENABLED = 0x00000000;
+var MF_GRAYED = 0x00000001;
+var MF_DISABLED = 0x00000002;
+var MF_UNCHECKED = 0x00000000;
+var MF_CHECKED = 0x00000008;
+var MF_STRING = 0x00000000;
+// var MF_BITMAP = 0x00000004; // do not use
+// var MF_OWNERDRAW = 0x00000100; // do not use
+// var MF_POPUP = 0x00000010; // do not use
+var MF_MENUBARBREAK = 0x00000020;
+var MF_MENUBREAK = 0x00000040;
+
+// Used with TrackPopupMenu()
+// https://docs.microsoft.com/en-gb/windows/win32/api/winuser/nf-winuser-trackpopupmenu
+var TPM_LEFTALIGN = 0x0000;
+var TPM_CENTERALIGN = 0x0004;
+var TPM_RIGHTALIGN = 0x0008;
+var TPM_TOPALIGN = 0x0000;
+var TPM_VCENTERALIGN = 0x0010;
+var TPM_BOTTOMALIGN = 0x0020;
+var TPM_HORIZONTAL = 0x0000; /* Horz alignment matters more */
+var TPM_VERTICAL = 0x0040; /* Vert alignment matters more */
+// Animations
+var TPM_HORPOSANIMATION = 0x0400;
+var TPM_HORNEGANIMATION = 0x0800;
+var TPM_VERPOSANIMATION = 0x1000;
+var TPM_VERNEGANIMATION = 0x2000;
+var TPM_NOANIMATION = 0x4000;
+
+// Mask for mouse callbacks
+var MK_LBUTTON = 0x0001;
+var MK_RBUTTON = 0x0002;
+var MK_SHIFT = 0x0004; // The SHIFT key is down.
+var MK_CONTROL = 0x0008; // The CTRL key is down.
+var MK_MBUTTON = 0x0010;
+var MK_XBUTTON1 = 0x0020;
+var MK_XBUTTON2 = 0x0040;
+
+// Used with window.SetCursor()
+var IDC_ARROW = 32512;
+var IDC_IBEAM = 32513;
+var IDC_WAIT = 32514;
+var IDC_CROSS = 32515;
+var IDC_UPARROW = 32516;
+var IDC_SIZE = 32640;
+var IDC_ICON = 32641;
+var IDC_SIZENWSE = 32642;
+var IDC_SIZENESW = 32643;
+var IDC_SIZEWE = 32644;
+var IDC_SIZENS = 32645;
+var IDC_SIZEALL = 32646;
+var IDC_NO = 32648;
+var IDC_APPSTARTING = 32650;
+var IDC_HAND = 32649;
+var IDC_HELP = 32651;
+
+// Used with utils.Glob()
+// For more information, see: http://msdn.microsoft.com/en-us/library/ee332330%28VS.85%29.aspx
+var FILE_ATTRIBUTE_READONLY            = 0x00000001;
+var FILE_ATTRIBUTE_HIDDEN              = 0x00000002;
+var FILE_ATTRIBUTE_SYSTEM              = 0x00000004;
+var FILE_ATTRIBUTE_DIRECTORY           = 0x00000010;
+var FILE_ATTRIBUTE_ARCHIVE             = 0x00000020;
+// var FILE_ATTRIBUTE_DEVICE            = 0x00000040; // do not use
+var FILE_ATTRIBUTE_NORMAL              = 0x00000080;
+var FILE_ATTRIBUTE_TEMPORARY           = 0x00000100;
+var FILE_ATTRIBUTE_SPARSE_FILE         = 0x00000200;
+var FILE_ATTRIBUTE_REPARSE_POINT       = 0x00000400;
+var FILE_ATTRIBUTE_COMPRESSED          = 0x00000800;
+var FILE_ATTRIBUTE_OFFLINE             = 0x00001000;
+var FILE_ATTRIBUTE_NOT_CONTENT_INDEXED = 0x00002000;
+var FILE_ATTRIBUTE_ENCRYPTED           = 0x00004000;
+// var FILE_ATTRIBUTE_VIRTUAL           = 0x00010000; // do not use
+
+// Used with utils.IsKeyPressed()
+var VK_BACK = 0x08;
+var VK_TAB = 0x09;
+var VK_RETURN = 0x0D;
+var VK_SHIFT = 0x10;
+var VK_CONTROL = 0x11;
+var VK_ALT = 0x12;
+var VK_ESCAPE = 0x1B;
+var VK_PGUP = 0x21;
+var VK_PGDN = 0x22;
+var VK_END = 0x23;
+var VK_HOME = 0x24;
+var VK_LEFT = 0x25;
+var VK_UP = 0x26;
+var VK_RIGHT = 0x27;
+var VK_DOWN = 0x28;
+var VK_INSERT = 0x2D;
+var VK_DELETE = 0x2E;
+var VK_SPACEBAR = 0x20;
+
+// Used with ITooltip.GetDelayTime() and ITooltip.SetDelayTime()
+// https://docs.microsoft.com/en-gb/windows/win32/controls/ttm-getdelaytime
+// https://docs.microsoft.com/en-gb/windows/win32/controls/ttm-setdelaytime
+var TTDT_AUTOMATIC = 0;
+var TTDT_RESHOW = 1;
+var TTDT_AUTOPOP = 2;
+var TTDT_INITIAL =3;
+
+// Used with gdi.Font(), can be combined.
+// https://docs.microsoft.com/en-gb/windows/win32/api/gdiplusenums/ne-gdiplusenums-fontstyle
+var FontStyle = {
+	Regular: 0,
+	Bold: 1,
+	Italic: 2,
+	BoldItalic: 3,
+	Underline: 4,
+	Strikeout: 8
+};
+
+// Used with SetTextRenderingHint()
+// https://docs.microsoft.com/en-gb/windows/win32/api/gdiplusenums/ne-gdiplusenums-textrenderinghint
+var TextRenderingHint = {
+	SystemDefault: 0,
+	SingleBitPerPixelGridFit: 1,
+	SingleBitPerPixel: 2,
+	AntiAliasGridFit: 3,
+	AntiAlias: 4,
+	ClearTypeGridFit: 5
+};
+
+// Used with SetSmoothingMode()
+// https://docs.microsoft.com/en-gb/windows/win32/api/gdiplusenums/ne-gdiplusenums-smoothingmode
+var SmoothingMode = {
+	Invalid: -1,
+	Default: 0,
+	HighSpeed: 1,
+	HighQuality: 2,
+	None: 3,
+	AntiAlias: 4
+};
+
+// Used with SetInterpolationMode()
+// https://docs.microsoft.com/en-gb/windows/win32/api/gdiplusenums/ne-gdiplusenums-interpolationmode
+var InterpolationMode = {
+	Invalid: -1,
+	Default: 0,
+	LowQuality: 1,
+	HighQuality: 2,
+	Bilinear: 3,
+	Bicubic: 4,
+	NearestNeighbor: 5,
+	HighQualityBilinear: 6,
+	HighQualityBicubic: 7
+};
+
+// Used with RotateFlip()
+// https://docs.microsoft.com/en-gb/windows/win32/api/gdiplusimaging/ne-gdiplusimaging-rotatefliptype
+var RotateFlipType = {
+	RotateNoneFlipNone: 0,
+	Rotate90FlipNone: 1,
+	Rotate180FlipNone: 2,
+	Rotate270FlipNone: 3,
+
+	RotateNoneFlipX: 4,
+	Rotate90FlipX: 5,
+	Rotate180FlipX: 6,
+	Rotate270FlipX: 7,
+
+	RotateNoneFlipY: 6,
+	Rotate90FlipY: 7,
+	Rotate180FlipY: 4,
+	Rotate270FlipY: 5,
+
+	RotateNoneFlipXY: 2,
+	Rotate90FlipXY: 3,
+	Rotate180FlipXY: 0,
+	Rotate270FlipXY: 1
+};
+
+// Horizontal / vertical align.
+// https://docs.microsoft.com/en-gb/windows/win32/api/gdiplusenums/ne-gdiplusenums-stringalignment
+var StringAlignment = {
+	Near: 0,
+	Center: 1,
+	Far: 2
+};
+
+// Trimming.
+// https://docs.microsoft.com/en-gb/windows/win32/api/gdiplusenums/ne-gdiplusenums-stringtrimming
+var StringTrimming = {
+	None: 0,
+	Character: 1,
+	Word: 2,
+	EllipsisCharacter: 3,
+	EllipsisWord: 4,
+	EllipsisPath: 5
+};
+
+// Flags. Can be combined.
+// https://docs.microsoft.com/en-gb/windows/win32/api/gdiplusenums/ne-gdiplusenums-stringformatflags
+var StringFormatFlags = {
+	DirectionRightToLeft: 0x00000001,
+	DirectionVertical: 0x00000002,
+	NoFitBlackBox: 0x00000004,
+	DisplayFormatControl: 0x00000020,
+	NoFontFallback: 0x00000400,
+	MeasureTrailingSpaces: 0x00000800,
+	NoWrap: 0x00001000,
+	LineLimit: 0x00002000,
+	NoClip: 0x00004000
+};
+
+// Used with IMetadbHandle GetAlbumArt(), GetAlbumArtAsync()
+var AlbumArtId = {
+	front: 0,
+	back: 1,
+	disc: 2,
+	icon: 3,
+	artist: 4
+};
+
+// Used with window.GetColourCUI()
+var ColourTypeCUI = {
+	text: 0,
+	selection_text: 1,
+	inactive_selection_text: 2,
+	background: 3,
+	selection_background: 4,
+	inactive_selection_background: 5,
+	active_item_frame: 6
+};
+
+// Used with window.GetColourDUI()
+var ColourTypeDUI = {
+	text: 0,
+	background: 1,
+	highlight: 2,
+	selection: 3
+};
+
+// Used with window.GetFontCUI()
+var FontTypeCUI = {
+	items: 0,
+	labels: 1
+};
+
+// Used with window.GetFontDUI()
+var FontTypeDUI = {
+	defaults: 0,
+	tabs: 1,
+	lists: 2,
+	playlists: 3,
+	statusbar: 4,
+	console: 5
+};
+
+// Used with plman.GetPlaylistLockFilterMask()
+var PlaylistLockFilterMask = {
+	filter_add : 1,
+	filter_remove: 2,
+	filter_reorder: 4,
+	filter_replace: 8,
+	filter_rename: 16,
+	filter_remove_playlist: 32,
+	filter_default_action: 64
+};

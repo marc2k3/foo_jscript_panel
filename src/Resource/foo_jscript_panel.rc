@@ -1,0 +1,139 @@
+#include "resource.h"
+#include <winresrc.h>
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU MENU
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "Import...", ID_FILE_IMPORT
+        MENUITEM "Export...", ID_FILE_EXPORT
+    END
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PREFERENCES DIALOGEX 0, 0, 332, 288
+STYLE DS_SETFONT | WS_CHILD
+FONT 8, "MS Shell Dlg 2", 400, 0, 0x0
+BEGIN
+    CONTROL         "Editor Properties", IDC_HEADER, "foobar2000:separator", 0, 0, 0, 332, 12
+    CONTROL         "", IDC_LIST_PREFERENCES, "SysListView32", LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP, 4, 16, 324, 240
+    PUSHBUTTON      "&Import", IDC_BTN_IMPORT, 170, 260, 50, 14
+    PUSHBUTTON      "E&xport", IDC_BTN_EXPORT, 224, 260, 50, 14
+    PUSHBUTTON      "&Presets", IDC_BTN_PRESETS, 278, 260, 50, 14
+END
+
+IDD_DIALOG_CONFIGURE DIALOGEX 0, 0, 620, 400
+STYLE DS_SETFONT | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Configuration"
+MENU IDR_MENU
+FONT 8, "Segoe UI", 400, 0, 0x0
+BEGIN
+    CONTROL         "", IDC_SCINTILLA, "scintilla.jsp", WS_CLIPCHILDREN, 3, 0, 617, 374
+    PUSHBUTTON      "&Reset", IDC_BTN_RESET, 7, 380, 50, 14
+    LTEXT           "Edge Style:", IDC_LABEL_EDGE, 64, 383, 45, 8
+    COMBOBOX        IDC_COMBO_EDGE, 110, 381, 60, 31, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    AUTOCHECKBOX    "Pseudo Transparent", IDC_CHECK_PSEUDO_TRANSPARENT, 180, 382, 80, 10
+    DEFPUSHBUTTON   "&OK", IDOK, 455, 380, 50, 14
+    PUSHBUTTON      "&Apply", IDC_BTN_APPLY, 509, 380, 50, 14
+    PUSHBUTTON      "&Cancel", IDCANCEL, 563, 380, 50, 14
+END
+
+IDD_DIALOG_PROPERTIES DIALOGEX 0, 0, 620, 400
+STYLE DS_SETFONT | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Properties"
+FONT 8, "Segoe UI", 400, 0, 0x0
+BEGIN
+    CONTROL         "", IDC_LIST_PROPERTIES, "SysListView32", LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP, 0, 0, 620, 374
+    PUSHBUTTON      "I&mport", IDC_BTN_IMPORT, 7, 380, 50, 14
+    PUSHBUTTON      "E&xport", IDC_BTN_EXPORT, 61, 380, 50, 14
+    PUSHBUTTON      "Clear", IDC_BTN_CLEAR, 115, 380, 50, 14
+    DEFPUSHBUTTON   "&OK", IDOK, 455, 380, 50, 14
+    PUSHBUTTON      "&Apply", IDC_BTN_APPLY, 509, 380, 50, 14
+    PUSHBUTTON      "&Cancel", IDCANCEL, 563, 380, 50, 14
+END
+
+IDD_DIALOG_FIND_REPLACE DIALOGEX 0, 0, 239, 122
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Replace"
+FONT 8, "Segoe UI", 400, 0, 0x0
+BEGIN
+    LTEXT           "Find:", IDC_STATIC, 7, 7, 35, 8
+    EDITTEXT        IDC_EDIT_FIND, 7, 17, 168, 14, ES_AUTOHSCROLL
+    LTEXT           "Replace with:", IDC_LABEL_REPLACE, 7, 35, 44, 8
+    EDITTEXT        IDC_EDIT_REPLACE, 7, 45, 168, 14, ES_AUTOHSCROLL
+    AUTOCHECKBOX    "Match case", IDC_CHECK_MATCHCASE, 7, 63, 52, 10
+    AUTOCHECKBOX    "Whole word", IDC_CHECK_WHOLEWORD, 7, 77, 54, 10
+    AUTOCHECKBOX    "Word start", IDC_CHECK_WORDSTART, 7, 91, 51, 10
+    AUTOCHECKBOX    "Regular Expression", IDC_CHECK_REGEXP, 7, 105, 77, 10
+    DEFPUSHBUTTON   "Find Down", IDC_BTN_NEXT, 182, 7, 50, 14, WS_DISABLED
+    PUSHBUTTON      "Find Up", IDC_BTN_PREVIOUS, 182, 25, 50, 14, WS_DISABLED
+    PUSHBUTTON      "Replace", IDC_BTN_REPLACE, 182, 43, 50, 14, WS_DISABLED
+    PUSHBUTTON      "Replace All", IDC_BTN_REPLACE_ALL, 182, 61, 50, 14, WS_DISABLED
+    PUSHBUTTON      "Close", IDCANCEL, 182, 97, 50, 14
+END
+
+IDD_DIALOG_GOTO DIALOGEX 0, 0, 206, 59
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Go To Line"
+FONT 8, "Segoe UI", 400, 0, 0x0
+BEGIN
+    LTEXT           "Line number:", IDC_STATIC, 7, 7, 42, 8
+    EDITTEXT        IDC_EDIT_LINE_NUMBER, 7, 17, 192, 14, ES_NUMBER | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK", IDOK, 95, 38, 50, 14
+    PUSHBUTTON      "Cancel", IDCANCEL, 149, 38, 50, 14
+END
+
+IDD_DIALOG_INPUT DIALOGEX 0, 0, 240, 80
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "InputBox"
+FONT 8, "Segoe UI", 400, 0, 0x0
+BEGIN
+    LTEXT           "Prompt", IDC_LABEL_PROMPT, 7, 7, 169, 56
+    EDITTEXT        IDC_EDIT_VALUE, 7, 61, 226, 14, ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK", IDOK, 183, 7, 50, 14
+    PUSHBUTTON      "Cancel", IDCANCEL, 183, 26, 50, 14
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+IDI_SCROLL              ICON                  "../foobar2000-sdk/libPPUI/IDI_SCROLL.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXT
+//
+
+IDR_SCRIPT              TEXT                  "foo_jscript_panel.js"
+IDR_API                 TEXT                  "foo_jscript_panel.api"
+IDR_BRIGHT              TEXT                  "cfgBright.cfg"
+IDR_DARK                TEXT                  "cfgDark.cfg"
+IDR_RUBY                TEXT                  "cfgRubyBlue.cfg"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TYPELIB
+//
+
+IDR_TYPELIB             TYPELIB               "foo_jscript_panel.tlb"
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////

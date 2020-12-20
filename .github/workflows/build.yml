@@ -1,0 +1,35 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-2019
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+
+    strategy:
+      matrix:
+        configuration: ['Release', 'Debug']
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: recursive
+
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Set repo variable
+      run: |
+        $repo = "${{ github.repository }}".Split("/")[1]
+        echo "REPO=$repo" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+    - name: Build
+      run: msbuild /m '/p:Platform=Win32;Configuration=${{ matrix.configuration }}' src\${{ env.REPO }}.sln
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      if: "startsWith(github.ref, 'refs/tags')"
+      with:
+        name: ${{ env.REPO }}-${{ matrix.configuration }}
+        path: component/

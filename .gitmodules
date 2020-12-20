@@ -1,0 +1,9 @@
+[submodule "foobar2000-sdk"]
+	path = foobar2000-sdk
+	url = https://github.com/marc2k3/foobar2000-sdk
+[submodule "columns_ui-sdk"]
+	path = columns_ui-sdk
+	url = https://github.com/marc2k3/columns_ui-sdk
+[submodule "scintilla-jsp"]
+	path = scintilla-jsp
+	url = https://github.com/marc2k3/scintilla-jsp
