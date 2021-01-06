@@ -168,12 +168,13 @@ STDMETHODIMP Utils::Glob(BSTR pattern, UINT exc_mask, UINT inc_mask, VARIANT* ou
 	if (!out) return E_POINTER;
 
 	WStrings files;
+	static constexpr auto sep = L"\\";
 
 	WIN32_FIND_DATA data;
 	HANDLE hFindFile = FindFirstFile(pattern, &data);
 	if (hFindFile != INVALID_HANDLE_VALUE)
 	{
-		std::wstring dir = std::filesystem::path(pattern).parent_path().wstring();
+		std::wstring dir = std::filesystem::path(pattern).parent_path().wstring() + sep;
 
 		do
 		{
