@@ -44,7 +44,7 @@ CAPTION "Configuration"
 MENU IDR_MENU
 FONT 8, "Segoe UI", 400, 0, 0x0
 BEGIN
-    CONTROL         "", IDC_SCINTILLA, "scintilla.jsp", WS_CLIPCHILDREN, 3, 0, 617, 374
+    CONTROL         "", IDC_SCINTILLA, "Scintilla.jsp", WS_CLIPCHILDREN, 3, 0, 617, 374
     PUSHBUTTON      "&Reset", IDC_BTN_RESET, 7, 380, 50, 14
     LTEXT           "Edge Style:", IDC_LABEL_EDGE, 64, 383, 45, 8
     COMBOBOX        IDC_COMBO_EDGE, 110, 381, 60, 31, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
