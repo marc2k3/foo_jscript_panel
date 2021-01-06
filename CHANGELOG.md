@@ -1,3 +1,6 @@
+## v2.5.0.2
+- Fix editor bug that caused crashes if `foo_wave_seekbar` was installed.
+
 ## v2.5.0.1
 - Fix `utils.Glob` bug where each item in the returned array had no separator between the filename and parent folder.
 
