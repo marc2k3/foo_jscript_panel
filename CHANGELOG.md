@@ -1,3 +1,6 @@
+## v2.5.0.1
+- Fix `utils.Glob` bug where there was no separator between the filename and parent folder.
+
 ## v2.5.0
 - The internal mechanism for saving per panel settings has changed. All scripts/settings from previous versions will be kept as you upgrade but the changes mean you can no longer downgrade to earlier versions without losing scripts embedded in each panel. Exporting your current layout before upgrading is highly recommended. Then if the worst happens, you can always re-import your theme with an earlier version.
 - The `Album Art` sample now has a menu option to customise the double click action. It can either open the image in the default viewer as before or it can open the containing folder.
