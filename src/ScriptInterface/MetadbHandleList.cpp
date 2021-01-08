@@ -272,6 +272,19 @@ STDMETHODIMP MetadbHandleList::OrderByRelativePath()
 	return S_OK;
 }
 
+STDMETHODIMP MetadbHandleList::Randomise()
+{
+	const size_t count = m_handles.get_count();
+	CustomSort::Order order(count);
+	std::iota(order.begin(), order.end(), 0U);
+
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::ranges::shuffle(order, g);
+	m_handles.reorder(order.data());
+	return S_OK;
+}
+
 STDMETHODIMP MetadbHandleList::RefreshStats()
 {
 	db::refresh(m_handles);

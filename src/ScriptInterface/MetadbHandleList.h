@@ -28,6 +28,7 @@ public:
 	STDMETHODIMP OrderByFormat(__interface ITitleFormat* script, int direction) override;
 	STDMETHODIMP OrderByPath() override;
 	STDMETHODIMP OrderByRelativePath() override;
+	STDMETHODIMP Randomise() override;
 	STDMETHODIMP RefreshStats() override;
 	STDMETHODIMP Remove(IMetadbHandle* handle) override;
 	STDMETHODIMP RemoveAll() override;

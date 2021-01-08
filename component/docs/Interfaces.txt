@@ -2266,6 +2266,8 @@ interface IMetadbHandleList {
 		OrderByRelativePath() (void)
 		// This method should only be used on a handle list containing items that are monitored as part of the Media Library.
 
+		Randomise(); (void)
+
 		RefreshStats() (void)
 		// https://github.com/marc2k3/foo_jscript_panel/wiki/Playback-Stats
 

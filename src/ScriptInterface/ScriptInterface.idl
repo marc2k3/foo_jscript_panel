@@ -198,6 +198,7 @@ library foo_jscript_panel
 		HRESULT OrderByFormat(ITitleFormat* script, int direction);
 		HRESULT OrderByPath();
 		HRESULT OrderByRelativePath();
+		HRESULT Randomise();
 		HRESULT RefreshStats();
 		HRESULT Remove(IMetadbHandle* handle);
 		HRESULT RemoveAll();
