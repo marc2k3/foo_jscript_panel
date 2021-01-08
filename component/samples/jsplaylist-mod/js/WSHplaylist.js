@@ -1042,7 +1042,9 @@ oItem = function (playlist, row_index, type, handle, track_index, group_index, t
 						if (this.tracktype < 2) {
 							var handles = fb.CreateHandleList(this.metadb);
 							if (this.l_mood != this.mood) {
-								handles.UpdateFileInfoFromJSON(JSON.stringify({"MOOD" : getTimestamp()}));
+								var d = new Date();
+								var t = d.getTime() / 1000;
+								handles.UpdateFileInfoFromJSON(JSON.stringify({"MOOD" : utils.TimestampToDateString(t)}));
 								this.mood = this.l_mood;
 							} else {
 								handles.UpdateFileInfoFromJSON(JSON.stringify({"MOOD" : ""}));

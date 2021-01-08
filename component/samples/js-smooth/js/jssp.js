@@ -170,165 +170,6 @@ dragndrop = {
 
 /*
 ===================================================================================================
-Images cache
-===================================================================================================
- */
-function reset_cover_timers() {
-	if (timers.coverDone) {
-		timers.coverDone && window.ClearTimeout(timers.coverDone);
-		timers.coverDone = false;
-	};
-};
-
-function on_load_image_done(tid, image) {
-	var tot = brw.groups.length;
-	for (var k = 0; k < tot; k++) {
-		if (brw.groups[k].metadb) {
-			if (brw.groups[k].tid == tid && brw.groups[k].load_requested == 1) {
-				brw.groups[k].load_requested = 2;
-				brw.groups[k].cover_img = g_image_cache.getit(brw.groups[k].metadb, k, image);
-				if (k < brw.groups.length && brw.groups[k].rowId >= g_start_ && brw.groups[k].rowId <= g_end_) {
-					if (!timers.coverDone) {
-						timers.coverDone = window.SetTimeout(function () {
-							brw.repaint();
-							timers.coverDone && window.ClearTimeout(timers.coverDone);
-							timers.coverDone = false;
-						}, 5);
-					};
-				}
-				break;
-			};
-		};
-	};
-};
-
-function on_get_album_art_done(metadb, art_id, image, image_path) {
-	var tot = brw.groups.length;
-	for (var i = 0; i < tot; i++) {
-		if (brw.groups[i].metadb && brw.groups[i].metadb.Compare(metadb)) {
-			brw.groups[i].cover_img = g_image_cache.getit(metadb, i, image);
-			if (i < brw.groups.length && i >= g_start_ && i <= g_end_) {
-				if (!timers.coverDone) {
-					timers.coverDone = window.SetTimeout(function () {
-							brw.repaint();
-							timers.coverDone && window.ClearTimeout(timers.coverDone);
-							timers.coverDone = false;
-						}, 5);
-				};
-			}
-			break;
-		};
-	};
-};
-
-//=================================================// Cover Tools
-image_cache = function () {
-	this._cachelist = {};
-	this.hit = function (metadb, albumIndex) {
-		var img = this._cachelist[brw.groups[albumIndex].cachekey];
-		if (typeof(img) == "undefined" || img == null) { // if image not in cache, we load it asynchronously
-			//if(!isScrolling  && !cScrollBar.timerID) { // and when no scrolling
-			brw.groups[albumIndex].crc = check_cache(metadb, albumIndex);
-			if (brw.groups[albumIndex].crc && brw.groups[albumIndex].load_requested == 0) {
-				// load img from cache
-				if (!timers.coverLoad) {
-					timers.coverLoad = window.SetTimeout(function () {
-							try {
-								brw.groups[albumIndex].tid = load_image_from_cache(metadb, brw.groups[albumIndex].crc);
-								brw.groups[albumIndex].load_requested = 1;
-							} catch (e) {};
-							timers.coverLoad && window.ClearTimeout(timers.coverLoad);
-							timers.coverLoad = false;
-						}, (!isScrolling && !cScrollBar.timerID ? 5 : 25));
-				};
-			} else if (brw.groups[albumIndex].load_requested == 0) {
-				// load img default method
-				if (!timers.coverLoad) {
-					timers.coverLoad = window.SetTimeout(function () {
-						brw.groups[albumIndex].load_requested = 1;
-						utils.GetAlbumArtAsync(window.ID, metadb, 0, true, false, false);
-						timers.coverLoad && window.ClearTimeout(timers.coverLoad);
-						timers.coverLoad = false;
-					}, (!isScrolling && !cScrollBar.timerID ? 5 : 25));
-				};
-			};
-			//};
-		};
-		return img;
-	};
-	this.reset = function (key) {
-		this._cachelist[key] = null;
-	};
-	this.getit = function (metadb, albumId, image) {
-		var cw = cover.max_w;
-		var ch = cw;
-		var img = null;
-		var cover_type = null;
-
-		if (cover.keepaspectratio) {
-			if (!image) {
-				var pw = cw - cover.margin * 2;
-				var ph = ch - cover.margin * 2;
-			} else {
-				if (image.Height >= image.Width) {
-					var ratio = image.Width / image.Height;
-					var pw = (cw - cover.margin * 2) * ratio;
-					var ph = ch - cover.margin * 2;
-				} else {
-					var ratio = image.Height / image.Width;
-					var pw = cw - cover.margin * 2;
-					var ph = (ch - cover.margin * 2) * ratio;
-				};
-			};
-		} else {
-			var pw = cw - cover.margin * 2;
-			var ph = ch - cover.margin * 2;
-		};
-		// cover.type : 0 = nocover, 1 = external cover, 2 = embedded cover, 3 = stream
-		if (brw.groups[albumId].tracktype != 3) {
-			if (metadb) {
-				if (image) {
-					img = FormatCover(image, pw, ph);
-					cover_type = 1;
-				} else {
-					//img = FormatCover(images.noart, pw, ph, false);
-					cover_type = 0;
-				};
-			};
-		} else {
-			//img = FormatNoCover(albumId, pw, ph, false, mode = 2);
-			cover_type = 3;
-
-		};
-		if (cover_type == 1) {
-			this._cachelist[brw.groups[albumId].cachekey] = img;
-		};
-		// save img to cache
-		if (cover_type == 1 && !brw.groups[albumId].save_requested) {
-			if (!timers.saveCover) {
-				brw.groups[albumId].save_requested = true;
-				save_image_to_cache(metadb, albumId);
-				timers.saveCover = window.SetTimeout(function () {
-					window.ClearTimeout(timers.saveCover);
-					timers.saveCover = false;
-				}, 50);
-			};
-		};
-
-		brw.groups[albumId].cover_type = cover_type;
-
-		return img;
-	};
-};
-var g_image_cache = new image_cache;
-
-function FormatCover(image, w, h) {
-	if (!image || w <= 0 || h <= 0) return image;
-	return image.Resize(w, h, 2);
-};
-
-/*
-===================================================================================================
 Objects
 ===================================================================================================
  */
@@ -1353,14 +1194,12 @@ oGroup = function (index, start, handle, groupkey) {
 	this.count = 1;
 	this.metadb = handle;
 	this.groupkey = groupkey;
-	this.cachekey = process_cachekey(ppt.tf_crc.EvalWithMetadb(handle));
+	this.cachekey = ppt.tf_crc.EvalWithMetadb(handle);
 	//
 	this.cover_img = null;
-	this.cover_type = null;
 	this.tracktype = TrackType(handle.RawPath.substring(0, 4));
 	this.tra = [];
 	this.load_requested = 0;
-	this.save_requested = false;
 	this.collapsed = ppt.autocollapse;
 
 	this.finalize = function (count, tracks) {
@@ -1927,29 +1766,14 @@ oBrowser = function (name) {
 							// cover art
 							// ==========
 							if (ghrh > 1 && cover.show) {
-								if (this.groups[g].cover_type == null) {
-									if (this.groups[g].load_requested == 0) {
-										this.groups[g].cover_img = g_image_cache.hit(this.rows[i].metadb, g);
-									};
-								} else if (this.groups[g].cover_type == 0) {
-									this.groups[g].cover_img = FormatCover(images.noart, coverWidth - cover.margin * 2, coverWidth - cover.margin * 2);
-								} else if (this.groups[g].cover_type == 3) {
-									this.groups[g].cover_img = FormatCover(images.stream, coverWidth - cover.margin * 2, coverWidth - cover.margin * 2);
+								if (this.groups[g].load_requested == 0) {
+									this.groups[g].cover_img = get_art(this.rows[i].metadb, g, 0);
 								};
 								this.coverMarginLeft = cover.margin + 1;
-								if (this.groups[g].cover_img != null) {
-									var cv_w = this.groups[g].cover_img.Width;
-									var cv_h = this.groups[g].cover_img.Height;
-									var dx = (cover.max_w - cv_w) / 2;
-									var dy = (cover.max_h - cv_h) / 2;
-									var cv_x = Math.floor(ax + dx + 1);
-									var cv_y = Math.floor(ay + dy - ((ghrh - 1) * ah));
-									gr.DrawImage(this.groups[g].cover_img, cv_x, cv_y, cv_w, cv_h, 1, 1, cv_w, cv_h, 0, 255);
-									gr.DrawRect(cv_x, cv_y, cv_w - 1, cv_h - 1, 1.0, g_color_normal_txt & 0x25ffffff);
+								if (this.groups[g].cover_img) {
+									drawImage(gr, this.groups[g].cover_img, ax + cover.margin + 1, ay + cover.margin - (cover.max_w / 2), cover.max_w - (cover.margin * 2), cover.max_w - (cover.margin * 2), true, g_color_normal_txt & 0x25ffffff);
 								} else {
-									var cv_x = Math.floor(ax + cover.margin + 1);
-									var cv_y = Math.floor(ay - ((ghrh - 1) * ah) + cover.margin);
-									gr.DrawImage(images.loading_draw, cv_x - cover.margin, cv_y - cover.margin, images.loading_draw.Width, images.loading_draw.Height, 0, 0, images.loading_draw.Width, images.loading_draw.Height, images.loading_angle, 230);
+									gr.DrawImage(images.loading_draw, ax + cover.margin + 1, ay + cover.margin - (cover.max_w / 2), cover.max_w - (cover.margin * 2), cover.max_w - (cover.margin * 2), 0, 0, images.loading_draw.Width, images.loading_draw.Height, images.loading_angle, 230);
 								};
 								var text_left_margin = cover.max_w;
 							} else {
@@ -2711,28 +2535,11 @@ oBrowser = function (name) {
 
 		this.metadblist_selection = plman.GetPlaylistSelectedItems(g_active_playlist);
 		Context.InitContextPlaylist();
-
-		// check if selection is single and is in the Media Library to provide if ok a link to Album View panel
-		var showInAlbumView = false;
-		if (this.metadblist_selection.Count == 1) {
-			if (fb.IsMetadbInMediaLibrary(this.metadblist_selection.Item(0))) {
-				showInAlbumView = true;
-			};
-		};
-
-		_menu.AppendMenuItem(MF_STRING, 1, "Settings...");
-		_menu.AppendMenuSeparator();
-		Context.BuildMenu(_menu, 2);
+		Context.BuildMenu(_menu, 1);
 
 		_child01.AppendTo(_menu, MF_STRING, "Selection...");
-		if (brw.activeRow > -1) {
-			if (this.metadblist_selection.Count == 1) {
-				_child01.AppendMenuItem(MF_STRING, 1010, "Reset Image Cache");
-			};
-		};
-		_child01.AppendMenuItem((showInAlbumView ? MF_STRING : MF_GRAYED), 1011, "Highlight in JS Smooth Browser");
 		_child01.AppendMenuItem(playlist_can_remove_items(g_active_playlist) ? MF_STRING : MF_GRAYED, 1020, "Remove");
-		_child02.AppendTo(_child01, MF_STRING, "Send to...");
+		_child02.AppendTo(_child01, MF_STRING, "Add to...");
 		_child02.AppendMenuItem(MF_STRING, 2000, "a New playlist...");
 
 		var pl_count = plman.PlaylistCount;
@@ -2745,50 +2552,27 @@ oBrowser = function (name) {
 			};
 		};
 
-		var ret = _menu.TrackPopupMenu(x, y);
-		if (ret > 1 && ret < 800) {
-			Context.ExecuteByID(ret - 2);
-		} else if (ret < 2) {
-			switch (ret) {
-			case 1:
-				//window.ShowProperties();
-				this.settings_context_menu(x, y);
-				break;
-			};
-		} else {
-			switch (ret) {
-			case 1010:
-				if (fso.FileExists(CACHE_FOLDER + crc)) {
-					try {
-						fso.DeleteFile(CACHE_FOLDER + crc);
-					} catch (e) {
-						console.log("JScript Panel Error: Image cache [" + crc + "] can't be deleted on disk, file in use, try later or reload panel.");
-					};
-				};
-				this.groups[albumIndex].tid = -1;
-				this.groups[albumIndex].load_requested = 0;
-				this.groups[albumIndex].save_requested = false;
-				g_image_cache.reset(crc);
-				this.groups[albumIndex].cover_img = null;
-				this.groups[albumIndex].cover_type = null;
-				this.repaint();
-				break;
-			case 1011:
-				window.NotifyOthers("JSSmoothPlaylist->JSSmoothBrowser:show_item", this.metadblist_selection.Item(0));
-				break;
-			case 1020:
-				plman.RemovePlaylistSelection(g_active_playlist, false);
-				break;
-			case 2000:
-				plman.CreatePlaylist(plman.PlaylistCount, "");
-				plman.ActivePlaylist = plman.PlaylistCount - 1;
-				plman.InsertPlaylistItems(plman.PlaylistCount - 1, 0, this.metadblist_selection, false);
-				break;
-			default:
-				var insert_index = plman.PlaylistItemCount(ret - 2001);
-				plman.InsertPlaylistItems((ret - 2001), insert_index, this.metadblist_selection, false);
-			};
-		};
+		var idx = _menu.TrackPopupMenu(x, y);
+
+		switch (true) {
+		case idx == 0:
+			break;
+		case idx < 800:
+			Context.ExecuteByID(ret - 1);
+			break;
+		case idx == 1020:
+			plman.UndoBackup(g_active_playlist);
+			plman.RemovePlaylistSelection(g_active_playlist, false);
+			break;
+		case idx == 2000:
+			plman.CreatePlaylist(plman.PlaylistCount, "");
+			plman.ActivePlaylist = plman.PlaylistCount - 1;
+			plman.InsertPlaylistItems(plman.PlaylistCount - 1, 0, this.metadblist_selection, false);
+			break;
+		default:
+			var insert_index = plman.PlaylistItemCount(ret - 2001);
+			plman.InsertPlaylistItems((ret - 2001), insert_index, this.metadblist_selection, false);
+		}
 		_child01.Dispose();
 		_child02.Dispose();
 		_menu.Dispose();
@@ -2800,7 +2584,6 @@ oBrowser = function (name) {
 		var _menu1 = window.CreatePopupMenu();
 		var _menu2 = window.CreatePopupMenu();
 		var _menu3 = window.CreatePopupMenu();
-		var idx;
 
 		_menu.AppendMenuItem((fb.IsPlaying ? MF_STRING : MF_GRAYED), 900, "Show Now Playing");
 		_menu.AppendMenuSeparator();
@@ -2843,7 +2626,7 @@ oBrowser = function (name) {
 		_menu.AppendMenuItem(MF_STRING, 991, "Panel Properties");
 		_menu.AppendMenuItem(MF_STRING, 992, "Configure...");
 
-		idx = _menu.TrackPopupMenu(x, y);
+		var idx = _menu.TrackPopupMenu(x, y);
 
 		switch (true) {
 		case (idx == 111):
@@ -3393,15 +3176,11 @@ function on_mouse_wheel(step) {
 						get_images();
 
 						// refresh covers
-						g_image_cache = new image_cache;
 						CollectGarbage();
 						var total = brw.groups.length;
 						for (var i = 0; i < total; i++) {
-							brw.groups[i].tid = -1;
 							brw.groups[i].load_requested = 0;
-							brw.groups[i].save_requested = false;
 							brw.groups[i].cover_img = null;
-							brw.groups[i].cover_type = null;
 						};
 
 						brw.repaint();
@@ -3431,15 +3210,11 @@ function on_mouse_wheel(step) {
 						get_images();
 
 						// refresh covers
-						g_image_cache = new image_cache;
 						CollectGarbage();
 						var total = brw.groups.length;
 						for (var i = 0; i < total; i++) {
-							brw.groups[i].tid = -1;
 							brw.groups[i].load_requested = 0;
-							brw.groups[i].save_requested = false;
 							brw.groups[i].cover_img = null;
-							brw.groups[i].cover_type = null;
 						};
 
 						brw.repaint();
@@ -3503,7 +3278,6 @@ function get_metrics() {
 	cover.h = ppt.groupHeaderRowsNumber * ppt.rowHeight;
 	cover.max_h = ppt.groupHeaderRowsNumber * ppt.rowHeight;
 	//
-	g_image_cache = new image_cache;
 	CollectGarbage();
 
 	cFilterBox.w = Math.floor(cFilterBox.default_w * g_zoom_percent / 100);
@@ -3852,15 +3626,11 @@ function on_key_down(vkey) {
 				break;
 			case VK_F5:
 				// refresh covers
-				g_image_cache = new image_cache;
 				CollectGarbage();
 				var total = brw.groups.length;
 				for (var i = 0; i < total; i++) {
-					brw.groups[i].tid = -1;
 					brw.groups[i].load_requested = 0;
-					brw.groups[i].save_requested = false;
 					brw.groups[i].cover_img = null;
-					brw.groups[i].cover_type = null;
 				};
 				brw.repaint();
 				break;
@@ -4078,15 +3848,11 @@ function on_key_down(vkey) {
 									get_images();
 
 									// refresh covers
-									g_image_cache = new image_cache;
 									CollectGarbage();
 									var total = brw.groups.length;
 									for (var i = 0; i < total; i++) {
-										brw.groups[i].tid = -1;
 										brw.groups[i].load_requested = 0;
-										brw.groups[i].save_requested = false;
 										brw.groups[i].cover_img = null;
-										brw.groups[i].cover_type = null;
 									};
 
 									brw.repaint();

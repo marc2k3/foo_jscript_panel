@@ -306,7 +306,6 @@ oInputbox = function (w, h, default_text, empty_text, textcolor, backcolor, bord
 	};
 
 	this.show_context_menu = function (x, y) {
-		var idx;
 		var _menu = window.CreatePopupMenu();
 		cInputbox.clipboard = cInputbox.doc.parentWindow.clipboardData.getData("Text");
 		_menu.AppendMenuItem(this.select ? MF_STRING : MF_GRAYED, 1, "Copy");
@@ -318,7 +317,7 @@ oInputbox = function (w, h, default_text, empty_text, textcolor, backcolor, bord
 			_menu.AppendMenuItem(MF_STRING, 20, "Properties");
 			_menu.AppendMenuItem(MF_STRING, 21, "Configure...");
 		}
-		idx = _menu.TrackPopupMenu(x, y);
+		var idx = _menu.TrackPopupMenu(x, y);
 		switch (idx) {
 		case 1:
 			if (this.edit && this.select) {

@@ -1,4 +1,50 @@
 var fso = new ActiveXObject("Scripting.FileSystemObject");
+var CACHE_FOLDER = fb.ProfilePath + "js_smooth_cache\\";
+
+function reset_cover_timers() {
+	if (timers.coverDone) {
+		window.ClearTimeout(timers.coverDone);
+		timers.coverDone = false;
+	};
+};
+
+function generate_filename(cachekey, art_id) {
+	var prefix = art_id == 4 ? "artist" : "front";
+	return CACHE_FOLDER + prefix + cachekey + ".jpg";
+}
+
+function get_art(metadb, albumIndex, art_id) {
+	var img = gdi.Image(generate_filename(brw.groups[albumIndex].cachekey, art_id));
+	if (img) return img;
+
+	if (brw.groups[albumIndex].load_requested == 0) {
+		brw.groups[albumIndex].load_requested = 1;
+		window.SetTimeout(function () {
+			utils.GetAlbumArtAsync(window.ID, metadb, art_id, false, false, false);
+		}, 10);
+	}
+	return img;
+}
+
+function on_get_album_art_done(metadb, art_id, image, image_path) {
+	var tot = brw.groups.length;
+	for (var i = 0; i < tot; i++) {
+		if (brw.groups[i].metadb && brw.groups[i].metadb.Compare(metadb)) {
+			if (image) {
+				var s = Math.min(200 / image.Width, 200 / image.Height);
+				var w = Math.floor(image.Width * s);
+				var h = Math.floor(image.Height * s);
+				image = image.Resize(w, h, 2);
+				image.SaveAs(generate_filename(brw.groups[i].cachekey, art_id));
+				brw.groups[i].cover_img = image;
+			} else {
+				brw.groups[i].cover_img = images.noart;
+			}
+			brw.repaint();
+			break;
+		}
+	}
+};
 
 function drawImage(gr, img, src_x, src_y, src_w, src_h, auto_fill, border, alpha) {
 	if (!img || !src_w || !src_h) {
@@ -36,8 +82,6 @@ function drawImage(gr, img, src_x, src_y, src_w, src_h, auto_fill, border, alpha
 		gr.DrawRect(src_x, src_y, src_w - 1, src_h - 1, 1, border);
 	}
 }
-
-var CACHE_FOLDER = fb.ProfilePath + "js_smooth_cache\\";
 
 // *****************************************************************************************************************************************
 // Common functions & flags by Br3tt aka Falstaff (c)2013-2015
@@ -491,212 +535,6 @@ button = function (normal, hover, down) {
 };
 
 //=================================================// Tools (general)
-function decode_colour(opt_colour, resultype) {
-	var XYZ_colour = {
-		RGBcolour: 0,
-		H: 0,
-		S: 0,
-		L: 0
-	};
-	var R_read,
-	G_read,
-	B_read;
-	switch (resultype) {
-	case 1:
-		switch (opt_colour.length) {
-		case 23:
-			XYZ_colour.H = Math.round(opt_colour.substring(0, 3));
-			XYZ_colour.S = Math.round(opt_colour.substring(4, 7));
-			XYZ_colour.L = Math.round(opt_colour.substring(8, 11));
-			XYZ_colour.RGBcolour = HSL2RGB(XYZ_colour.H, XYZ_colour.S, XYZ_colour.L, "RGB");
-			break;
-		default:
-			XYZ_colour.H = 0;
-			XYZ_colour.S = 0;
-			XYZ_colour.L = 0;
-			XYZ_colour.RGBcolour = RGB(0, 0, 0)
-		};
-		return XYZ_colour;
-		break;
-	default:
-		switch (opt_colour.length) {
-		case 23:
-			R_read = Math.round(opt_colour.substring(12, 15));
-			G_read = Math.round(opt_colour.substring(16, 19));
-			B_read = Math.round(opt_colour.substring(20, 23));
-			break;
-		default:
-			R_read = 0;
-			G_read = 0;
-			B_read = 0
-		};
-		return RGB(R_read, G_read, B_read);
-	};
-};
-
-function HSL2RGB(zH, zS, zL, result) {
-	var L = zL / 100;
-	var S = zS / 100;
-	var H = zH / 100;
-	var R,
-	G,
-	B,
-	var_1,
-	var_2;
-	if (S == 0) { //HSL from 0 to 1
-		R = L * 255; //RGB results from 0 to 255
-		G = L * 255;
-		B = L * 255;
-	} else {
-		if (L < 0.5)
-			var_2 = L * (1 + S);
-		else
-			var_2 = (L + S) - (S * L);
-
-		var_1 = 2 * L - var_2;
-
-		R = 255 * Hue2RGB(var_1, var_2, H + (1 / 3));
-		G = 255 * Hue2RGB(var_1, var_2, H);
-		B = 255 * Hue2RGB(var_1, var_2, H - (1 / 3));
-	};
-	switch (result) {
-	case "R":
-		return Math.round(R);
-		break;
-	case "G":
-		return Math.round(G);
-		break;
-	case "B":
-		return Math.round(B);
-		break;
-	default:
-		return RGB(Math.round(R), Math.round(G), Math.round(B));
-	};
-};
-
-function Hue2RGB(v1, v2, vH) {
-	if (vH < 0)
-		vH += 1;
-	if (vH > 1)
-		vH -= 1;
-	if ((6 * vH) < 1)
-		return (v1 + (v2 - v1) * 6 * vH);
-	if ((2 * vH) < 1)
-		return (v2);
-	if ((3 * vH) < 2)
-		return (v1 + (v2 - v1) * ((2 / 3) - vH) * 6);
-	return (v1);
-};
-
-function RGB2HSL(RGB_colour) {
-	var R = (getRed(RGB_colour) / 255);
-	var G = (getGreen(RGB_colour) / 255);
-	var B = (getBlue(RGB_colour) / 255);
-	var HSL_colour = {
-		RGB: 0,
-		H: 0,
-		S: 0,
-		L: 0
-	};
-
-	var_Min = Math.min(R, G, B); //Min. value of RGB
-	var_Max = Math.max(R, G, B); //Max. value of RGB
-	del_Max = var_Max - var_Min; //Delta RGB value
-
-	L = (var_Max + var_Min) / 2;
-
-	if (del_Max == 0) { //This is a gray, no chroma...
-		H = 0; //HSL results from 0 to 1
-		S = 0;
-	} else { //Chromatic data...
-		if (L < 0.5)
-			S = del_Max / (var_Max + var_Min);
-		else
-			S = del_Max / (2 - var_Max - var_Min);
-
-		del_R = (((var_Max - R) / 6) + (del_Max / 2)) / del_Max;
-		del_G = (((var_Max - G) / 6) + (del_Max / 2)) / del_Max;
-		del_B = (((var_Max - B) / 6) + (del_Max / 2)) / del_Max;
-
-		if (R == var_Max)
-			H = del_B - del_G;
-		else if (G == var_Max)
-			H = (1 / 3) + del_R - del_B;
-		else if (B == var_Max)
-			H = (2 / 3) + del_G - del_R;
-
-		if (H < 0)
-			H += 1;
-		if (H > 1)
-			H -= 1;
-	};
-	HSL_colour.RGB = RGB_colour;
-	HSL_colour.H = Math.round(H * 100);
-	HSL_colour.S = Math.round(S * 100);
-	HSL_colour.L = Math.round(L * 100);
-	return HSL_colour;
-};
-
-function DrawColoredText(gr, text, font, default_color, x, y, w, h, alignment, force_default_color) {
-	var txt = "",
-	color = default_color,
-	lg = 0,
-	i = 1,
-	z = 0,
-	tmp = "";
-	var pos = text.indexOf(String.fromCharCode(3));
-	if (pos < 0) { // no specific color
-		gr.GdiDrawText(text, font, default_color, x, y, w, h, alignment | DT_CALCRECT | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX);
-	} else {
-		var tab = text.split(String.fromCharCode(3));
-		var fin = tab.length;
-
-		switch (alignment) {
-		case DT_CENTER:
-			var full_lg = gr.CalcTextWidth(tab[0], font);
-			for (var m = i; m < fin; m += 2) {
-				full_lg += gr.CalcTextWidth(tab[m + 1], font);
-			};
-			if (full_lg > w)
-				full_lg = w;
-			var delta_align = ((w - full_lg) / 2);
-			break;
-		case DT_RIGHT:
-			var full_lg = gr.CalcTextWidth(tab[0], font);
-			for (var m = i; m < fin; m += 2) {
-				full_lg += gr.CalcTextWidth(tab[m + 1], font);
-			};
-			if (full_lg > w)
-				full_lg = w;
-			var delta_align = (w - full_lg);
-			break;
-		default:
-			var delta_align = 0;
-		};
-
-		// if first part is default color
-		if (pos > 0) {
-			txt = tab[0];
-			lg = gr.CalcTextWidth(txt, font);
-			gr.GdiDrawText(txt, font, color, x + delta_align + z, y, w - z, h, DT_LEFT | DT_CALCRECT | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX);
-			z += lg;
-		};
-
-		// draw all other colored parts
-		while (i < fin && z < w) {
-			if (!force_default_color) {
-				tmp = tab[i];
-				color = eval("0xFF" + tmp.substr(4, 2) + tmp.substr(2, 2) + tmp.substr(0, 2));
-			};
-			//color = RGB(parseInt(tmp.substr(0,2),16), parseInt(tmp.substr(2,2),16), parseInt(tmp.substr(4,2),16));
-			txt = tab[i + 1];
-			lg = gr.CalcTextWidth(txt, font);
-			gr.GdiDrawText(txt, font, color, x + delta_align + z, y, w - z, h, DT_LEFT | DT_CALCRECT | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX);
-			z += lg;
-			i += 2;
-		};
-	};
-};
 
 function DrawPolyStar(gr, x, y, out_radius, in_radius, points, line_thickness, line_color, fill_color, angle, opacity) {
 	// ---------------------
@@ -775,28 +613,6 @@ function compareObject(o1, o2) {
 		};
 	};
 	return true;
-};
-
-function getTimestamp() {
-	var d,
-	s1,
-	s2,
-	s3,
-	hh,
-	min,
-	sec,
-	timestamp;
-	d = new Date();
-	s1 = d.getFullYear();
-	s2 = (d.getMonth() + 1);
-	s3 = d.getDate();
-	hh = d.getHours();
-	min = d.getMinutes();
-	sec = d.getSeconds();
-	if (s3.length == 1)
-		s3 = "0" + s3;
-	timestamp = s1 + ((s2 < 10) ? "-0" : "-") + s2 + ((s3 < 10) ? "-0" : "-") + s3 + ((hh < 10) ? " 0" : " ") + hh + ((min < 10) ? ":0" : ":") + min + ((sec < 10) ? ":0" : ":") + sec;
-	return timestamp;
 };
 
 function Utf8Encode(string) {
@@ -884,19 +700,6 @@ function on_load() {
 		fso.CreateFolder(CACHE_FOLDER);
 };
 
-function resize(source, crc) {
-	var img = gdi.Image(source);
-	if (!img) {
-		return;
-	}
-	var s = Math.min(200 / img.Width, 200 / img.Height);
-	var w = Math.floor(img.Width * s);
-	var h = Math.floor(img.Height * s);
-	img = img.Resize(w, h, 2);
-	img.SaveAs(CACHE_FOLDER + crc, "image/jpeg");
-	img.Dispose();
-}
-
 function getpath_(temp) {
 	var img_path = "",
 	path_;
@@ -909,38 +712,6 @@ function getpath_(temp) {
 		};
 	};
 	return null;
-};
-
-function check_cache(metadb, albumIndex) {
-	//var crc = ppt.tf_crc.EvalWithMetadb(metadb);
-	var crc = brw.groups[albumIndex].cachekey;
-	if (fso.FileExists(CACHE_FOLDER + crc)) {
-		return crc;
-	};
-	return null;
-};
-
-function load_image_from_cache(metadb, crc) {
-	if (fso.FileExists(CACHE_FOLDER + crc)) { // image in folder cache
-		var tdi = gdi.LoadImageAsync(window.ID, CACHE_FOLDER + crc);
-		return tdi;
-	} else {
-		return -1;
-	};
-};
-
-function process_cachekey(str) {
-	var str_return = "";
-	str = str.toLowerCase();
-	var len = str.length;
-	for (var i = 0; i < len; i++) {
-		var charcode = str.charCodeAt(i);
-		if (charcode > 96 && charcode < 123)
-			str_return += str.charAt(i);
-		if (charcode > 47 && charcode < 58)
-			str_return += str.charAt(i);
-	};
-	return str_return;
 };
 
 // ===================================================== // Wallpaper

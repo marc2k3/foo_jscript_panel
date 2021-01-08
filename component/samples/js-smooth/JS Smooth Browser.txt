@@ -10,7 +10,7 @@
 /*
 [Features]
  * 2 sources possible: library or active playlist (initialy designed as a library browser)
- * 3 columns modes available: albums, artists, genres
+ * 2 columns modes available: albums, artists
  * 4 display modes avaliable: column, art+bottom label, art+right label, grid art view
  * True Smooth Scrolling
  * Screen Touch support
@@ -27,7 +27,7 @@
  * Hold SHIFT key + right click to display Configure script and panel Properties entries
  * Change colors and fonts in foobar2000 Preferences > DefaultUI or ColumsUI
  * Some minor settings can be changed in window Properties (SHIFT + right click > Properties), use it carefully
- * Use Keyboard for "jumping" to an artist/genre in the library view (incremental search feature like in ELPlaylist)
+ * Use Keyboard for "jumping" to an artist in the library view (incremental search feature like in ELPlaylist)
  * Right Click on items for contextual menu for the selection
  * CTRL+T to toggle the columns toolbar
  * CTRL+B to toggle the scrollbar

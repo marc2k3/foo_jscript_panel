@@ -65,7 +65,6 @@ cColumns = {
 	dateWidth: 0,
 	albumArtistWidth: 0,
 	titleWidth: 0,
-	genreWidth: 0
 };
 
 cScrollBar = {
@@ -1357,7 +1356,6 @@ oBrowser = function (name) {
 		var _menu = window.CreatePopupMenu();
 		var _newplaylist = window.CreatePopupMenu();
 		var _autoplaylist = window.CreatePopupMenu();
-		var idx;
 		var total_area,
 		visible_area;
 		var bout,
@@ -1404,7 +1402,7 @@ oBrowser = function (name) {
 
 		};
 
-		idx = _menu.TrackPopupMenu(x, y);
+		var idx = _menu.TrackPopupMenu(x, y);
 
 		switch (true) {
 		case (idx == 100):
@@ -1588,7 +1586,6 @@ oBrowser = function (name) {
 		var _menu1 = window.CreatePopupMenu();
 		var _menu2 = window.CreatePopupMenu();
 		var _menu3 = window.CreatePopupMenu();
-		var idx;
 
 		_menu.AppendMenuItem(MF_STRING, 910, "Header Bar");
 		_menu.CheckMenuItem(910, ppt.showHeaderBar);
@@ -1608,7 +1605,7 @@ oBrowser = function (name) {
 		_menu.AppendMenuItem(MF_STRING, 991, "Panel Properties");
 		_menu.AppendMenuItem(MF_STRING, 992, "Configure...");
 
-		idx = _menu.TrackPopupMenu(x, y);
+		var idx = _menu.TrackPopupMenu(x, y);
 
 		switch (true) {
 		case (idx == 200):
