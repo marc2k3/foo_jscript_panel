@@ -1,9 +1,9 @@
-## v2.5.1 (unreleased)
+## v2.5.1
 - Add `IMetadbHandleList` `Randomise`.
 - Add `IMetadbHandleList` `RemoveDuplicatesByFormat`.
 - Update `JS-Smooth Browser` / `JS-Smooth Playlist`.
   * The context menu no longer has a `Settings` option. Right click the `Album count` or `Playlist name` in the top right corner to access the same settings.
-  * The disk cache is always enabled and now supports embedded art. Start up is much faster once the cache has been generated.
+  * The disk cache is always enabled and now supports embedded art. Start up should be faster once the cache has been generated.
   * `JS-Smooth Browser` has had the browse by `Genre` option removed.
 
 ## v2.5.0.2

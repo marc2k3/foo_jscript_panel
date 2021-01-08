@@ -58,7 +58,7 @@ ppt = {
 };
 
 // since genre no longer exists, must check
-if (ppt.tagMode != 1 || ppt.tagMode != 2) {
+if (ppt.tagMode != 1 && ppt.tagMode != 2) {
 	ppt.tagMode = 1;
 	window.SetProperty("_PROPERTY: Tag Mode", 1);
 }
