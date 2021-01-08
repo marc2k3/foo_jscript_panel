@@ -206,6 +206,7 @@ library foo_jscript_panel
 		HRESULT RemoveAttachedImages();
 		HRESULT RemoveById(UINT index);
 		HRESULT RemoveDuplicates();
+		HRESULT RemoveDuplicatesByFormat(ITitleFormat* script);
 		HRESULT RemoveRange(UINT from, UINT count);
 		HRESULT UpdateFileInfoFromJSON(BSTR str);
 		[propget] HRESULT Count([out, retval] UINT* out);

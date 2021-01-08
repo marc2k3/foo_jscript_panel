@@ -351,6 +351,26 @@ STDMETHODIMP MetadbHandleList::RemoveDuplicates()
 	return S_OK;
 }
 
+STDMETHODIMP MetadbHandleList::RemoveDuplicatesByFormat(__interface ITitleFormat* script)
+{
+	titleformat_object* obj = nullptr;
+	GET_PTR(script, obj);
+
+	std::set<string8> set;
+	const size_t count = m_handles.get_count();
+	pfc::bit_array_bittable mask(count);
+	for (size_t i = 0; i < count; ++i)
+	{
+		string8 str;
+		m_handles[i]->format_title(nullptr, str, obj, nullptr);
+		if (set.contains(str)) continue;
+		set.emplace(str);
+		mask.set(i, true);
+	}
+	m_handles.filter_mask(mask);
+	return S_OK;
+}
+
 STDMETHODIMP MetadbHandleList::RemoveRange(UINT from, UINT count)
 {
 	m_handles.remove_from_idx(from, count);

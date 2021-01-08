@@ -2298,6 +2298,26 @@ interface IMetadbHandleList {
 		RemoveDuplicates() (void)
 		// Original order of handle list is preserved.
 
+		RemoveDuplicatesByFormat(tfo) (void)
+		/*
+		tfo: an instance of ITitleFormat.
+
+		Example1:
+		var tfo = fb.TitleFormat("%artist%");
+		var handles = fb.GetLibraryItems();
+		handles.RemoveDuplicatesByFormat(tfo);
+
+		In this example, there will no more than 1 track with the same artist.
+
+		Example2:
+		Because the order of the handle list is not modified, you might consider using Randomise() first.
+
+		var tfo = fb.TitleFormat("%artist% - %album%");
+		var handles = fb.GetLibraryItems();
+		handles.Randomise();
+		handles.RemoveDuplicatesByFormat(tfo);
+		*/
+
 		RemoveRange(from, num) (void)
 		/*
 		Example:
