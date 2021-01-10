@@ -49,10 +49,7 @@ CEditorCtrl::Colour CEditorCtrl::ParseHex(const std::string& hex)
 		{
 			return ch - 'a' + 10;
 		}
-		else
-		{
-			return 0;
-		}
+		return 0;
 	};
 
 	const auto int_from_hex_byte = [int_from_hex_digit](const char* hex_byte)
@@ -243,18 +240,15 @@ LRESULT CEditorCtrl::OnKeyDown(UINT, WPARAM wParam, LPARAM, BOOL& bHandled)
 		case 'F':
 			OpenFindDialog();
 			break;
-
 		case 'H':
 			OpenReplaceDialog();
 			break;
-
 		case 'G':
 			fb2k::inMainThread([&]()
 				{
 					OpenGotoDialog();
 				});
 			break;
-
 		case 'S':
 			GetParent().PostMessage(WM_COMMAND, MAKEWPARAM(IDC_BTN_APPLY, BN_CLICKED), reinterpret_cast<LPARAM>(m_hWnd));
 			break;
@@ -287,7 +281,6 @@ LRESULT CEditorCtrl::OnUpdateUI(LPNMHDR)
 {
 	Position braceAtCaret = -1;
 	Position braceOpposite = -1;
-
 	FindBraceMatchPos(braceAtCaret, braceOpposite);
 
 	if (braceAtCaret != -1 && braceOpposite == -1)
@@ -304,7 +297,6 @@ LRESULT CEditorCtrl::OnUpdateUI(LPNMHDR)
 
 		SetHighlightGuide(std::min(columnAtCaret, columnOpposite));
 	}
-
 	return 0;
 }
 
@@ -329,11 +321,11 @@ CEditorCtrl::Range CEditorCtrl::GetSelection()
 
 Strings CEditorCtrl::GetLinePartsInStyle(Line line, const StyleAndWords& saw)
 {
-	Strings sv;
+	Strings strings;
 	const Position thisLineStart = PositionFromLine(line);
 	const Position nextLineStart = PositionFromLine(line + 1);
 	const bool separateCharacters = saw.IsSingleChar();
-	std::string s;
+	std::string string;
 
 	for (Position pos = thisLineStart; pos < nextLineStart; ++pos)
 	{
@@ -341,27 +333,26 @@ Strings CEditorCtrl::GetLinePartsInStyle(Line line, const StyleAndWords& saw)
 		{
 			if (separateCharacters)
 			{
-				if (s.length() > 0)
+				if (!string.empty())
 				{
-					sv.emplace_back(s);
+					strings.emplace_back(string);
+					string.clear();
 				}
-				s = "";
 			}
-			s += GetCharAt(pos);
+			string += GetCharAt(pos);
 		}
-		else if (s.length() > 0)
+		else if (!string.empty())
 		{
-			sv.emplace_back(s);
-			s = "";
+			strings.emplace_back(string);
+			string.clear();
 		}
 	}
 
-	if (s.length() > 0)
+	if (!string.empty())
 	{
-		sv.emplace_back(s);
+		strings.emplace_back(string);
 	}
-
-	return sv;
+	return strings;
 }
 
 bool CEditorCtrl::Contains(const std::string& str, char ch)
@@ -376,19 +367,18 @@ bool CEditorCtrl::FindBraceMatchPos(Position& braceAtCaret, Position& braceOppos
 		return ch == '[' || ch == ']' || ch == '(' || ch == ')' || ch == '{' || ch == '}';
 	};
 
+	const int lengthDoc = GetLength();
 	const int pos = GetCurrentPos();
 	bool isInside = false;
+	bool isAfter = true;
+	int charBefore = 0;
 
 	braceAtCaret = -1;
 	braceOpposite = -1;
 
-	int charBefore = 0;
-	const int lengthDoc = GetLength();
-
 	if (lengthDoc > 0 && pos > 0)
 	{
 		const Position posBefore = PositionBefore(pos);
-
 		if (posBefore == pos - 1)
 		{
 			charBefore = GetCharAt(posBefore);
@@ -399,8 +389,6 @@ bool CEditorCtrl::FindBraceMatchPos(Position& braceAtCaret, Position& braceOppos
 	{
 		braceAtCaret = pos - 1;
 	}
-
-	bool isAfter = true;
 
 	if (lengthDoc > 0 && braceAtCaret < 0 && pos < lengthDoc)
 	{
@@ -416,13 +404,8 @@ bool CEditorCtrl::FindBraceMatchPos(Position& braceAtCaret, Position& braceOppos
 	if (braceAtCaret >= 0)
 	{
 		braceOpposite = BraceMatch(braceAtCaret, 0);
-
-		if (braceOpposite > braceAtCaret)
-			isInside = isAfter;
-		else
-			isInside = !isAfter;
+		isInside = braceOpposite > braceAtCaret ? isAfter : !isAfter;
 	}
-
 	return isInside;
 }
 
@@ -489,12 +472,9 @@ bool CEditorCtrl::Includes(const StyleAndWords& symbols, const std::string& valu
 			if (symbol)
 				symbol++;
 		}
+		return false;
 	}
-	else
-	{
-		return Contains(value, symbols.words[0]);
-	}
-	return false;
+	return Contains(value, symbols.words[0]);
 }
 
 bool CEditorCtrl::RangeIsAllWhitespace(Position start, Position end)
@@ -593,6 +573,14 @@ std::string CEditorCtrl::GetNearestWords(const std::string& wordStart, size_t se
 		words.append(it->text, 0, it->len);
 	}
 	return words;
+}
+
+string8 CEditorCtrl::GetContent()
+{
+	const int len = GetTextLength();
+	std::string value(len + 1, '\0');
+	GetText(value.length(), value.data());
+	return value.c_str();
 }
 
 void CEditorCtrl::AutoMarginWidth()

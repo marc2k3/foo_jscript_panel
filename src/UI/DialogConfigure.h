@@ -36,7 +36,6 @@ public:
 	void OnSamples(UINT, int nID, CWindow);
 
 private:
-	string8 GetText();
 	void Apply();
 	void BuildMenu();
 

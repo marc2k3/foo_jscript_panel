@@ -234,7 +234,7 @@ STDMETHODIMP MetadbHandleList::OptimiseFileLayout(VARIANT_BOOL minimise)
 	return S_OK;
 }
 
-STDMETHODIMP MetadbHandleList::OrderByFormat(__interface ITitleFormat* script, int direction)
+STDMETHODIMP MetadbHandleList::OrderByFormat(ITitleFormat* script, int direction)
 {
 	titleformat_object* obj = nullptr;
 	GET_PTR(script, obj);
@@ -351,7 +351,7 @@ STDMETHODIMP MetadbHandleList::RemoveDuplicates()
 	return S_OK;
 }
 
-STDMETHODIMP MetadbHandleList::RemoveDuplicatesByFormat(__interface ITitleFormat* script)
+STDMETHODIMP MetadbHandleList::RemoveDuplicatesByFormat(ITitleFormat* script)
 {
 	titleformat_object* obj = nullptr;
 	GET_PTR(script, obj);
@@ -439,10 +439,7 @@ STDMETHODIMP MetadbHandleList::UpdateFileInfoFromJSON(BSTR str)
 		);
 		return S_OK;
 	}
-	else
-	{
-		return E_INVALIDARG;
-	}
+	return E_INVALIDARG;
 }
 
 STDMETHODIMP MetadbHandleList::get_Count(UINT* out)

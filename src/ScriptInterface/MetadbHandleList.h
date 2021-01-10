@@ -25,7 +25,7 @@ public:
 	STDMETHODIMP MakeDifference(IMetadbHandleList* handles) override;
 	STDMETHODIMP MakeIntersection(IMetadbHandleList* handles) override;
 	STDMETHODIMP OptimiseFileLayout(VARIANT_BOOL minimise) override;
-	STDMETHODIMP OrderByFormat(__interface ITitleFormat* script, int direction) override;
+	STDMETHODIMP OrderByFormat(ITitleFormat* script, int direction) override;
 	STDMETHODIMP OrderByPath() override;
 	STDMETHODIMP OrderByRelativePath() override;
 	STDMETHODIMP Randomise() override;
@@ -36,7 +36,7 @@ public:
 	STDMETHODIMP RemoveAttachedImages() override;
 	STDMETHODIMP RemoveById(UINT index) override;
 	STDMETHODIMP RemoveDuplicates() override;
-	STDMETHODIMP RemoveDuplicatesByFormat(__interface ITitleFormat* script) override;
+	STDMETHODIMP RemoveDuplicatesByFormat(ITitleFormat* script) override;
 	STDMETHODIMP RemoveRange(UINT from, UINT count) override;
 	STDMETHODIMP UpdateFileInfoFromJSON(BSTR str) override;
 	STDMETHODIMP get_Count(UINT* out) override;

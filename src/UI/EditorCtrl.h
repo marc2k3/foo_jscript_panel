@@ -17,6 +17,7 @@ public:
 	END_MSG_MAP()
 
 	bool Find(bool next);
+	string8 GetContent();
 	void Init();
 	void Replace();
 	void ReplaceAll();

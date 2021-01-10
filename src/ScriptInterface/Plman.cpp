@@ -327,8 +327,7 @@ STDMETHODIMP Plman::InsertPlaylistItems(UINT playlistIndex, UINT base, IMetadbHa
 	metadb_handle_list* handles_ptr = nullptr;
 	GET_PTR(handles, handles_ptr);
 
-	pfc::bit_array_val selection(to_bool(select));
-	playlist_manager::get()->playlist_insert_items(playlistIndex, base, *handles_ptr, selection);
+	playlist_manager::get()->playlist_insert_items(playlistIndex, base, *handles_ptr, pfc::bit_array_val(to_bool(select)));
 	return S_OK;
 }
 
@@ -412,13 +411,13 @@ STDMETHODIMP Plman::PlaylistItemCount(UINT playlistIndex, UINT* out)
 STDMETHODIMP Plman::RecyclerPurge(VARIANT affectedItems)
 {
 	auto api = playlist_manager_v3::get();
-	pfc::bit_array_bittable affected(api->recycler_get_count());
+	pfc::bit_array_bittable mask(api->recycler_get_count());
 	ComArrayReader reader;
-	if (!reader.convert(affectedItems, affected)) return E_INVALIDARG;
+	if (!reader.convert(affectedItems, mask)) return E_INVALIDARG;
 
-	if (affected.size())
+	if (mask.size())
 	{
-		api->recycler_purge(affected);
+		api->recycler_purge(mask);
 	}
 	return S_OK;
 }
@@ -443,13 +442,13 @@ STDMETHODIMP Plman::RemoveItemFromPlaybackQueue(UINT index)
 STDMETHODIMP Plman::RemoveItemsFromPlaybackQueue(VARIANT affectedItems)
 {
 	auto api = playlist_manager::get();
-	pfc::bit_array_bittable affected(api->queue_get_count());
+	pfc::bit_array_bittable mask(api->queue_get_count());
 	ComArrayReader reader;
-	if (!reader.convert(affectedItems, affected)) return E_INVALIDARG;
+	if (!reader.convert(affectedItems, mask)) return E_INVALIDARG;
 
-	if (affected.size())
+	if (mask.size())
 	{
-		api->queue_remove_mask(affected);
+		api->queue_remove_mask(mask);
 	}
 	return S_OK;
 }
@@ -469,13 +468,13 @@ STDMETHODIMP Plman::RemovePlaylists(VARIANT playlistIndexes, VARIANT_BOOL* out)
 	*out = VARIANT_FALSE;
 
 	auto api = playlist_manager::get();
-	pfc::bit_array_bittable affected(api->get_playlist_count());
+	pfc::bit_array_bittable mask(api->get_playlist_count());
 	ComArrayReader reader;
-	if (!reader.convert(playlistIndexes, affected)) return E_INVALIDARG;
+	if (!reader.convert(playlistIndexes, mask)) return E_INVALIDARG;
 
-	if (affected.size())
+	if (mask.size())
 	{
-		*out = to_variant_bool(api->remove_playlists(affected));
+		*out = to_variant_bool(api->remove_playlists(mask));
 	}
 	return S_OK;
 }
@@ -527,14 +526,13 @@ STDMETHODIMP Plman::SetPlaylistFocusItemByHandle(UINT playlistIndex, IMetadbHand
 STDMETHODIMP Plman::SetPlaylistSelection(UINT playlistIndex, VARIANT affectedItems, VARIANT_BOOL state)
 {
 	auto api = playlist_manager::get();
-	pfc::bit_array_bittable affected(api->playlist_get_item_count(playlistIndex));
+	pfc::bit_array_bittable mask(api->playlist_get_item_count(playlistIndex));
 	ComArrayReader reader;
-	if (!reader.convert(affectedItems, affected)) return E_INVALIDARG;
+	if (!reader.convert(affectedItems, mask)) return E_INVALIDARG;
 
-	if (affected.size())
+	if (mask.size())
 	{
-		pfc::bit_array_val status(to_bool(state));
-		api->playlist_set_selection(playlistIndex, affected, status);
+		api->playlist_set_selection(playlistIndex, mask, pfc::bit_array_val(to_bool(state)));
 	}
 	return S_OK;
 }

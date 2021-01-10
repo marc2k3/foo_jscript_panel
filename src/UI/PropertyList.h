@@ -147,16 +147,12 @@ public:
 		__super::OnSubItemClicked(row, column, pt);
 	}
 
-	void RemoveMask(const pfc::bit_array& mask)
+	void RequestRemoveSelection() override
 	{
+		const pfc::bit_array_bittable mask = GetSelectionMask();
 		const size_t old_count = GetItemCount();
 		pfc::remove_mask_t(m_data, mask);
 		this->OnItemsRemoved(mask, old_count);
-	}
-
-	void RequestRemoveSelection() override
-	{
-		RemoveMask(GetSelectionMask());
 	}
 
 	void RequestReorder(size_t const* order, size_t count) override {}

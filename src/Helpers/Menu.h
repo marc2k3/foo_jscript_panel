@@ -3,7 +3,7 @@
 class ContextMenuCommand
 {
 public:
-	ContextMenuCommand(const std::wstring command) : m_command(from_wide(command)) {}
+	ContextMenuCommand(const std::wstring& command) : m_command(from_wide(command)) {}
 
 	bool execute_recur(contextmenu_node* parent, stringp p = "")
 	{

@@ -23,7 +23,7 @@ BOOL CDialogConfigure::OnInitDialog(CWindow, LPARAM)
 {
 	// Set caption text
 	m_caption << jsp::component_name << " Configuration";
-	if (m_panel->m_hwnd != nullptr) m_caption << " (id:" << m_panel->m_id << ")";
+	if (m_panel->m_id != 0) m_caption << " (id:" << m_panel->m_id << ")";
 	pfc::setWindowText(m_hWnd, m_caption);
 
 	// Init
@@ -99,14 +99,6 @@ LRESULT CDialogConfigure::OnNotify(int, LPNMHDR pnmh)
 	return 0;
 }
 
-string8 CDialogConfigure::GetText()
-{
-	const int len = m_editorctrl.GetTextLength();
-	std::string value(len + 1, '\0');
-	m_editorctrl.GetText(value.length(), value.data());
-	return value.c_str();
-}
-
 void CDialogConfigure::Apply()
 {
 	// Save panel settings
@@ -114,7 +106,7 @@ void CDialogConfigure::Apply()
 	m_panel->m_config.m_transparent = m_check_transparent.IsChecked();
 
 	// Get script text
-	m_panel->m_config.m_code = GetText();
+	m_panel->m_config.m_code = m_editorctrl.GetContent();
 	m_panel->update_script();
 
 	// Save point
@@ -189,7 +181,7 @@ void CDialogConfigure::OnFileExport(UINT, int, CWindow)
 	string8 filename;
 	if (uGetOpenFileName(m_hWnd, "Text files|*.txt|All files|*.*", 0, "txt", "Save as", nullptr, filename, TRUE))
 	{
-		FileHelper(filename).write(GetText());
+		FileHelper(filename).write(m_editorctrl.GetContent());
 	}
 }
 

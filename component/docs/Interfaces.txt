@@ -1054,11 +1054,6 @@ interface IPlman {
 		// affectedItems: array like [1, 3, 5]
 }
 
-interface IConsole {
-	Methods:
-		console.log(message) (void)
-}
-
 interface IUtils {
 	Properties:
 		utils.Version (uint) (read)

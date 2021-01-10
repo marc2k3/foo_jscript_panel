@@ -14,8 +14,7 @@ public:
 
 		if (m_playlist < api->get_playlist_count() && !(mask & playlist_lock::filter_add))
 		{
-			pfc::bit_array_val selection(m_to_select);
-			api->playlist_insert_items(m_playlist, m_base, handles, selection);
+			api->playlist_insert_items(m_playlist, m_base, handles, pfc::bit_array_val(m_to_select));
 			if (m_to_select)
 			{
 				api->set_active_playlist(m_playlist);
