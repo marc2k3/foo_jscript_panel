@@ -341,10 +341,7 @@ STDMETHODIMP MetadbHandleList::RemoveDuplicates()
 	pfc::bit_array_bittable mask(count);
 	for (size_t i = 0; i < count; ++i)
 	{
-		metadb_handle_ptr item = m_handles[i];
-		if (set.contains(item)) continue;
-		set += item;
-		mask.set(i, true);
+		mask.set(i, set.add_item_check(m_handles[i]));
 	}
 	set.remove_all();
 	m_handles.filter_mask(mask);
@@ -363,9 +360,7 @@ STDMETHODIMP MetadbHandleList::RemoveDuplicatesByFormat(ITitleFormat* script)
 	{
 		string8 str;
 		m_handles[i]->format_title(nullptr, str, obj, nullptr);
-		if (set.contains(str)) continue;
-		set.emplace(str);
-		mask.set(i, true);
+		mask.set(i, set.emplace(str).second);
 	}
 	m_handles.filter_mask(mask);
 	return S_OK;
