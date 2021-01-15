@@ -66,7 +66,7 @@ namespace
 			string8 filename;
 			if (uGetOpenFileName(m_hWnd, "Configuration files|*.cfg|All files|*.*", 0, "cfg", "Import from", nullptr, filename, FALSE))
 			{
-				g_config.import(FileHelper(filename).read());
+				g_config.load(FileHelper(filename).read());
 				m_list.ReloadData();
 			}
 		}

@@ -44,7 +44,12 @@ void Config::get_data_raw(stream_writer* writer, abort_callback& abort)
 	catch (...) {}
 }
 
-void Config::import(stringp content)
+void Config::init_data()
+{
+	m_data = init_table;
+}
+
+void Config::load(stringp content)
 {
 	SimpleMap data;
 	for (const std::string& line : split_string(content.get_ptr(), CRLF))
@@ -58,14 +63,9 @@ void Config::import(stringp content)
 	merge_data(data);
 }
 
-void Config::init_data()
-{
-	m_data = init_table;
-}
-
 void Config::load_preset(int idx)
 {
-	import(Component::get_resource_text(idx));
+	load(Component::get_resource_text(idx));
 }
 
 void Config::merge_data(const SimpleMap& data)
