@@ -40,18 +40,22 @@ public:
 
 	string8 read()
 	{
-		string8 content;
+		std::string content;
 		std::ifstream f(m_path);
 		if (f.is_open())
 		{
 			std::string line;
 			while (std::getline(f, line))
 			{
-				content << line.c_str() << CRLF;
+				content += line + CRLF;
 			}
 			f.close();
 		}
-		return content;
+		if (content.length() >= 3 && content[0] == -17 && content[1] == -69 && content[2] == -65)
+		{
+			return content.substr(3).c_str();
+		}
+		return content.c_str();
 	}
 
 	void read_wide(size_t codepage, std::wstring& content)
