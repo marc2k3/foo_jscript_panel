@@ -75,9 +75,9 @@
       <AdditionalDependencies>../foobar2000-sdk/foobar2000/shared/shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>set component_path=$(SolutionDir)..\component
-copy /Y "$(TargetPath)" "%component_path%\"
-copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%\"</Command>
+      <Command>set component_path=$(SolutionDir)..\component\
+copy /Y "$(TargetPath)" "%component_path%"
+copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%"</Command>
     </PostBuildEvent>
     <Midl>
       <OutputDirectory>$(ProjectDir)ScriptInterface</OutputDirectory>
@@ -110,9 +110,9 @@ copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%\"</Command>
       <AdditionalDependencies>../foobar2000-sdk/foobar2000/shared/shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>set component_path=$(SolutionDir)..\component
-copy /Y "$(TargetPath)" "%component_path%\"
-copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%\"</Command>
+      <Command>set component_path=$(SolutionDir)..\component\
+copy /Y "$(TargetPath)" "%component_path%"
+copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%"</Command>
     </PostBuildEvent>
     <Midl>
       <OutputDirectory>$(ProjectDir)ScriptInterface</OutputDirectory>
