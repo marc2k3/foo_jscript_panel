@@ -67,7 +67,7 @@ public:
 
 	void reset()
 	{
-		m_code = Component::get_resource_text(IDR_SCRIPT);
+		m_code = Component::get_resource_text(IDR_SCRIPT).c_str();
 		m_style = 0;
 		m_transparent = false;
 	}

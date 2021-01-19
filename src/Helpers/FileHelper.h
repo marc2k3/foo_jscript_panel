@@ -5,8 +5,7 @@ _COM_SMARTPTR_TYPEDEF(IMultiLanguage2, IID_IMultiLanguage2);
 class FileHelper
 {
 public:
-	FileHelper(const string8& path) : m_path(to_wide(path)) {}
-	FileHelper(const std::string& path) : m_path(to_wide(path.c_str())) {}
+	FileHelper(jstring path) : m_path(to_wide(path)) {}
 	FileHelper(const std::wstring& path) : m_path(path) {}
 
 	WStrings list_files(bool recur = false)
@@ -21,7 +20,7 @@ public:
 		return list_t(is_folder);
 	}
 
-	bool write(stringp content)
+	bool write(jstring content)
 	{
 		std::ofstream f(m_path, std::ios::binary);
 		if (f.is_open())
@@ -128,7 +127,7 @@ private:
 		return wstrings;
 	}
 
-	size_t guess_codepage(stringp content)
+	size_t guess_codepage(jstring content)
 	{
 		int size = static_cast<int>(content.length());
 		if (size == 0) return 0;

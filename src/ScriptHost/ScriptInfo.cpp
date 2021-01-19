@@ -13,28 +13,28 @@ ScriptInfo::ScriptInfo()
 	}
 }
 
-std::string ScriptInfo::expand_import(const std::string& path)
+std::string ScriptInfo::extract_value(const std::string& str)
 {
+	constexpr char q = '"';
+	const size_t first = str.find_first_of(q);
+	const size_t last = str.find_last_of(q);
+	if (first < last && last < str.length())
+	{
+		return str.substr(first + 1, last - first - 1);
+	}
+	return "";
+}
+
+void ScriptInfo::add_import(const std::string& str)
+{
+	std::string path = extract_value(str);
 	for (const auto& [what, with] : s_replacements)
 	{
 		if (path.starts_with(what))
 		{
-			return with + path.substr(what.length());
+			m_imports.emplace_back(with + path.substr(what.length()));
 		}
 	}
-	return path;
-}
-
-std::string ScriptInfo::extract_value(const std::string& source)
-{
-	constexpr char q = '"';
-	const size_t first = source.find_first_of(q);
-	const size_t last = source.find_last_of(q);
-	if (first < last && last < source.length())
-	{
-		return source.substr(first + 1, last - first - 1);
-	}
-	return "";
 }
 
 void ScriptInfo::clear()
@@ -44,13 +44,13 @@ void ScriptInfo::clear()
 	m_build_string.reset();
 }
 
-void ScriptInfo::update(size_t id, stringp code)
+void ScriptInfo::update(size_t id, jstring str)
 {
 	clear();
 	m_name << "id:" << id;
 
+	std::string source = str;
 	string8 author, version;
-	std::string source(code);
 	const size_t start = source.find("// ==PREPROCESSOR==");
 	const size_t end = source.find("// ==/PREPROCESSOR==");
 
@@ -75,7 +75,7 @@ void ScriptInfo::update(size_t id, stringp code)
 			}
 			else if (line.find("@import") < len)
 			{
-				m_imports.emplace_back(expand_import(extract_value(line)));
+				add_import(line);
 			}
 		}
 	}

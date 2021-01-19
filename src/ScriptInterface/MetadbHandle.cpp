@@ -180,7 +180,9 @@ STDMETHODIMP MetadbHandle::get_Path(BSTR* out)
 {
 	if (m_handle.is_empty() || !out) return E_POINTER;
 
-	*out = to_bstr(file_path_display(m_handle->get_path()).get_ptr());
+	string8 str;
+	filesystem::g_get_display_path(m_handle->get_path(), str);
+	*out = to_bstr(str);
 	return S_OK;
 }
 

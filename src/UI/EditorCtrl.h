@@ -21,7 +21,7 @@ public:
 	void Init();
 	void Replace();
 	void ReplaceAll();
-	void SetContent(stringp text);
+	void SetContent(jstring text);
 
 private:
 	enum
@@ -70,12 +70,9 @@ private:
 	{
 		StringComparePartial(size_t len) : m_len(len) {}
 
-		int operator()(const std::string& s1, const std::string& s2) const
+		int operator()(jstring s1, jstring s2) const
 		{
-			const size_t len1 = pfc::strlen_max_t(s1.c_str(), m_len);
-			const size_t len2 = pfc::strlen_max_t(s2.c_str(), m_len);
-
-			return pfc::stricmp_ascii_ex(s1.c_str(), len1, s2.c_str(), len2);
+			return pfc::stricmp_ascii_ex(s1, std::min(s1.length(), m_len), s2, std::min(s2.length(), m_len));
 		}
 
 		size_t m_len;
@@ -83,7 +80,6 @@ private:
 
 	struct StyleAndWords
 	{
-		bool IsEmpty() const { return words.length() == 0; }
 		bool IsSingleChar() const { return words.length() == 1; }
 
 		int styleNumber = 0;

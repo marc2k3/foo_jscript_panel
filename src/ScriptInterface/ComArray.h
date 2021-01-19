@@ -102,7 +102,7 @@ public:
 		return put_item(idx, var);
 	}
 
-	bool put_item(LONG idx, stringp str)
+	bool put_item(LONG idx, jstring str)
 	{
 		_variant_t var;
 		var.vt = VT_BSTR;

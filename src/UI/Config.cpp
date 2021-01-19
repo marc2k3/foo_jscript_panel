@@ -49,10 +49,10 @@ void Config::init_data()
 	m_data = init_table;
 }
 
-void Config::load(stringp content)
+void Config::load(jstring content)
 {
 	SimpleMap data;
-	for (const std::string& line : split_string(content.get_ptr(), CRLF))
+	for (const std::string& line : split_string(content, CRLF))
 	{
 		const size_t pos = line.find('=');
 		if (pos == 0 || pos == std::string::npos) continue;

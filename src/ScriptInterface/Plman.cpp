@@ -113,7 +113,7 @@ STDMETHODIMP Plman::DuplicatePlaylist(UINT playlistIndex, BSTR name, UINT* out)
 		}
 
 		stream_reader_dummy dummy_reader;
-		*out = api->create_playlist_ex(uname.get_ptr(), uname.get_length(), playlistIndex + 1, items, &dummy_reader, fb2k::noAbort);
+		*out = api->create_playlist_ex(uname, uname.get_length(), playlistIndex + 1, items, &dummy_reader, fb2k::noAbort);
 		return S_OK;
 	}
 	return E_INVALIDARG;
@@ -566,7 +566,7 @@ STDMETHODIMP Plman::SortByFormat(UINT playlistIndex, BSTR pattern, VARIANT_BOOL 
 	if (!out) return E_POINTER;
 
 	const string8 upattern = from_wide(pattern);
-	*out = to_variant_bool(playlist_manager::get()->playlist_sort_by_format(playlistIndex, upattern.get_length() ? upattern.get_ptr() : nullptr, to_bool(selOnly)));
+	*out = to_variant_bool(playlist_manager::get()->playlist_sort_by_format(playlistIndex, upattern.is_empty() ? nullptr : upattern, to_bool(selOnly)));
 	return S_OK;
 }
 

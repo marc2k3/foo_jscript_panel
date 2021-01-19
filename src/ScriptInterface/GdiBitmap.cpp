@@ -142,7 +142,7 @@ STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* out)
 				{ "freq", cluster.get_frequency(colours_length) },
 			});
 	}
-	*out = to_bstr(j.dump().c_str());
+	*out = to_bstr(j.dump());
 	return S_OK;
 }
 

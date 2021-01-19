@@ -13,7 +13,7 @@ ScriptHost::ScriptHost(PanelWindow* panel)
 
 ScriptHost::~ScriptHost() {}
 
-DWORD ScriptHost::GenerateSourceContext(const std::string& path)
+DWORD ScriptHost::GenerateSourceContext(jstring path)
 {
 	m_context_to_path_map.emplace(++m_last_source_context, path);
 	return m_last_source_context;
@@ -262,7 +262,7 @@ STDMETHODIMP ScriptHost::OnScriptError(IActiveScriptError* err)
 	{
 		if (m_context_to_path_map.contains(ctx))
 		{
-			formatter << "File: " << m_context_to_path_map.at(ctx).c_str() << "\n";
+			formatter << "File: " << m_context_to_path_map.at(ctx) << "\n";
 		}
 		formatter << "Line: " << (line + 1) << ", Col: " << (charpos + 1) << "\n";
 	}

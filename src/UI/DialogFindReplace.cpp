@@ -99,7 +99,7 @@ void CDialogFindReplace::OnFindPrevious(UINT, int, CWindow)
 void CDialogFindReplace::OnFindTextChange(UINT, int, CWindow)
 {
 	m_find_text = pfc::getWindowText(m_window.at(IDC_EDIT_FIND));
-	const bool enabled = m_find_text.get_length() > 0;
+	const bool enabled = !m_find_text.is_empty();
 	m_window.at(IDC_BTN_NEXT).EnableWindow(enabled);
 	m_window.at(IDC_BTN_PREVIOUS).EnableWindow(enabled);
 	m_window.at(IDC_BTN_REPLACE).EnableWindow(enabled);

@@ -3,7 +3,7 @@
 class CDialogGoto : public CDialogImpl<CDialogGoto>
 {
 public:
-	CDialogGoto(stringp line_number) : m_line_number(line_number) {}
+	CDialogGoto(jstring line_number) : m_line_number(line_number) {}
 
 	BEGIN_MSG_MAP_EX(CDialogGoto)
 		MSG_WM_INITDIALOG(OnInitDialog)

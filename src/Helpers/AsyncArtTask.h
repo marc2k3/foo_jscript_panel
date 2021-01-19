@@ -27,7 +27,7 @@ public:
 				bitmap = AlbumArt::get_embedded(path, m_id);
 				if (bitmap)
 				{
-					image_path = file_path_display(path);
+					filesystem::g_get_display_path(path, image_path);
 				}
 			}
 			else

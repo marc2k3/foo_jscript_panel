@@ -87,8 +87,7 @@ STDMETHODIMP Utils::FormatDuration(double seconds, BSTR* out)
 {
 	if (!out) return E_POINTER;
 
-	string8 str = pfc::format_time_ex(seconds, 0).get_ptr();
-	*out = to_bstr(str);
+	*out = to_bstr(pfc::format_time_ex(seconds, 0).get_ptr());
 	return S_OK;
 }
 
@@ -96,8 +95,7 @@ STDMETHODIMP Utils::FormatFileSize(UINT64 bytes, BSTR* out)
 {
 	if (!out) return E_POINTER;
 
-	string8 str = pfc::format_file_size_short(bytes);
-	*out = to_bstr(str);
+	*out = to_bstr(pfc::format_file_size_short(bytes));
 	return S_OK;
 }
 

@@ -5,12 +5,12 @@ class ContextMenuCommand
 public:
 	ContextMenuCommand(const std::wstring& command) : m_command(from_wide(command)) {}
 
-	bool execute_recur(contextmenu_node* parent, stringp p = "")
+	bool execute_recur(contextmenu_node* parent, jstring p = "")
 	{
 		for (uint32_t i = 0; i < parent->get_num_children(); ++i)
 		{
 			contextmenu_node* child = parent->get_child(i);
-			string8 path = p.get_ptr();
+			string8 path = p;
 			path.add_string(child->get_name());
 
 			switch (child->get_type())
@@ -91,12 +91,13 @@ public:
 	}
 
 private:
-	bool execute_recur(mainmenu_node::ptr node, stringp p)
+	bool execute_recur(mainmenu_node::ptr node, jstring p)
 	{
-		string8 path, text;
+		string8 path = p;
+		string8 text;
 		uint32_t flags;
 		node->get_display(text, flags);
-		path << p << text;
+		path.add_string(text);
 
 		switch (node->get_type())
 		{
@@ -134,7 +135,9 @@ private:
 			{
 				string8 str;
 				group_popup_ptr->get_display_string(str);
-				path = PFC_string_formatter() << str << "/" << path;
+				str.add_char('/');
+				str.add_string(path);
+				path = str;
 			}
 			parent = group_ptr->get_parent();
 		}

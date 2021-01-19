@@ -3,7 +3,7 @@
 class CInputBox : public CDialogImpl<CInputBox>
 {
 public:
-	CInputBox(stringp prompt, stringp caption, stringp value) : m_prompt(prompt), m_caption(caption), m_value(value) {}
+	CInputBox(jstring prompt, jstring caption, jstring value) : m_prompt(prompt), m_caption(caption), m_value(value) {}
 
 	BEGIN_MSG_MAP_EX(CInputBox)
 		MSG_WM_INITDIALOG(OnInitDialog)

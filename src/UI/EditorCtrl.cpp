@@ -442,7 +442,7 @@ bool CEditorCtrl::Find(bool next)
 
 bool CEditorCtrl::Includes(const StyleAndWords& symbols, const std::string& value)
 {
-	if (symbols.IsEmpty())
+	if (symbols.words.empty())
 	{
 		return false;
 	}
@@ -886,7 +886,7 @@ void CEditorCtrl::OpenReplaceDialog()
 
 void CEditorCtrl::ReadAPIs()
 {
-	std::string content = Component::get_resource_text(IDR_API).get_ptr();
+	std::string content = Component::get_resource_text(IDR_API);
 
 	for (const std::string& line : split_string(content, CRLF))
 	{
@@ -940,7 +940,7 @@ void CEditorCtrl::ReplaceAll()
 	EndUndoAction();
 }
 
-void CEditorCtrl::SetContent(stringp text)
+void CEditorCtrl::SetContent(jstring text)
 {
 	SetText(text);
 	ConvertEOLs(SC_EOL_CRLF);

@@ -28,7 +28,7 @@ namespace CustomSort
 		return order;
 	}
 
-	static std::wstring make_sort_string(stringp in)
+	static std::wstring make_sort_string(jstring in)
 	{
 		return space + to_wide(in);
 	}

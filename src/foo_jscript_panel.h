@@ -19,6 +19,24 @@ namespace jsp
 	X->get__ptr(reinterpret_cast<void**>(&Y)); \
 	if (!Y) return E_INVALIDARG;
 
+class jstring {
+public:
+	jstring(const char* s) : m_ptr(s) {}
+	jstring(const pfc::string& s) : m_ptr(s.get_ptr()) {}
+	jstring(const pfc::string_base& s) : m_ptr(s) {}
+	jstring(const std::string& s) : m_ptr(s.c_str()) {}
+
+	operator const char* () const { return m_ptr; }
+	operator pfc::string8 () const { return m_ptr; }
+	operator std::string () const { return m_ptr; }
+
+	const char* get_ptr() const { return m_ptr; }
+	size_t length() const { return strlen(m_ptr); }
+
+private:
+	const char* const m_ptr;
+};
+
 template <typename T>
 static std::vector<T> split_string_t(const T& text, const T& delims)
 {
@@ -58,7 +76,7 @@ static string8 from_wide(const std::wstring& str)
 	return ret.c_str();
 }
 
-static std::wstring to_wide(stringp str)
+static std::wstring to_wide(jstring str)
 {
 	std::wstring ret;
 	ret.resize(MultiByteToWideChar(CP_UTF8, 0, str, str.length(), nullptr, 0));
@@ -67,7 +85,7 @@ static std::wstring to_wide(stringp str)
 }
 
 static bool to_bool(VARIANT_BOOL vb) { return vb != VARIANT_FALSE; }
-static BSTR to_bstr(stringp str) { return SysAllocString(to_wide(str).data()); }
+static BSTR to_bstr(jstring str) { return SysAllocString(to_wide(str).data()); }
 static int to_int(size_t num) { return num == SIZE_MAX ? -1 : static_cast<int>(num); }
 
 static int to_argb(COLORREF colour)

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PanelProperties.h"
 
-bool PanelProperties::get_property(const char* key, VARIANT& out)
+bool PanelProperties::get_property(jstring key, VARIANT& out)
 {
 	if (m_data.contains(key))
 	{
@@ -110,7 +110,7 @@ void PanelProperties::set(stream_reader* reader, abort_callback& abort) throw()
 	g_set(reader, m_data, abort);
 }
 
-void PanelProperties::set_property(const char* key, const VARIANT& val)
+void PanelProperties::set_property(jstring key, const VARIANT& val)
 {
 	if (g_sizeof(val.vt) != -1)
 	{

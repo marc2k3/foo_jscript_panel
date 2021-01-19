@@ -152,7 +152,7 @@ namespace AlbumArt
 			album_art_path_list::ptr pathlist = ptr->query_paths(what, fb2k::noAbort);
 			if (pathlist->get_count() > 0)
 			{
-				image_path.set_string(file_path_display(pathlist->get_path(0)));
+				filesystem::g_get_display_path(pathlist->get_path(0), image_path);
 			}
 			if (!no_load)
 			{
@@ -162,7 +162,7 @@ namespace AlbumArt
 		return nullptr;
 	}
 
-	static IGdiBitmap* get_embedded(stringp path, size_t id)
+	static IGdiBitmap* get_embedded(jstring path, size_t id)
 	{
 		const GUID what = id_to_guid(id);
 
