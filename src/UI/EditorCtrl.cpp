@@ -52,18 +52,11 @@ CEditorCtrl::Colour CEditorCtrl::ParseHex(const std::string& hex)
 		return 0;
 	};
 
-	const auto int_from_hex_byte = [int_from_hex_digit](const char* hex_byte)
-	{
-		return (int_from_hex_digit(hex_byte[0]) << 4) | (int_from_hex_digit(hex_byte[1]));
-	};
-
-	if (hex.length() > 7) return 0;
-
-	const int r = int_from_hex_byte(hex.c_str() + 1);
-	const int g = int_from_hex_byte(hex.c_str() + 3);
-	const int b = int_from_hex_byte(hex.c_str() + 5);
-
-	return RGB(r, g, b);
+	if (hex.length() != 7) return 0;
+	const int r = int_from_hex_digit(hex.at(1)) << 4 | int_from_hex_digit(hex.at(2));
+	const int g = int_from_hex_digit(hex.at(3)) << 4 | int_from_hex_digit(hex.at(4));
+	const int b = int_from_hex_digit(hex.at(5)) << 4 | int_from_hex_digit(hex.at(6));
+	return RGB(r, g, b);;
 }
 
 CEditorCtrl::EditorStyle CEditorCtrl::ParseStyle(const std::string& str)
@@ -870,7 +863,7 @@ void CEditorCtrl::OpenFindDialog()
 void CEditorCtrl::OpenGotoDialog()
 {
 	modal_dialog_scope scope(m_hWnd);
-	CDialogGoto dlg(std::to_string(GetCurrentLineNumber() + 1).c_str());
+	CDialogGoto dlg(std::to_string(GetCurrentLineNumber() + 1));
 	if (dlg.DoModal(m_hWnd) == IDOK)
 	{
 		const Line line = std::stoi(dlg.m_line_number.get_ptr()) - 1;
@@ -1061,8 +1054,7 @@ void CEditorCtrl::StartCallTip()
 		--StartCalltipWord;
 	}
 
-	line.at(current) = '\0';
-	CurrentCallTipWord = line.c_str() + StartCalltipWord;
+	CurrentCallTipWord = line.substr(StartCalltipWord, current - StartCalltipWord);
 	FunctionDefinition = "";
 	FillFunctionDefinition(pos);
 }
