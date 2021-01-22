@@ -28,12 +28,17 @@ std::string ScriptInfo::extract_value(const std::string& str)
 void ScriptInfo::add_import(const std::string& str)
 {
 	std::string path = extract_value(str);
-	for (const auto& [what, with] : s_replacements)
+	if (path.length())
 	{
-		if (path.starts_with(what))
+		for (const auto& [what, with] : s_replacements)
 		{
-			m_imports.emplace_back(with + path.substr(what.length()));
+			if (path.starts_with(what))
+			{
+				path = with + path.substr(what.length());
+				break;
+			}
 		}
+		m_imports.emplace_back(path);
 	}
 }
 
