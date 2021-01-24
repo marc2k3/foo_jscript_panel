@@ -16,13 +16,17 @@ STDMETHODIMP UiSelectionHolder::SetPlaylistTracking()
 	return S_OK;
 }
 
-STDMETHODIMP UiSelectionHolder::SetSelection(IMetadbHandleList* handles)
+STDMETHODIMP UiSelectionHolder::SetSelection(IMetadbHandleList* handles, UINT type)
 {
 	metadb_handle_list* handles_ptr = nullptr;
 	GET_PTR(handles, handles_ptr);
 
-	m_holder->set_selection(*handles_ptr);
-	return S_OK;
+	if (type < guids::selections.size())
+	{
+		m_holder->set_selection_ex(*handles_ptr, *guids::selections[type]);
+		return S_OK;
+	}
+	return E_INVALIDARG;
 }
 
 void UiSelectionHolder::FinalRelease()

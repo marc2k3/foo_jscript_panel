@@ -11,7 +11,7 @@ protected:
 public:
 	STDMETHODIMP SetPlaylistSelectionTracking() override;
 	STDMETHODIMP SetPlaylistTracking() override;
-	STDMETHODIMP SetSelection(IMetadbHandleList* handles) override;
+	STDMETHODIMP SetSelection(IMetadbHandleList* handles, UINT type) override;
 
 private:
 	ui_selection_holder::ptr m_holder;

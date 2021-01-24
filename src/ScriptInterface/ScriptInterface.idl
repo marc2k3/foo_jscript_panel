@@ -275,7 +275,7 @@ library foo_jscript_panel
 	{
 		HRESULT SetPlaylistSelectionTracking();
 		HRESULT SetPlaylistTracking();
-		HRESULT SetSelection(IMetadbHandleList* handles);
+		HRESULT SetSelection(IMetadbHandleList* handles, [defaultvalue(0)] UINT type);
 	};
 
 	[object,dual,pointer_default(unique),custom(8AFCDA7F-33B7-3120-86A8-754D2C0C0578,"library_block"),uuid(690a35f6-ba53-46f9-91f8-4327204c6c62)]

@@ -100,8 +100,19 @@ interface IFb {
 			interface IUiSelectionHolder {
 				Methods:
 					Dispose() (void)
-					SetSelection(handle_list) (void)
-					// sets the selected items.
+
+					SetSelection(handle_list[, type]) (void)
+					/*
+					type: default 0
+
+					0 undefined
+					1 active_playlist_selection
+					2 caller_active_playlist
+					3 playlist_manager
+					4 now_playing
+					5 keyboard_shortcut_list
+					6 media_library_viewer
+					*/
 
 					SetPlaylistSelectionTracking() (void)
 					/*
@@ -146,14 +157,14 @@ interface IFb {
 			function on_mouse_lbtn_up(x, y) {
 				// Presumably going to select something here...
 				handle_list = ...;
-				selection_holder.SetSelection(handle_list);
+				selection_holder.SetSelection(handle_list, 6);
 			}
 
 			function on_focus(is_focused) {
 				if (is_focused) {
 					// Updates the selection when panel regains focus
 					if (handle_list && handle_list.Count) {
-						selection_holder.SetSelection(handle_list);
+						selection_holder.SetSelection(handle_list, 6);
 					}
 				}
 			}
