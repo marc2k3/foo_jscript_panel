@@ -1,12 +1,13 @@
 var fso = new ActiveXObject("Scripting.FileSystemObject");
 var CACHE_FOLDER = fb.ProfilePath + "js_smooth_cache\\";
+if (!fso.FolderExists(CACHE_FOLDER)) fso.CreateFolder(CACHE_FOLDER);
 
 function reset_cover_timers() {
 	if (timers.coverDone) {
 		window.ClearTimeout(timers.coverDone);
 		timers.coverDone = false;
-	};
-};
+	}
+}
 
 function generate_filename(cachekey, art_id) {
 	var prefix = art_id == 4 ? "artist" : "front";
@@ -44,7 +45,7 @@ function on_get_album_art_done(metadb, art_id, image, image_path) {
 			break;
 		}
 	}
-};
+}
 
 function drawImage(gr, img, src_x, src_y, src_w, src_h, auto_fill, border, alpha) {
 	if (!img || !src_w || !src_h) {
@@ -202,7 +203,7 @@ var KMask = {
 	ctrlalt: 4,
 	ctrlaltshift: 5,
 	alt: 6
-};
+}
 
 function GetKeyboardMask() {
 	var c = utils.IsKeyPressed(VK_CONTROL) ? true : false;
@@ -222,7 +223,7 @@ function GetKeyboardMask() {
 	if (!c && a && !s)
 		ret = KMask.alt;
 	return ret;
-};
+}
 // }}
 // {{
 // Used in window.GetColorCUI()
@@ -234,19 +235,19 @@ ColorTypeCUI = {
 	selection_background: 4,
 	inactive_selection_background: 5,
 	active_item_frame: 6
-};
+}
 // Used in window.GetFontCUI()
 FontTypeCUI = {
 	items: 0,
 	labels: 1
-};
+}
 // Used in window.GetColorDUI()
 ColorTypeDUI = {
 	text: 0,
 	background: 1,
 	highlight: 2,
 	selection: 3
-};
+}
 // Used in window.GetFontDUI()
 FontTypeDUI = {
 	defaults: 0,
@@ -255,7 +256,7 @@ FontTypeDUI = {
 	playlists: 3,
 	statusbar: 4,
 	console: 5
-};
+}
 //}}
 // {{
 // Used in gr.DrawString()
@@ -274,14 +275,14 @@ function StringFormat() {
 		break;
 	default:
 		return 0;
-	};
+	}
 	return ((h_align << 28) | (v_align << 24) | (trimming << 20) | flags);
-};
+}
 StringAlignment = {
 	Near: 0,
 	Centre: 1,
 	Far: 2
-};
+}
 var lt_stringformat = StringFormat(StringAlignment.Near, StringAlignment.Near);
 var ct_stringformat = StringFormat(StringAlignment.Centre, StringAlignment.Near);
 var rt_stringformat = StringFormat(StringAlignment.Far, StringAlignment.Near);
@@ -300,38 +301,38 @@ AlbumArtId = {
 	disc: 2,
 	icon: 3,
 	artist: 4
-};
+}
 //}}
 // {{
 // Used everywhere!
 function RGB(r, g, b) {
 	return (0xff000000 | (r << 16) | (g << 8) | (b));
-};
+}
 function RGBA(r, g, b, a) {
 	return ((a << 24) | (r << 16) | (g << 8) | (b));
-};
+}
 function getAlpha(color) {
 	return ((color >> 24) & 0xff);
-};
+}
 
 function getRed(color) {
 	return ((color >> 16) & 0xff);
-};
+}
 
 function getGreen(color) {
 	return ((color >> 8) & 0xff);
-};
+}
 
 function getBlue(color) {
 	return (color & 0xff);
-};
+}
 
 function negative(colour) {
 	var R = getRed(colour);
 	var G = getGreen(colour);
 	var B = getBlue(colour);
 	return RGB(Math.abs(R - 255), Math.abs(G - 255), Math.abs(B - 255));
-};
+}
 
 function toRGB(d) { // convert back to RGB values
 	var d = d - 0xff000000;
@@ -339,7 +340,7 @@ function toRGB(d) { // convert back to RGB values
 	var g = d >> 8 & 0xFF;
 	var b = d & 0xFF;
 	return [r, g, b];
-};
+}
 
 function blendColors(c1, c2, factor) {
 	// When factor is 0, result is 100% color1, when factor is 1, result is 100% color2.
@@ -349,7 +350,7 @@ function blendColors(c1, c2, factor) {
 	var g = Math.round(c1[1] + factor * (c2[1] - c1[1]));
 	var b = Math.round(c1[2] + factor * (c2[2] - c1[2]));
 	return (0xff000000 | (r << 16) | (g << 8) | (b));
-};
+}
 
 function draw_glass_reflect(w, h) {
 	// Mask for glass effect
@@ -370,24 +371,7 @@ function draw_glass_reflect(w, h) {
 	glass_img.ApplyMask(Mask);
 	Mask.Dispose();
 	return glass_img;
-};
-
-function drawBlurbox(w, h, bgcolor, boxcolor, radius, iteration) {
-	// Create a image which background is true transparent
-	var g_blurbox = gdi.CreateImage(w + 40, h + 40);
-	// Get graphics interface like "gr" in on_paint
-	var gb = g_blurbox.GetGraphics();
-	gb.FillSolidRect(20, 20, w, h, boxcolor);
-	g_blurbox.ReleaseGraphics(gb);
-	// Make box blur, radius = 2, iteration = 2
-	g_blurbox.BoxBlur(radius, iteration);
-	var g_blurbox_main = gdi.CreateImage(w + 40, h + 40);
-	gb = g_blurbox_main.GetGraphics();
-	gb.FillSolidRect(0, 0, w + 40, h + 40, bgcolor);
-	gb.DrawImage(g_blurbox, 0, -10, w + 40, h + 40, 0, 0, w + 40, h + 40, 0, 255);
-	g_blurbox_main.ReleaseGraphics(gb);
-	return g_blurbox_main;
-};
+}
 
 function num(strg, nb) {
 	if (!strg) return "";
@@ -397,25 +381,11 @@ function num(strg, nb) {
 	if (k > 0) {
 		for (i = 0; i < k; i++) {
 			str = "0" + str;
-		};
-	};
+		}
+	}
 	return str.toString();
-};
-//Time formatting secondes -> 0:00
-function TimeFromSeconds(t) {
-	var zpad = function (n) {
-		var str = n.toString();
-		return (str.length < 2) ? "0" + str : str;
-	};
-	var h = Math.floor(t / 3600);
-	t -= h * 3600;
-	var m = Math.floor(t / 60);
-	t -= m * 60;
-	var s = Math.floor(t);
-	if (h > 0)
-		return h.toString() + ":" + zpad(m) + ":" + zpad(s);
-	return m.toString() + ":" + zpad(s);
-};
+}
+
 function TrackType(trkpath) {
 	var taggable;
 	var type;
@@ -447,38 +417,25 @@ function TrackType(trkpath) {
 	default:
 		taggable = 0;
 		type = 5;
-	};
+	}
 	return type;
-};
+}
+
 function replaceAll(str, search, repl) {
 	while (str.indexOf(search) != -1) {
 		str = str.replace(search, repl);
-	};
+	}
 	return str;
-};
-function removeAccents(str) {
-	/*
-	var norm = new Array('À','Á','Â','Ã','Ä','Å','Æ','Ç','È','É','Ê','Ë',
-	'Ì','Í','Î','Ï', 'Ð','Ñ','Ò','Ó','Ô','Õ','Ö','Ø','Ù','Ú','Û','Ü','Ý',
-	'Þ','ß');
-	var spec = new Array('A','A','A','A','A','A','AE','C','E','E','E','E',
-	'I','I','I','I', 'D','N','O','O','O','O','O','O','U','U','U','U','Y',
-	'b','SS');
-	for (var i = 0; i < spec.length; i++) {
-	str = replaceAll(str, norm[i], spec[i]);
-	};
-	*/
-	return str;
-};
-//}}
+}
 
 //=================================================// Button object
-ButtonStates = {
+var ButtonStates = {
 	normal: 0,
 	hover: 1,
 	down: 2
-};
-button = function (normal, hover, down) {
+}
+
+var button = function (normal, hover, down) {
 	this.img = Array(normal, hover, down);
 	this.w = this.img[0].Width;
 	this.h = this.img[0].Height;
@@ -487,15 +444,15 @@ button = function (normal, hover, down) {
 		this.img = Array(normal, hover, down);
 		this.w = this.img[0].Width;
 		this.h = this.img[0].Height;
-	};
+	}
 	this.draw = function (gr, x, y, alpha) {
 		this.x = x;
 		this.y = y;
 		this.img[this.state] && gr.DrawImage(this.img[this.state], this.x, this.y, this.w, this.h, 0, 0, this.w, this.h, 0, alpha);
-	};
+	}
 	this.repaint = function () {
 		window.RepaintRect(this.x, this.y, this.w, this.h);
-	};
+	}
 	this.checkstate = function (event, x, y) {
 		this.ishover = (x > this.x && x < this.x + this.w - 1 && y > this.y && y < this.y + this.h - 1);
 		this.old = this.state;
@@ -507,7 +464,7 @@ button = function (normal, hover, down) {
 				this.state = this.ishover ? ButtonStates.down : ButtonStates.normal;
 				this.isdown = true;
 				break;
-			};
+			}
 			break;
 		case "up":
 			this.state = this.ishover ? ButtonStates.hover : ButtonStates.normal;
@@ -522,17 +479,17 @@ button = function (normal, hover, down) {
 			case ButtonStates.hover:
 				this.state = this.ishover ? ButtonStates.hover : ButtonStates.normal;
 				break;
-			};
+			}
 			break;
 		case "leave":
 			this.state = this.isdown ? ButtonStates.down : ButtonStates.normal;
 			break;
-		};
+		}
 		if (this.state != this.old)
 			this.repaint();
 		return this.state;
-	};
-};
+	}
+}
 
 //=================================================// Tools (general)
 
@@ -552,7 +509,7 @@ function DrawPolyStar(gr, x, y, out_radius, in_radius, points, line_thickness, l
 		var y_point = Math.ceil(r * Math.sin(Math.PI * i / points * 2 - Math.PI / 2));
 		point_arr.push(x_point + out_radius / 2);
 		point_arr.push(y_point + out_radius / 2);
-	};
+	}
 
 	//---> Crate poligon image
 	var img = gdi.CreateImage(out_radius, out_radius);
@@ -565,154 +522,21 @@ function DrawPolyStar(gr, x, y, out_radius, in_radius, points, line_thickness, l
 
 	//---> Draw image
 	gr.DrawImage(img, x, y, out_radius, out_radius, 0, 0, out_radius, out_radius, angle, opacity);
-};
-
-function zoom(value, factor) {
-	return Math.ceil(value * factor / 100);
-};
+}
 
 function get_system_scrollbar_width() {
 	var tmp = utils.GetSystemMetrics(SM_CXVSCROLL);
 	return tmp;
-};
-
-function get_system_scrollbar_height() {
-	var tmp = utils.GetSystemMetrics(SM_CYHSCROLL);
-	return tmp;
-};
+}
 
 String.prototype.repeat = function (num) {
 	if (num >= 0 && num <= 5) {
 		var g = Math.round(num);
 	} else {
 		return "";
-	};
+	}
 	return new Array(g + 1).join(this);
-};
-
-function cloneObject(obj) {
-	var clone = {};
-	for (var i in obj) {
-		if (typeof(obj[i]) == "object" && obj[i] != null)
-			clone[i] = cloneObject(obj[i]);
-		else
-			clone[i] = obj[i];
-	};
-	return clone;
-};
-
-function compareObject(o1, o2) {
-	for (var p in o1) {
-		if (o1[p] != o2[p]) {
-			return false;
-		};
-	};
-	for (var p in o2) {
-		if (o1[p] != o2[p]) {
-			return false;
-		};
-	};
-	return true;
-};
-
-function Utf8Encode(string) {
-	string = string.replace(/\r\n/g, "\n");
-	var utftext = "";
-	for (var n = 0; n < string.length; n++) {
-		var c = string.charCodeAt(n);
-		if (c < 128) {
-			utftext += String.fromCharCode(c);
-		} else if ((c > 127) && (c < 2048)) {
-			utftext += String.fromCharCode((c >> 6) | 192);
-			utftext += String.fromCharCode((c & 63) | 128);
-		} else {
-			utftext += String.fromCharCode((c >> 12) | 224);
-			utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-			utftext += String.fromCharCode((c & 63) | 128);
-		};
-	};
-	return utftext;
-};
-
-function crc32(str) {
-	//  discuss at: http://phpjs.org/functions/crc32/
-	// original by: Webtoolkit.info (http://www.webtoolkit.info/)
-	// improved by: T0bsn
-	//  depends on: utf8_encode
-	//   example 1: crc32('Kevin van Zonneveld');
-	//   returns 1: 1249991249
-
-	str = Utf8Encode(str);
-	var table =
-		'00000000 77073096 EE0E612C 990951BA 076DC419 706AF48F E963A535 9E6495A3 0EDB8832 79DCB8A4 E0D5E91E 97D2D988 09B64C2B 7EB17CBD E7B82D07 90BF1D91 1DB71064 6AB020F2 F3B97148 84BE41DE 1ADAD47D 6DDDE4EB F4D4B551 83D385C7 136C9856 646BA8C0 FD62F97A 8A65C9EC 14015C4F 63066CD9 FA0F3D63 8D080DF5 3B6E20C8 4C69105E D56041E4 A2677172 3C03E4D1 4B04D447 D20D85FD A50AB56B 35B5A8FA 42B2986C DBBBC9D6 ACBCF940 32D86CE3 45DF5C75 DCD60DCF ABD13D59 26D930AC 51DE003A C8D75180 BFD06116 21B4F4B5 56B3C423 CFBA9599 B8BDA50F 2802B89E 5F058808 C60CD9B2 B10BE924 2F6F7C87 58684C11 C1611DAB B6662D3D 76DC4190 01DB7106 98D220BC EFD5102A 71B18589 06B6B51F 9FBFE4A5 E8B8D433 7807C9A2 0F00F934 9609A88E E10E9818 7F6A0DBB 086D3D2D 91646C97 E6635C01 6B6B51F4 1C6C6162 856530D8 F262004E 6C0695ED 1B01A57B 8208F4C1 F50FC457 65B0D9C6 12B7E950 8BBEB8EA FCB9887C 62DD1DDF 15DA2D49 8CD37CF3 FBD44C65 4DB26158 3AB551CE A3BC0074 D4BB30E2 4ADFA541 3DD895D7 A4D1C46D D3D6F4FB 4369E96A 346ED9FC AD678846 DA60B8D0 44042D73 33031DE5 AA0A4C5F DD0D7CC9 5005713C 270241AA BE0B1010 C90C2086 5768B525 206F85B3 B966D409 CE61E49F 5EDEF90E 29D9C998 B0D09822 C7D7A8B4 59B33D17 2EB40D81 B7BD5C3B C0BA6CAD EDB88320 9ABFB3B6 03B6E20C 74B1D29A EAD54739 9DD277AF 04DB2615 73DC1683 E3630B12 94643B84 0D6D6A3E 7A6A5AA8 E40ECF0B 9309FF9D 0A00AE27 7D079EB1 F00F9344 8708A3D2 1E01F268 6906C2FE F762575D 806567CB 196C3671 6E6B06E7 FED41B76 89D32BE0 10DA7A5A 67DD4ACC F9B9DF6F 8EBEEFF9 17B7BE43 60B08ED5 D6D6A3E8 A1D1937E 38D8C2C4 4FDFF252 D1BB67F1 A6BC5767 3FB506DD 48B2364B D80D2BDA AF0A1B4C 36034AF6 41047A60 DF60EFC3 A867DF55 316E8EEF 4669BE79 CB61B38C BC66831A 256FD2A0 5268E236 CC0C7795 BB0B4703 220216B9 5505262F C5BA3BBE B2BD0B28 2BB45A92 5CB36A04 C2D7FFA7 B5D0CF31 2CD99E8B 5BDEAE1D 9B64C2B0 EC63F226 756AA39C 026D930A 9C0906A9 EB0E363F 72076785 05005713 95BF4A82 E2B87A14 7BB12BAE 0CB61B38 92D28E9B E5D5BE0D 7CDCEFB7 0BDBDF21 86D3D2D4 F1D4E242 68DDB3F8 1FDA836E 81BE16CD F6B9265B 6FB077E1 18B74777 88085AE6 FF0F6A70 66063BCA 11010B5C 8F659EFF F862AE69 616BFFD3 166CCF45 A00AE278 D70DD2EE 4E048354 3903B3C2 A7672661 D06016F7 4969474D 3E6E77DB AED16A4A D9D65ADC 40DF0B66 37D83BF0 A9BCAE53 DEBB9EC5 47B2CF7F 30B5FFE9 BDBDF21C CABAC28A 53B39330 24B4A3A6 BAD03605 CDD70693 54DE5729 23D967BF B3667A2E C4614AB8 5D681B02 2A6F2B94 B40BBE37 C30C8EA1 5A05DF1B 2D02EF8D';
-
-	var crc = 0;
-	var x = 0;
-	var y = 0;
-
-	crc = crc ^ (-1);
-	for (var i = 0, iTop = str.length; i < iTop; i++) {
-		y = (crc ^ str.charCodeAt(i)) & 0xFF;
-		x = '0x' + table.substr(y * 9, 8);
-		crc = (crc >>> 8) ^ x;
-	};
-
-	return crc ^ (-1);
-};
-
-// --- UIHacks
-
-MainMenuState = {
-	Show: 0,
-	Hide: 1,
-	Auto: 2
-};
-
-FrameStyle = {
-	Default: 0,
-	SmallCaption: 1,
-	NoCaption: 2,
-	NoBorder: 3
-};
-
-MoveStyle = {
-	Default: 0,
-	Middle: 1,
-	Left: 2,
-	Both: 3
-};
-
-AeroEffect = {
-	Default: 0,
-	Disabled: 1,
-	GlassFrame: 2,
-	SheetOfGlass: 3
-};
-
-WindowState = {
-	Normal: 0,
-	Minimized: 1,
-	Maximized: 2
-};
-
-function on_load() {
-	if (!fso.FolderExists(CACHE_FOLDER))
-		fso.CreateFolder(CACHE_FOLDER);
-};
-
-function getpath_(temp) {
-	var img_path = "",
-	path_;
-	for (var iii in cover_img) {
-		path_ = utils.Glob(temp + cover_img[iii], exc_mask = FILE_ATTRIBUTE_DIRECTORY, inc_mask = 0xffffffff).toArray();
-		for (var j in path_) {
-			if (path_[j].toLowerCase().indexOf(".jpg") > -1 || path_[j].toLowerCase().indexOf(".png") > -1 || path_[j].toLowerCase().indexOf(".gif") > -1) {
-				return path_[j];
-			};
-		};
-	};
-	return null;
-};
+}
 
 // ===================================================== // Wallpaper
 function setWallpaperImg() {
@@ -728,7 +552,7 @@ function setWallpaperImg() {
 	}
 
 	return FormatWallpaper(tmp);;
-};
+}
 
 function FormatWallpaper(img) {
 	if (!img)
@@ -744,10 +568,10 @@ function FormatWallpaper(img) {
 	if (ppt.wallpaperblurred) {
 		var blur_factor = ppt.wallpaperblurvalue; // [1-90]
 		tmp_img = draw_blurred_image(tmp_img, 0, 0, tmp_img.Width, tmp_img.Height, 0, 0, tmp_img.Width, tmp_img.Height, blur_factor, 0x00ffffff);
-	};
+	}
 
 	return tmp_img.CreateRawBitmap();
-};
+}
 
 function draw_blurred_image(image, ix, iy, iw, ih, bx, by, bw, bh, blur_value, overlay_color) {
 	var blurValue = blur_value;
@@ -771,23 +595,23 @@ function draw_blurred_image(image, ix, iy, iw, ih, bx, by, bw, bh, blur_value, o
 	if (ix != bx || iy != by || iw != bw || ih != bh) {
 		gb.DrawImage(image, ix, iy, iw, ih, 0, 0, image.Width, image.Height, 0, 255);
 		gb.FillSolidRect(bx, by, bw, bh, 0xffffffff);
-	};
+	}
 	gb.DrawImage(bbox, bx, by, bw, bh, 0, 0, bbox.Width, bbox.Height, 0, 255);
 
 	// overlay
 	if (overlay_color != null) {
 		gb.FillSolidRect(bx, by, bw, bh, overlay_color);
-	};
+	}
 
 	// top border of blur area
 	if (ix != bx || iy != by || iw != bw || ih != bh) {
 		gb.FillSolidRect(bx, by, bw, 1, 0x22ffffff);
 		gb.FillSolidRect(bx, by - 1, bw, 1, 0x22000000);
-	};
+	}
 	newImg.ReleaseGraphics(gb);
 
 	return newImg;
-};
+}
 
 //=================================================// Custom functions
 function match(input, str) {
@@ -796,9 +620,9 @@ function match(input, str) {
 	for (var j in str) {
 		if (input.indexOf(str[j]) < 0)
 			return false;
-	};
+	}
 	return true;
-};
+}
 
 function process_string(str) {
 	str_ = [];
@@ -809,9 +633,9 @@ function process_string(str) {
 	for (var i in str) {
 		if (str[i] != "")
 			str_[str_.length] = str[i];
-	};
+	}
 	return str_;
-};
+}
 
 // Used with plman.GetPlaylistLockFilterMask()
 var PlaylistLockFilterMask = {
@@ -822,7 +646,7 @@ var PlaylistLockFilterMask = {
 	filter_rename: 16,
 	filter_remove_playlist: 32,
 	filter_default_action: 64
-};
+}
 
 function playlist_can_add_items(playlistIndex) {
 	return !(plman.GetPlaylistLockFilterMask(playlistIndex) & PlaylistLockFilterMask.filter_add);
@@ -849,7 +673,7 @@ function get_font() {
 	} else if (g_instancetype == 1) {
 		default_font = window.GetFontDUI(FontTypeDUI.playlists);
 		g_font_headers = window.GetFontDUI(FontTypeDUI.tabs);
-	};
+	}
 
 	if (default_font) {
 		g_fname = default_font.Name;
@@ -882,8 +706,8 @@ function get_font() {
 	} else {
 		g_font_rating = gdi.Font("arial", (g_fsize * 140 / 100), 0);
 		g_font_mood = gdi.Font("arial", (g_fsize * 140 / 100), 0);
-	};
-};
+	}
+}
 
 function get_colors() {
 	var arr;
@@ -919,15 +743,15 @@ function get_colors() {
 			g_color_normal_bg = window.GetColourDUI(ColorTypeDUI.background);
 			g_color_selected_bg = g_color_selected_txt;
 			g_color_highlight = window.GetColourDUI(ColorTypeDUI.highlight);
-		};
-	};
-};
+		}
+	}
+}
 
 function on_font_changed() {
 	get_font();
 	get_metrics();
 	brw.repaint();
-};
+}
 
 function on_colours_changed() {
 	get_colors();
@@ -937,4 +761,4 @@ function on_colours_changed() {
 	g_filterbox.getImages();
 	g_filterbox.reset_colors();
 	brw.repaint();
-};
+}

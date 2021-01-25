@@ -8,7 +8,7 @@ oScrollbar = function (themed) {
 		this.theme = window.CreateThemeManager("scrollbar");
 	} else {
 		this.theme = false;
-	};
+	}
 	this.cursorScrollTimer = false;
 	this.buttons = Array(null, null, null);
 
@@ -20,17 +20,17 @@ oScrollbar = function (themed) {
 				this.theme.DrawThemeBackground(gr, this.x, this.y, this.w, this.h);
 			} catch (e) {
 				gr.FillSolidRect(this.x, this.y, this.w, this.h, g_color_normal_txt & 0x15ffffff);
-			};
+			}
 		} else {
 			gr.FillSolidRect(this.x, this.y, this.w, this.h, g_color_normal_txt & 0x15ffffff);
-		};
+		}
 		// draw up & down buttons
 		this.buttons[cScrollBar.buttonType.up] && this.buttons[cScrollBar.buttonType.up].draw(gr, this.x, this.y, 255);
 		this.buttons[cScrollBar.buttonType.down] && this.buttons[cScrollBar.buttonType.down].draw(gr, this.x, this.y + this.h - this.w, 255);
 
 		// draw cursor
 		this.buttons[cScrollBar.buttonType.cursor] && this.buttons[cScrollBar.buttonType.cursor].draw(gr, this.x, this.cursorPos, 255);
-	};
+	}
 
 	this.setCursor = function (totalRowVisible, totalRows, offset) {
 		if (totalRows > 0 && totalRows > totalRowVisible && this.w > 2) {
@@ -43,8 +43,8 @@ oScrollbar = function (themed) {
 			var ratio = offset / (totalRows - totalRowVisible);
 			this.cursorPos = this.area_y + Math.round((this.area_h - this.cursorHeight) * ratio);
 			this.setCursorButton();
-		};
-	};
+		}
+	}
 
 	this.setCursorButton = function () {
 		// normal cursor Image
@@ -57,10 +57,10 @@ oScrollbar = function (themed) {
 			if (this.cursorHeight >= 16) {
 				this.theme.SetPartAndStateId(9, 1);
 				this.theme.DrawThemeBackground(gb, 0, 0, this.cursorWidth, this.cursorHeight);
-			};
+			}
 		} catch (e) {
 			gb.FillSolidRect(0, 0, this.cursorWidth, this.cursorHeight, g_color_normal_txt & 0x33ffffff);
-		};
+		}
 		this.cursorImage_normal.ReleaseGraphics(gb);
 
 		// hover cursor Image
@@ -73,10 +73,10 @@ oScrollbar = function (themed) {
 			if (this.cursorHeight >= 16) {
 				this.theme.SetPartAndStateId(9, 1);
 				this.theme.DrawThemeBackground(gb, 0, 0, this.cursorWidth, this.cursorHeight);
-			};
+			}
 		} catch (e) {
 			gb.FillSolidRect(0, 0, this.cursorWidth, this.cursorHeight, g_color_normal_txt & 0x55ffffff);
-		};
+		}
 		this.cursorImage_hover.ReleaseGraphics(gb);
 
 		// down cursor Image
@@ -89,15 +89,15 @@ oScrollbar = function (themed) {
 			if (this.cursorHeight >= 16) {
 				this.theme.SetPartAndStateId(9, 1);
 				this.theme.DrawThemeBackground(gb, 0, 0, this.cursorWidth, this.cursorHeight);
-			};
+			}
 		} catch (e) {
 			gb.FillSolidRect(0, 0, this.cursorWidth, this.cursorHeight, g_color_normal_txt & 0x99ffffff);
-		};
+		}
 		this.cursorImage_down.ReleaseGraphics(gb);
 
 		// create/refresh cursor Button in buttons array
 		this.buttons[cScrollBar.buttonType.cursor] = new button(this.cursorImage_normal, this.cursorImage_hover, this.cursorImage_down);
-	};
+	}
 
 	this.setButtons = function () {
 
@@ -111,7 +111,7 @@ oScrollbar = function (themed) {
 		} catch (e) {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(112), g_font_wd3_scrollBar, g_color_normal_txt & 0x55ffffff, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.upImage_normal.ReleaseGraphics(gb);
 
 		// hover scroll_up Image
@@ -124,7 +124,7 @@ oScrollbar = function (themed) {
 		} catch (e) {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(112), g_font_wd3_scrollBar, g_color_normal_txt & 0x99ffffff, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.upImage_hover.ReleaseGraphics(gb);
 
 		// down scroll_up Image
@@ -137,7 +137,7 @@ oScrollbar = function (themed) {
 		} catch (e) {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(112), g_font_wd3_scrollBar, g_color_normal_txt, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.upImage_down.ReleaseGraphics(gb);
 
 		// normal scroll_down Image
@@ -150,7 +150,7 @@ oScrollbar = function (themed) {
 		} catch (e) {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(113), g_font_wd3_scrollBar, g_color_normal_txt & 0x55ffffff, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.downImage_normal.ReleaseGraphics(gb);
 
 		// hover scroll_down Image
@@ -163,7 +163,7 @@ oScrollbar = function (themed) {
 		} catch (e) {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(113), g_font_wd3_scrollBar, g_color_normal_txt & 0x99ffffff, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.downImage_hover.ReleaseGraphics(gb);
 
 		// down scroll_down Image
@@ -176,7 +176,7 @@ oScrollbar = function (themed) {
 		} catch (e) {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(113), g_font_wd3_scrollBar, g_color_normal_txt, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.downImage_down.ReleaseGraphics(gb);
 
 		var fin = this.buttons.length;
@@ -191,9 +191,9 @@ oScrollbar = function (themed) {
 			case cScrollBar.buttonType.down:
 				this.buttons[cScrollBar.buttonType.down] = new button(this.downImage_normal, this.downImage_hover, this.downImage_down);
 				break;
-			};
-		};
-	};
+			}
+		}
+	}
 
 	this.setSize = function (x, y, w, h) {
 		this.x = x;
@@ -204,7 +204,7 @@ oScrollbar = function (themed) {
 		this.area_y = y + w;
 		this.area_h = h - (w * 2);
 		this.setButtons();
-	};
+	}
 
 	this.setOffsetFromCursorPos = function () {
 		// calc ratio of the scroll cursor to calc the equivalent item for the full playlist (with gh)
@@ -212,7 +212,7 @@ oScrollbar = function (themed) {
 		// calc idx of the item (of the full playlist with gh) to display at top of the panel list (visible)
 		var newOffset = Math.round((p.list.totalRows - p.list.totalRowVisible) * ratio);
 		return newOffset;
-	};
+	}
 
 	this.cursorCheck = function (event, x, y) {
 		this.ishover = (x >= this.x && x <= this.x + this.w && y >= this.cursorPos && y <= (this.cursorPos + this.cursorHeight));
@@ -226,7 +226,7 @@ oScrollbar = function (themed) {
 				this.cursorDrag = true;
 				this.cursorDragDelta = y - this.cursorPos;
 				this.clicked = true;
-			};
+			}
 			break;
 		case "up":
 			this.buttons[0] && this.buttons[0].checkstate(event, x, y);
@@ -234,7 +234,7 @@ oScrollbar = function (themed) {
 				p.list.offset = this.setOffsetFromCursorPos();
 				p.list.setItems(false);
 				full_repaint();
-			};
+			}
 			this.cursorClickX = 0;
 			this.cursorClickY = 0;
 			this.cursorDrag = false;
@@ -246,10 +246,10 @@ oScrollbar = function (themed) {
 				this.cursorPos = y - this.cursorDragDelta;
 				if (this.cursorPos + this.cursorHeight > this.area_y + this.area_h) {
 					this.cursorPos = (this.area_y + this.area_h) - this.cursorHeight;
-				};
+				}
 				if (this.cursorPos < this.area_y) {
 					this.cursorPos = this.area_y;
-				};
+				}
 
 				p.list.offset = this.setOffsetFromCursorPos();
 				if (!g_mouse_wheel_timer) {
@@ -259,18 +259,18 @@ oScrollbar = function (themed) {
 							g_mouse_wheel_timer && window.ClearTimeout(g_mouse_wheel_timer);
 							g_mouse_wheel_timer = false;
 						}, 30);
-				};
-			};
+				}
+			}
 			break;
 		case "leave":
 			this.buttons[0] && this.buttons[0].checkstate(event, x, y);
 			break;
-		};
-	};
+		}
+	}
 
 	this.isHoverObject = function (x, y) {
 		return (x >= this.x && x <= this.x + this.w && y > this.area_y && y < this.area_y + this.area_h);
-	};
+	}
 
 	this.check = function (event, x, y) {
 
@@ -297,7 +297,7 @@ oScrollbar = function (themed) {
 						if (properties.smoothscrolling) {
 							cList.scroll_direction = 1;
 							set_scroll_delta();
-						};
+						}
 						full_repaint();
 						if (!cScrollBar.timerID2) {
 							cScrollBar.timerID2 = window.SetInterval(function () {
@@ -307,10 +307,10 @@ oScrollbar = function (themed) {
 										p.list.setItems(false);
 										p.scrollbar.setCursor(p.list.totalRowVisible, p.list.totalRows, p.list.offset);
 										full_repaint();
-									};
+									}
 								}, 60);
-						};
-					};
+						}
+					}
 					break;
 				case 2: // down button
 					if (this.buttons[i] && this.buttons[i].checkstate(event, x, y) == ButtonStates.hover) {
@@ -324,7 +324,7 @@ oScrollbar = function (themed) {
 						if (properties.smoothscrolling) {
 							cList.scroll_direction = -1;
 							set_scroll_delta();
-						};
+						}
 						full_repaint();
 						if (!cScrollBar.timerID2) {
 							cScrollBar.timerID2 = window.SetInterval(function () {
@@ -334,12 +334,12 @@ oScrollbar = function (themed) {
 										p.list.setItems(false);
 										p.scrollbar.setCursor(p.list.totalRowVisible, p.list.totalRows, p.list.offset);
 										full_repaint();
-									};
+									}
 								}, 60);
-						};
-					};
+						}
+					}
 					break;
-				};
+				}
 				break;
 			case "down":
 				switch (i) {
@@ -354,7 +354,7 @@ oScrollbar = function (themed) {
 						if (properties.smoothscrolling) {
 							cList.scroll_direction = 1;
 							set_scroll_delta();
-						};
+						}
 						full_repaint();
 						if (!cScrollBar.timerID2) {
 							cScrollBar.timerID2 = window.SetInterval(function () {
@@ -364,10 +364,10 @@ oScrollbar = function (themed) {
 										p.list.setItems(false);
 										p.scrollbar.setCursor(p.list.totalRowVisible, p.list.totalRows, p.list.offset);
 										full_repaint();
-									};
+									}
 								}, 60);
-						};
-					};
+						}
+					}
 					break;
 				case 2: // down button
 					if (this.buttons[i] && this.buttons[i].checkstate(event, x, y) == ButtonStates.down) {
@@ -380,7 +380,7 @@ oScrollbar = function (themed) {
 						if (properties.smoothscrolling) {
 							cList.scroll_direction = -1;
 							set_scroll_delta();
-						};
+						}
 						full_repaint();
 						if (!cScrollBar.timerID2) {
 							cScrollBar.timerID2 = window.SetInterval(function () {
@@ -390,31 +390,31 @@ oScrollbar = function (themed) {
 										p.list.setItems(false);
 										p.scrollbar.setCursor(p.list.totalRowVisible, p.list.totalRows, p.list.offset);
 										full_repaint();
-									};
+									}
 								}, 60);
-						};
-					};
+						}
+					}
 					break;
-				};
+				}
 				break;
 			case "up":
 				if (cScrollBar.timerID2) {
 					window.ClearInterval(cScrollBar.timerID2);
 					cScrollBar.timerID2 = false;
-				};
+				}
 				cScrollBar.timer_counter = 0;
 				this.buttons[i] && this.buttons[i].checkstate(event, x, y);
 				this.clicked = false;
 				break;
 			default:
 				this.buttons[i] && this.buttons[i].checkstate(event, x, y);
-			};
-		};
-	};
+			}
+		}
+	}
 	this.repaint = function () {
 		window.RepaintRect(this.x, this.y, this.w, this.h);
-	};
-};
+	}
+}
 
 oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, offset, parent_object, show_buttons, scroll_step, is_themed) {
 	this.id = id;
@@ -432,7 +432,7 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 		cursor: 0,
 		up: 1,
 		down: 2
-	};
+	}
 	this.showButtons = show_buttons;
 	this.scrollStep = scroll_step;
 	this.themed = is_themed;
@@ -440,16 +440,16 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 		this.theme = window.CreateThemeManager("scrollbar");
 	} else {
 		this.theme = false;
-	};
+	}
 
 	this.parentRepaint = function () {
 		eval(this.parentObject).repaint();
 		//window.Repaint();
-	};
+	}
 
 	this.repaint = function () {
 		window.RepaintRect(this.x, this.y, this.w, this.h);
-	};
+	}
 
 	this.setCursorButton = function () {
 		// normal cursor Image
@@ -463,13 +463,13 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 				if (this.cursorHeight >= 25) {
 					this.theme.SetPartAndStateId(9, 1);
 					this.theme.DrawThemeBackground(gb, 0, 0, this.cursorWidth, this.cursorHeight);
-				};
+				}
 			} catch (e) {
 				gb.FillSolidRect(0, 0, this.cursorWidth, this.cursorHeight, this.color_txt & 0x33ffffff);
-			};
+			}
 		} else {
 			gb.FillSolidRect(0, 0, this.cursorWidth, this.cursorHeight, this.color_txt & 0x33ffffff);
-		};
+		}
 		this.cursorImage_normal.ReleaseGraphics(gb);
 
 		// hover cursor Image
@@ -483,13 +483,13 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 				if (this.cursorHeight >= 25) {
 					this.theme.SetPartAndStateId(9, 1);
 					this.theme.DrawThemeBackground(gb, 0, 0, this.cursorWidth, this.cursorHeight);
-				};
+				}
 			} catch (e) {
 				gb.FillSolidRect(0, 0, this.cursorWidth, this.cursorHeight, this.color_txt & 0x55ffffff);
-			};
+			}
 		} else {
 			gb.FillSolidRect(0, 0, this.cursorWidth, this.cursorHeight, this.color_txt & 0x55ffffff);
-		};
+		}
 		this.cursorImage_hover.ReleaseGraphics(gb);
 
 		// down cursor Image
@@ -503,18 +503,18 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 				if (this.cursorHeight >= 25) {
 					this.theme.SetPartAndStateId(9, 1);
 					this.theme.DrawThemeBackground(gb, 0, 0, this.cursorWidth, this.cursorHeight);
-				};
+				}
 			} catch (e) {
 				gb.FillSolidRect(0, 0, this.cursorWidth, this.cursorHeight, this.color_txt & 0x99ffffff);
-			};
+			}
 		} else {
 			gb.FillSolidRect(0, 0, this.cursorWidth, this.cursorHeight, this.color_txt & 0x99ffffff);
-		};
+		}
 		this.cursorImage_down.ReleaseGraphics(gb);
 
 		// create/refresh cursor Button in buttons array
 		this.buttons[this.buttonType.cursor] = new button(this.cursorImage_normal, this.cursorImage_hover, this.cursorImage_down);
-	};
+	}
 
 	this.setButtons = function () {
 		// normal scroll_up Image
@@ -528,11 +528,11 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 			} catch (e) {
 				gb.SetTextRenderingHint(4);
 				gb.DrawString(String.fromCharCode(112), g_font_wd3_scrollBar, this.color_txt & 0x55ffffff, 0, 0, this.w, this.w, cc_stringformat);
-			};
+			}
 		} else {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(112), g_font_wd3_scrollBar, this.color_txt & 0x55ffffff, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.upImage_normal.ReleaseGraphics(gb);
 
 		// hover scroll_up Image
@@ -546,11 +546,11 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 			} catch (e) {
 				gb.SetTextRenderingHint(4);
 				gb.DrawString(String.fromCharCode(112), g_font_wd3_scrollBar, this.color_txt & 0x99ffffff, 0, 0, this.w, this.w, cc_stringformat);
-			};
+			}
 		} else {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(112), g_font_wd3_scrollBar, this.color_txt & 0x99ffffff, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.upImage_hover.ReleaseGraphics(gb);
 
 		// down scroll_up Image
@@ -564,11 +564,11 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 			} catch (e) {
 				gb.SetTextRenderingHint(4);
 				gb.DrawString(String.fromCharCode(112), g_font_wd3_scrollBar, this.color_txt, 0, 0, this.w, this.w, cc_stringformat);
-			};
+			}
 		} else {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(112), g_font_wd3_scrollBar, this.color_txt, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.upImage_down.ReleaseGraphics(gb);
 
 		// normal scroll_down Image
@@ -582,11 +582,11 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 			} catch (e) {
 				gb.SetTextRenderingHint(4);
 				gb.DrawString(String.fromCharCode(113), g_font_wd3_scrollBar, this.color_txt & 0x55ffffff, 0, 0, this.w, this.w, cc_stringformat);
-			};
+			}
 		} else {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(113), g_font_wd3_scrollBar, this.color_txt & 0x55ffffff, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.downImage_normal.ReleaseGraphics(gb);
 
 		// hover scroll_down Image
@@ -600,11 +600,11 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 			} catch (e) {
 				gb.SetTextRenderingHint(4);
 				gb.DrawString(String.fromCharCode(113), g_font_wd3_scrollBar, this.color_txt & 0x99ffffff, 0, 0, this.w, this.w, cc_stringformat);
-			};
+			}
 		} else {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(113), g_font_wd3_scrollBar, this.color_txt & 0x99ffffff, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.downImage_hover.ReleaseGraphics(gb);
 
 		// down scroll_down Image
@@ -618,11 +618,11 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 			} catch (e) {
 				gb.SetTextRenderingHint(4);
 				gb.DrawString(String.fromCharCode(113), g_font_wd3_scrollBar, this.color_txt, 0, 0, this.w, this.w, cc_stringformat);
-			};
+			}
 		} else {
 			gb.SetTextRenderingHint(4);
 			gb.DrawString(String.fromCharCode(113), g_font_wd3_scrollBar, this.color_txt, 0, 0, this.w, this.w, cc_stringformat);
-		};
+		}
 		this.downImage_down.ReleaseGraphics(gb);
 
 		for (i = 1; i < this.buttons.length; i++) {
@@ -636,9 +636,9 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 			case this.buttonType.down:
 				this.buttons[this.buttonType.down] = new button(this.downImage_normal, this.downImage_hover, this.downImage_down);
 				break;
-			};
-		};
-	};
+			}
+		}
+	}
 
 	this.setDefaultColors = function () {
 		this.color_bg = g_color_normal_bg;
@@ -646,7 +646,7 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 		if (this.cursorHeight)
 			this.setCursorButton();
 		this.setButtons();
-	};
+	}
 	this.setDefaultColors();
 
 	this.setCustomColors = function (color_bg, color_txt) {
@@ -655,7 +655,7 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 		if (this.cursorHeight)
 			this.setCursorButton();
 		this.setButtons();
-	};
+	}
 
 	this.updateCursorPos = function (offset) {
 		this.offset = offset;
@@ -668,7 +668,7 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 		var ratio2 = this.offset / (this.total - this.totalRowsFull);
 		this.cursorY = this.cursorAreaY + Math.round((this.cursorAreaHeight - this.cursorHeight) * ratio2);
 		this.setCursorButton();
-	};
+	}
 
 	this.reSet = function (total_items, item_height, offset) {
 		this.total = total_items;
@@ -687,11 +687,11 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 			this.buttonHeight = 0;
 			this.cursorAreaY = this.y;
 			this.cursorAreaHeight = this.h;
-		};
+		}
 		if (this.visible)
 			this.updateCursorPos(this.offset);
 
-	};
+	}
 	this.reSet(this.total, this.itemHeight, this.offset);
 
 	this.reSize = function (x, y, w, h, total_items, item_height, offset) {
@@ -703,7 +703,7 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 		this.itemHeight = item_height;
 		this.offset = offset;
 		this.reSet(this.total, this.itemHeight, this.offset);
-	};
+	}
 
 	this.drawXY = function (gr, x, y) {
 		this.x = x;
@@ -716,18 +716,18 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 					this.theme.DrawThemeBackground(gr, x, y, this.w, this.h);
 				} catch (e) {
 					gr.FillSolidRect(this.x, this.y, this.w, this.h, this.color_txt & 0x15ffffff);
-				};
+				}
 			} else {
 				gr.FillSolidRect(this.x, this.y, this.w, this.h, this.color_txt & 0x15ffffff);
-			};
+			}
 			// scrollbar buttons
 			this.buttons[this.buttonType.cursor].draw(gr, x, this.cursorY, 255);
 			if (this.showButtons) {
 				this.buttons[this.buttonType.up].draw(gr, x, y, 255);
 				this.buttons[this.buttonType.down].draw(gr, x, this.cursorAreaY + this.cursorAreaHeight, 255);
-			};
-		};
-	};
+			}
+		}
+	}
 
 	this.draw = function (gr) {
 		if (this.visible) {
@@ -738,18 +738,18 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 					this.theme.DrawThemeBackground(gr, this.x, this.y, this.w, this.h);
 				} catch (e) {
 					gr.FillSolidRect(this.x, this.y, this.w, this.h, this.color_txt & 0x15ffffff);
-				};
+				}
 			} else {
 				gr.FillSolidRect(this.x, this.y, this.w, this.h, this.color_txt & 0x15ffffff);
-			};
+			}
 			// scrollbar buttons
 			this.buttons[this.buttonType.cursor].draw(gr, this.x, this.cursorY, 255);
 			if (this.showButtons) {
 				this.buttons[this.buttonType.up].draw(gr, this.x, this.y, 255);
 				this.buttons[this.buttonType.down].draw(gr, this.x, this.cursorAreaY + this.cursorAreaHeight, 255);
-			};
-		};
-	};
+			}
+		}
+	}
 
 	this.getOffsetFromCursorPos = function () {
 		// calc ratio of the scroll cursor to calc the equivalent item for the full playlist (with gh)
@@ -757,18 +757,18 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 		// calc idx of the item (of the full list with gh) to display at top of the panel list (visible)
 		var newOffset = Math.round((this.total - this.totalRowsFull) * ratio);
 		return newOffset;
-	};
+	}
 
 	this.setCursorPosFromOffset = function () {
 		return;
 		this.cursorY = Math.round((this.y + this.buttonHeight) + this.offset * (this.cursorAreaHeight / this.total));
 		if (this.cursorY + this.cursorHeight > this.cursorAreaY + this.cursorAreaHeight) {
 			this.cursorY = (this.cursorAreaY + this.cursorAreaHeight) - this.cursorHeight;
-		};
+		}
 		if (this.cursorY < this.cursorAreaY) {
 			this.cursorY = this.cursorAreaY;
-		};
-	};
+		}
+	}
 
 	this.cursorCheck = function (event, x, y) {
 		this.ishover = (x >= this.x && x <= this.x + this.w && y >= this.cursorY && y <= (this.cursorY + this.cursorHeight));
@@ -783,7 +783,7 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 				this.cursorClickY = y;
 				this.cursorDrag = true;
 				this.cursorDragDelta = y - this.cursorY;
-			};
+			}
 			break;
 		case "up":
 			this.buttons[this.buttonType.cursor].checkstate(event, x, y);
@@ -791,7 +791,7 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 				eval(this.parentObject).offset = this.getOffsetFromCursorPos();
 				this.setCursorPosFromOffset();
 				this.parentRepaint();
-			};
+			}
 			this.cursorClickX = 0;
 			this.cursorClickY = 0;
 			this.cursorDrag = false;
@@ -802,10 +802,10 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 				this.cursorY = y - this.cursorDragDelta;
 				if (this.cursorY + this.cursorHeight > this.cursorAreaY + this.cursorAreaHeight) {
 					this.cursorY = (this.cursorAreaY + this.cursorAreaHeight) - this.cursorHeight;
-				};
+				}
 				if (this.cursorY < this.cursorAreaY) {
 					this.cursorY = this.cursorAreaY;
-				};
+				}
 				this.offset = this.getOffsetFromCursorPos();
 				eval(this.parentObject).offset = this.offset;
 
@@ -816,14 +816,14 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 							window.ClearTimeout(cScrollBar.timer_repaint);
 							cScrollBar.timer_repaint = false;
 						}, 32);
-				};
-			};
+				}
+			}
 			break;
 		case "leave":
 			this.buttons[this.buttonType.cursor].checkstate(event, x, y);
 			break;
-		};
-	};
+		}
+	}
 
 	this.check = function (event, x, y, delta) {
 
@@ -861,10 +861,10 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 											obj.parentRepaint();
 										} else {
 											cScrollBar.timerCounter++;
-										};
+										}
 									}, 60);
-							};
-						};
+							}
+						}
 						break;
 					case 2: // down button
 						if (this.buttons[i].checkstate(event, x, y) == ButtonStates.down) {
@@ -886,27 +886,27 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 											obj.parentRepaint();
 										} else {
 											cScrollBar.timerCounter++;
-										};
+										}
 									}, 60);
-							};
-						};
+							}
+						}
 						break;
-					};
+					}
 					break;
 				case "up":
 					this.buttonClick = false;
 					if (cScrollBar.timerID) {
 						window.ClearInterval(cScrollBar.timerID);
 						cScrollBar.timerID = false;
-					};
+					}
 					cScrollBar.timerCounter = 0;
 					this.buttons[i].checkstate(event, x, y);
 					this.setCursorPosFromOffset();
 					break;
 				default:
 					this.buttons[i].checkstate(event, x, y);
-				};
-			};
+				}
+			}
 
 			// click on empty scrollbar area to scroll page
 			if (this.isHoverEmptyArea) {
@@ -930,9 +930,9 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 										obj.parentRepaint();
 									} else {
 										cScrollBar.timerCounter++;
-									};
+									}
 								}, 60);
-						};
+						}
 						break;
 					case false: // down
 						var max_offset = this.total - this.totalRowsFull;
@@ -952,14 +952,14 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 										obj.parentRepaint();
 									} else {
 										cScrollBar.timerCounter++;
-									};
+									}
 								}, 60);
-						};
+						}
 						break;
-					};
+					}
 					break;
-				};
-			};
+				}
+			}
 
 			// mouse wheel event
 			if (event == "wheel") {
@@ -973,10 +973,10 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 					eval(this.parentObject).offset = this.offset;
 					this.reSet(this.total, this.itemHeight, this.offset);
 					this.parentRepaint();
-				};
-			};
-		};
-	};
+				}
+			}
+		}
+	}
 
 	this.on_key = function (event, vkey) {
 		switch (event) {
@@ -1000,9 +1000,9 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 								obj.parentRepaint();
 							} else {
 								cScrollBar.timerCounter++;
-							};
+							}
 						}, 60);
-				};
+				}
 				break;
 			case VK_UP:
 				this.offset = this.offset > 0 ? this.offset - 1 : 0;
@@ -1020,23 +1020,23 @@ oScrollBar = function (id, object_name, x, y, w, h, total_items, item_height, of
 								obj.parentRepaint();
 							} else {
 								cScrollBar.timerCounter++;
-							};
+							}
 						}, 60);
-				};
+				}
 				break;
-			};
+			}
 			break;
 		case "up":
 			if (cScrollBar.timerID) {
 				window.ClearInterval(cScrollBar.timerID);
 				cScrollBar.timerID = false;
-			};
+			}
 			cScrollBar.timerCounter = 0;
 			break;
-		};
-	};
+		}
+	}
 
-	this.on_char = function (code) {};
+	this.on_char = function (code) {}
 
-	this.on_focus = function (is_focused) {};
-};
+	this.on_focus = function (is_focused) {}
+}

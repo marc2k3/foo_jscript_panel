@@ -99,7 +99,7 @@ var KMask = {
 	ctrlalt: 4,
 	ctrlaltshift: 5,
 	alt: 6
-};
+}
 
 function GetKeyboardMask() {
 	var c = utils.IsKeyPressed(VK_CONTROL) ? true : false;
@@ -119,7 +119,7 @@ function GetKeyboardMask() {
 	if (!c && a && !s)
 		ret = KMask.alt;
 	return ret;
-};
+}
 // }}
 // {{
 // Used in window.GetColorCUI()
@@ -131,19 +131,19 @@ ColorTypeCUI = {
 	selection_background: 4,
 	inactive_selection_background: 5,
 	active_item_frame: 6
-};
+}
 // Used in window.GetFontCUI()
 FontTypeCUI = {
 	items: 0,
 	labels: 1
-};
+}
 // Used in window.GetColorDUI()
 ColorTypeDUI = {
 	text: 0,
 	background: 1,
 	highlight: 2,
 	selection: 3
-};
+}
 // Used in window.GetFontDUI()
 FontTypeDUI = {
 	defaults: 0,
@@ -152,7 +152,7 @@ FontTypeDUI = {
 	playlists: 3,
 	statusbar: 4,
 	console: 5
-};
+}
 //}}
 // {{
 // Used in gr.DrawString()
@@ -171,14 +171,14 @@ function StringFormat() {
 		break;
 	default:
 		return 0;
-	};
+	}
 	return ((h_align << 28) | (v_align << 24) | (trimming << 20) | flags);
-};
+}
 StringAlignment = {
 	Near: 0,
 	Centre: 1,
 	Far: 2
-};
+}
 var lt_stringformat = StringFormat(StringAlignment.Near, StringAlignment.Near);
 var ct_stringformat = StringFormat(StringAlignment.Centre, StringAlignment.Near);
 var rt_stringformat = StringFormat(StringAlignment.Far, StringAlignment.Near);
@@ -197,38 +197,38 @@ AlbumArtId = {
 	disc: 2,
 	icon: 3,
 	artist: 4
-};
+}
 //}}
 // {{
 // Used everywhere!
 function RGB(r, g, b) {
 	return (0xff000000 | (r << 16) | (g << 8) | (b));
-};
+}
 function RGBA(r, g, b, a) {
 	return ((a << 24) | (r << 16) | (g << 8) | (b));
-};
+}
 function getAlpha(color) {
 	return ((color >> 24) & 0xff);
-};
+}
 
 function getRed(color) {
 	return ((color >> 16) & 0xff);
-};
+}
 
 function getGreen(color) {
 	return ((color >> 8) & 0xff);
-};
+}
 
 function getBlue(color) {
 	return (color & 0xff);
-};
+}
 
 function negative(colour) {
 	var R = getRed(colour);
 	var G = getGreen(colour);
 	var B = getBlue(colour);
 	return RGB(Math.abs(R - 255), Math.abs(G - 255), Math.abs(B - 255));
-};
+}
 
 function toRGB(d) { // convert back to RGB values
 	var d = d - 0xff000000;
@@ -236,7 +236,7 @@ function toRGB(d) { // convert back to RGB values
 	var g = d >> 8 & 0xFF;
 	var b = d & 0xFF;
 	return [r, g, b];
-};
+}
 
 function blendColors(c1, c2, factor) {
 	// When factor is 0, result is 100% color1, when factor is 1, result is 100% color2.
@@ -246,7 +246,7 @@ function blendColors(c1, c2, factor) {
 	var g = Math.round(c1[1] + factor * (c2[1] - c1[1]));
 	var b = Math.round(c1[2] + factor * (c2[2] - c1[2]));
 	return (0xff000000 | (r << 16) | (g << 8) | (b));
-};
+}
 
 function draw_glass_reflect(w, h) {
 	// Mask for glass effect
@@ -267,7 +267,7 @@ function draw_glass_reflect(w, h) {
 	glass_img.ApplyMask(Mask);
 	Mask.Dispose();
 	return glass_img;
-};
+}
 
 function drawBlurbox(w, h, bgcolor, boxcolor, radius, iteration) {
 	// Create a image which background is true transparent
@@ -284,7 +284,7 @@ function drawBlurbox(w, h, bgcolor, boxcolor, radius, iteration) {
 	gb.DrawImage(g_blurbox, 0, -10, w + 40, h + 40, 0, 0, w + 40, h + 40, 0, 255);
 	g_blurbox_main.ReleaseGraphics(gb);
 	return g_blurbox_main;
-};
+}
 
 function num(strg, nb) {
 	var i;
@@ -293,16 +293,16 @@ function num(strg, nb) {
 	if (k > 0) {
 		for (i = 0; i < k; i++) {
 			str = "0" + str;
-		};
-	};
+		}
+	}
 	return str.toString();
-};
+}
 //Time formatting secondes -> 0:00
 function TimeFromSeconds(t) {
 	var zpad = function (n) {
 		var str = n.toString();
 		return (str.length < 2) ? "0" + str : str;
-	};
+	}
 	var h = Math.floor(t / 3600);
 	t -= h * 3600;
 	var m = Math.floor(t / 60);
@@ -311,7 +311,7 @@ function TimeFromSeconds(t) {
 	if (h > 0)
 		return h.toString() + ":" + zpad(m) + ":" + zpad(s);
 	return m.toString() + ":" + zpad(s);
-};
+}
 function TrackType(trkpath) {
 	var taggable;
 	var type;
@@ -343,15 +343,15 @@ function TrackType(trkpath) {
 	default:
 		taggable = 0;
 		type = 5;
-	};
+	}
 	return type;
-};
+}
 function replaceAll(str, search, repl) {
 	while (str.indexOf(search) != -1) {
 		str = str.replace(search, repl);
-	};
+	}
 	return str;
-};
+}
 function removeAccents(str) {
 	/*
 	var norm = new Array('À','Á','Â','Ã','Ä','Å','Æ','Ç','È','É','Ê','Ë',
@@ -362,10 +362,10 @@ function removeAccents(str) {
 	'b','SS');
 	for (var i = 0; i < spec.length; i++) {
 	str = replaceAll(str, norm[i], spec[i]);
-	};
+	}
 	*/
 	return str;
-};
+}
 //}}
 
 //=================================================// Button object
@@ -373,7 +373,7 @@ ButtonStates = {
 	normal: 0,
 	hover: 1,
 	down: 2
-};
+}
 button = function (normal, hover, down) {
 	this.img = Array(normal, hover, down);
 	this.w = this.img[0].Width;
@@ -383,15 +383,15 @@ button = function (normal, hover, down) {
 		this.img = Array(normal, hover, down);
 		this.w = this.img[0].Width;
 		this.h = this.img[0].Height;
-	};
+	}
 	this.draw = function (gr, x, y, alpha) {
 		this.x = x;
 		this.y = y;
 		this.img[this.state] && gr.DrawImage(this.img[this.state], this.x, this.y, this.w, this.h, 0, 0, this.w, this.h, 0, alpha);
-	};
+	}
 	this.repaint = function () {
 		window.RepaintRect(this.x, this.y, this.w, this.h);
-	};
+	}
 	this.checkstate = function (event, x, y) {
 		this.ishover = (x > this.x && x < this.x + this.w - 1 && y > this.y && y < this.y + this.h - 1);
 		this.old = this.state;
@@ -403,7 +403,7 @@ button = function (normal, hover, down) {
 				this.state = this.ishover ? ButtonStates.down : ButtonStates.normal;
 				this.isdown = true;
 				break;
-			};
+			}
 			break;
 		case "up":
 			this.state = this.ishover ? ButtonStates.hover : ButtonStates.normal;
@@ -418,17 +418,17 @@ button = function (normal, hover, down) {
 			case ButtonStates.hover:
 				this.state = this.ishover ? ButtonStates.hover : ButtonStates.normal;
 				break;
-			};
+			}
 			break;
 		case "leave":
 			this.state = this.isdown ? ButtonStates.down : ButtonStates.normal;
 			break;
-		};
+		}
 		if (this.state != this.old)
 			this.repaint();
 		return this.state;
-	};
-};
+	}
+}
 
 //=================================================// Tools (general)
 
@@ -451,7 +451,7 @@ function DrawColoredText(gr, text, font, default_color, x, y, w, h, alignment, f
 			var full_lg = gr.CalcTextWidth(tab[0], font);
 			for (var m = i; m < fin; m += 2) {
 				full_lg += gr.CalcTextWidth(tab[m + 1], font);
-			};
+			}
 			if (full_lg > w)
 				full_lg = w;
 			var delta_align = ((w - full_lg) / 2);
@@ -460,14 +460,14 @@ function DrawColoredText(gr, text, font, default_color, x, y, w, h, alignment, f
 			var full_lg = gr.CalcTextWidth(tab[0], font);
 			for (var m = i; m < fin; m += 2) {
 				full_lg += gr.CalcTextWidth(tab[m + 1], font);
-			};
+			}
 			if (full_lg > w)
 				full_lg = w;
 			var delta_align = (w - full_lg);
 			break;
 		default:
 			var delta_align = 0;
-		};
+		}
 
 		// if first part is default color
 		if (pos > 0) {
@@ -475,46 +475,46 @@ function DrawColoredText(gr, text, font, default_color, x, y, w, h, alignment, f
 			lg = gr.CalcTextWidth(txt, font);
 			gr.GdiDrawText(txt, font, color, x + delta_align + z, y, w - z, h, DT_LEFT | DT_CALCRECT | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX);
 			z += lg;
-		};
+		}
 
 		// draw all other colored parts
 		while (i < fin && z < w) {
 			if (!force_default_color) {
 				tmp = tab[i];
 				color = eval("0xFF" + tmp.substr(4, 2) + tmp.substr(2, 2) + tmp.substr(0, 2));
-			};
+			}
 			//color = RGB(parseInt(tmp.substr(0,2),16), parseInt(tmp.substr(2,2),16), parseInt(tmp.substr(4,2),16));
 			txt = tab[i + 1];
 			lg = gr.CalcTextWidth(txt, font);
 			gr.GdiDrawText(txt, font, color, x + delta_align + z, y, w - z, h, DT_LEFT | DT_CALCRECT | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX);
 			z += lg;
 			i += 2;
-		};
-	};
-};
+		}
+	}
+}
 
 function zoom(value, factor) {
 	return Math.ceil(value * factor / 100);
-};
+}
 
 function get_system_scrollbar_width() {
 	var tmp = utils.GetSystemMetrics(SM_CXVSCROLL);
 	return tmp;
-};
+}
 
 function get_system_scrollbar_height() {
 	var tmp = utils.GetSystemMetrics(SM_CYHSCROLL);
 	return tmp;
-};
+}
 
 String.prototype.repeat = function (num) {
 	if (num >= 0 && num <= 5) {
 		var g = Math.round(num);
 	} else {
 		return "";
-	};
+	}
 	return new Array(g + 1).join(this);
-};
+}
 
 function cloneObject(obj) {
 	var clone = {};
@@ -523,23 +523,23 @@ function cloneObject(obj) {
 			clone[i] = cloneObject(obj[i]);
 		else
 			clone[i] = obj[i];
-	};
+	}
 	return clone;
-};
+}
 
 function compareObject(o1, o2) {
 	for (var p in o1) {
 		if (o1[p] != o2[p]) {
 			return false;
-		};
-	};
+		}
+	}
 	for (var p in o2) {
 		if (o1[p] != o2[p]) {
 			return false;
-		};
-	};
+		}
+	}
 	return true;
-};
+}
 
 function getTimestamp() {
 	var d,
@@ -561,7 +561,7 @@ function getTimestamp() {
 		s3 = "0" + s3;
 	timestamp = s1 + ((s2 < 10) ? "-0" : "-") + s2 + ((s3 < 10) ? "-0" : "-") + s3 + ((hh < 10) ? " 0" : " ") + hh + ((min < 10) ? ":0" : ":") + min + ((sec < 10) ? ":0" : ":") + sec;
 	return timestamp;
-};
+}
 
 // --- UIHacks
 
@@ -569,34 +569,34 @@ MainMenuState = {
 	Show: 0,
 	Hide: 1,
 	Auto: 2
-};
+}
 
 FrameStyle = {
 	Default: 0,
 	SmallCaption: 1,
 	NoCaption: 2,
 	NoBorder: 3
-};
+}
 
 MoveStyle = {
 	Default: 0,
 	Middle: 1,
 	Left: 2,
 	Both: 3
-};
+}
 
 AeroEffect = {
 	Default: 0,
 	Disabled: 1,
 	GlassFrame: 2,
 	SheetOfGlass: 3
-};
+}
 
 WindowState = {
 	Normal: 0,
 	Minimized: 1,
 	Maximized: 2
-};
+}
 
 var fonts = {};
 function gdi_font(name, size, style) {
@@ -620,7 +620,7 @@ var PlaylistLockFilterMask = {
 	filter_rename: 16,
 	filter_remove_playlist: 32,
 	filter_default_action: 64
-};
+}
 
 function playlist_can_add_items(playlistIndex) {
 	return !(plman.GetPlaylistLockFilterMask(playlistIndex) & PlaylistLockFilterMask.filter_add);

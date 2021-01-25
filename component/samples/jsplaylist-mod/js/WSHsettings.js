@@ -70,7 +70,7 @@ function settings_checkboxes_action(id, status, parentId) {
 			eval(p.settings.pages[parentId].elements[id].linkedVariable + " = " + status);
 			window.SetProperty("SYSTEM.Enable Touch Scrolling", status);
 			break;
-		};
+		}
 		break;
 	case 1: // page 1 : Columns
 		switch (id) {
@@ -88,8 +88,8 @@ function settings_checkboxes_action(id, status, parentId) {
 					if (k != idx && p.headerBar.columns[k].percent > newColumnSize) {
 						totalColsToResizeDown++;
 						last_idx = k;
-					};
-				};
+					}
+				}
 				var minus_value = Math.floor(newColumnSize / totalColsToResizeDown);
 				var reste = newColumnSize - (minus_value * totalColsToResizeDown);
 				fin = p.headerBar.columns.length;
@@ -98,10 +98,10 @@ function settings_checkboxes_action(id, status, parentId) {
 						p.headerBar.columns[k].percent = Math.abs(p.headerBar.columns[k].percent) - minus_value;
 						if (reste > 0 && k == last_idx) {
 							p.headerBar.columns[k].percent = Math.abs(p.headerBar.columns[k].percent) - reste;
-						};
-					};
+						}
+					}
 					p.headerBar.columns[k].w = Math.abs(p.headerBar.w * p.headerBar.columns[k].percent / 100000);
-				};
+				}
 				p.headerBar.saveColumns();
 			} else {
 				// check if it's not the last column visible, otherwise, we coundn't hide it!
@@ -110,8 +110,8 @@ function settings_checkboxes_action(id, status, parentId) {
 				for (var k = 0; k < fin; k++) {
 					if (p.headerBar.columns[k].percent > 0) {
 						nbvis++;
-					};
-				};
+					}
+				}
 				if (nbvis > 1) {
 					p.settings.pages[1].elements[8].status = false;
 					var RemovedColumnSize = Math.abs(p.headerBar.columns[idx].percent);
@@ -123,8 +123,8 @@ function settings_checkboxes_action(id, status, parentId) {
 						if (k != idx && p.headerBar.columns[k].percent > 0) {
 							totalColsToResizeUp++;
 							last_idx = k;
-						};
-					};
+						}
+					}
 					var add_value = Math.floor(RemovedColumnSize / totalColsToResizeUp);
 					var reste = RemovedColumnSize - (add_value * totalColsToResizeUp);
 					fin = p.headerBar.columns.length;
@@ -133,13 +133,13 @@ function settings_checkboxes_action(id, status, parentId) {
 							p.headerBar.columns[k].percent = Math.abs(p.headerBar.columns[k].percent) + add_value;
 							if (reste > 0 && k == last_idx) {
 								p.headerBar.columns[k].percent = Math.abs(p.headerBar.columns[k].percent) + reste;
-							};
-						};
+							}
+						}
 						p.headerBar.columns[k].w = Math.abs(p.headerBar.w * p.headerBar.columns[k].percent / 100000);
-					};
+					}
 					p.headerBar.saveColumns();
-				};
-			};
+				}
+			}
 			p.headerBar.initColumns();
 
 			// set minimum rows / cover column size
@@ -152,16 +152,16 @@ function settings_checkboxes_action(id, status, parentId) {
 				} else {
 					cover.column = false;
 					cGroup.count_minimum = cGroup.default_count_minimum;
-				};
+				}
 				cover.previous_max_size = p.headerBar.columns[idx].w;
 				g_image_cache = new image_cache;
 				CollectGarbage();
 				update_playlist(properties.collapseGroupsByDefault);
 			} else {
 				full_repaint();
-			};
+			}
 			break;
-		};
+		}
 		break;
 	case 2: // page 2 : Groups
 		switch (id) {
@@ -170,7 +170,7 @@ function settings_checkboxes_action(id, status, parentId) {
 				p.list.groupby[p.settings.pages[parentId].elements[0].selectedId].showCover = "1";
 			} else {
 				p.list.groupby[p.settings.pages[parentId].elements[0].selectedId].showCover = "0";
-			};
+			}
 			p.list.saveGroupBy();
 			break;
 		case 17:
@@ -178,10 +178,10 @@ function settings_checkboxes_action(id, status, parentId) {
 				p.list.groupby[p.settings.pages[parentId].elements[0].selectedId].autoCollapse = "1";
 			} else {
 				p.list.groupby[p.settings.pages[parentId].elements[0].selectedId].autoCollapse = "0";
-			};
+			}
 			p.list.saveGroupBy();
 			break;
-		};
+		}
 		break;
 	case 3: // page 3 : Appearance
 		switch (id) {
@@ -202,10 +202,10 @@ function settings_checkboxes_action(id, status, parentId) {
 			p.list.setItemColors();
 			p.playlistManager.setColors();
 			break;
-		};
+		}
 		break;
-	};
-};
+	}
+}
 
 function settings_radioboxes_action(id, status, parentId) {
 	var pid = parentId;
@@ -224,7 +224,7 @@ function settings_radioboxes_action(id, status, parentId) {
 			properties.defaultPlaylistItemAction = "Add to playback queue";
 			window.SetProperty("SYSTEM.Default Playlist Action", properties.defaultPlaylistItemAction);
 			break;
-		};
+		}
 		full_repaint();
 		break;
 	case 1:
@@ -251,7 +251,7 @@ function settings_radioboxes_action(id, status, parentId) {
 			p.headerBar.columns[selectedColumnId].align = 2;
 			p.headerBar.saveColumns();
 			break;
-		};
+		}
 		full_repaint();
 		break;
 	case 2:
@@ -271,7 +271,7 @@ function settings_radioboxes_action(id, status, parentId) {
 				p.settings.pages[pid].elements[14].status = false;
 				p.settings.pages[pid].elements[15].status = false;
 				p.list.groupby[selectedPatternId].expandedHeight = 0;
-			};
+			}
 			p.list.groupby[selectedPatternId].collapsedHeight = 0;
 			p.list.saveGroupBy();
 			break;
@@ -288,7 +288,7 @@ function settings_radioboxes_action(id, status, parentId) {
 				p.settings.pages[pid].elements[14].status = false;
 				p.settings.pages[pid].elements[15].status = false;
 				p.list.groupby[selectedPatternId].expandedHeight = 1;
-			};
+			}
 			p.list.groupby[selectedPatternId].collapsedHeight = 1;
 			p.list.saveGroupBy();
 			break;
@@ -305,7 +305,7 @@ function settings_radioboxes_action(id, status, parentId) {
 				p.settings.pages[pid].elements[14].status = false;
 				p.settings.pages[pid].elements[15].status = false;
 				p.list.groupby[selectedPatternId].expandedHeight = 2;
-			};
+			}
 			p.list.groupby[selectedPatternId].collapsedHeight = 2;
 			p.list.saveGroupBy();
 			break;
@@ -322,7 +322,7 @@ function settings_radioboxes_action(id, status, parentId) {
 				p.settings.pages[pid].elements[14].status = true;
 				p.settings.pages[pid].elements[15].status = false;
 				p.list.groupby[selectedPatternId].expandedHeight = 3;
-			};
+			}
 			p.list.groupby[selectedPatternId].collapsedHeight = 3;
 			p.list.saveGroupBy();
 			break;
@@ -339,7 +339,7 @@ function settings_radioboxes_action(id, status, parentId) {
 				p.settings.pages[pid].elements[14].status = false;
 				p.settings.pages[pid].elements[15].status = true;
 				p.list.groupby[selectedPatternId].expandedHeight = 4;
-			};
+			}
 			p.list.groupby[selectedPatternId].collapsedHeight = 4;
 			p.list.saveGroupBy();
 			break;
@@ -357,7 +357,7 @@ function settings_radioboxes_action(id, status, parentId) {
 				p.settings.pages[pid].elements[9].status = false;
 				p.settings.pages[pid].elements[10].status = false;
 				p.list.groupby[selectedPatternId].collapsedHeight = 0;
-			};
+			}
 			p.list.groupby[selectedPatternId].expandedHeight = 0;
 			p.list.saveGroupBy();
 			break;
@@ -374,7 +374,7 @@ function settings_radioboxes_action(id, status, parentId) {
 				p.settings.pages[pid].elements[9].status = false;
 				p.settings.pages[pid].elements[10].status = false;
 				p.list.groupby[selectedPatternId].collapsedHeight = 1;
-			};
+			}
 			p.list.groupby[selectedPatternId].expandedHeight = 1;
 			p.list.saveGroupBy();
 			break;
@@ -391,7 +391,7 @@ function settings_radioboxes_action(id, status, parentId) {
 				p.settings.pages[pid].elements[9].status = false;
 				p.settings.pages[pid].elements[10].status = false;
 				p.list.groupby[selectedPatternId].collapsedHeight = 2;
-			};
+			}
 			p.list.groupby[selectedPatternId].expandedHeight = 2;
 			p.list.saveGroupBy();
 			break;
@@ -408,7 +408,7 @@ function settings_radioboxes_action(id, status, parentId) {
 				p.settings.pages[pid].elements[9].status = true;
 				p.settings.pages[pid].elements[10].status = false;
 				p.list.groupby[selectedPatternId].collapsedHeight = 3;
-			};
+			}
 			p.list.groupby[selectedPatternId].expandedHeight = 3;
 			p.list.saveGroupBy();
 			break;
@@ -425,7 +425,7 @@ function settings_radioboxes_action(id, status, parentId) {
 				p.settings.pages[pid].elements[9].status = false;
 				p.settings.pages[pid].elements[10].status = true;
 				p.list.groupby[selectedPatternId].collapsedHeight = 4;
-			};
+			}
 			p.list.groupby[selectedPatternId].expandedHeight = 4;
 			p.list.saveGroupBy();
 			break;
@@ -441,7 +441,7 @@ function settings_radioboxes_action(id, status, parentId) {
 			p.list.groupby[selectedPatternId].collapseGroupsByDefault = "0";
 			p.list.saveGroupBy();
 			break;
-		};
+		}
 		full_repaint();
 		break;
 	case 3:
@@ -514,13 +514,13 @@ function settings_radioboxes_action(id, status, parentId) {
 			properties.wallpaperalpha = 225;
 			window.SetProperty("CUSTOM Wallpaper Alpha", properties.wallpaperalpha);
 			break;
-		};
+		}
 		// set wallpaper
 		p.wallpaperImg = setWallpaperImg();
 		full_repaint();
 		break;
-	};
-};
+	}
+}
 
 function settings_listboxes_action(pageId, id, selectedId) {
 	switch (pageId) {
@@ -564,15 +564,15 @@ function settings_listboxes_action(pageId, id, selectedId) {
 					p.settings.pages[1].elements[6].status = false;
 					p.settings.pages[1].elements[7].status = true;
 					break;
-				};
+				}
 				// update checkbox status / selected column Id in the listbox
 				p.settings.pages[1].elements[0].status = (p.headerBar.columns[selectedId].percent > 0);
 			} catch (e) {
 				console.log("WSH Error catched: settings_listboxes_action");
-			};
+			}
 			full_repaint();
 			break;
-		};
+		}
 		break;
 	case 2:
 		var txtbox_value = "";
@@ -660,7 +660,7 @@ function settings_listboxes_action(pageId, id, selectedId) {
 					p.settings.pages[2].elements[9].status = false;
 					p.settings.pages[2].elements[10].status = true;
 					break;
-				};
+				}
 				switch (Math.floor(p.list.groupby[selectedId].expandedHeight)) {
 					// expanded height
 				case 0:
@@ -698,7 +698,7 @@ function settings_listboxes_action(pageId, id, selectedId) {
 					p.settings.pages[2].elements[14].status = false;
 					p.settings.pages[2].elements[15].status = true;
 					break;
-				};
+				}
 				switch (Math.floor(p.list.groupby[selectedId].collapseGroupsByDefault)) {
 					// default group status
 				case 0:
@@ -709,17 +709,17 @@ function settings_listboxes_action(pageId, id, selectedId) {
 					p.settings.pages[2].elements[22].status = true;
 					p.settings.pages[2].elements[23].status = false;
 					break;
-				};
+				}
 
 			} catch (e) {
 				console.log("WSH Error catched: settings_listboxes_action");
-			};
+			}
 			full_repaint();
 			break;
-		};
+		}
 		break;
-	};
-};
+	}
+}
 
 function settings_textboxes_action(pageId, elementId) {
 	switch (pageId) {
@@ -739,9 +739,9 @@ function settings_textboxes_action(pageId, elementId) {
 				var fin = p.headerBar.columns.length;
 				for (var i = 0; i < fin; i++) {
 					p.settings.pages[pageId].elements[0].arr.push(p.headerBar.columns[i].ref);
-				};
+				}
 				full_repaint();
-			};
+			}
 			break;
 		case 2:
 			var tf = p.headerBar.columns[selectedColumnId].tf;
@@ -751,7 +751,7 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_tf) {
 				p.headerBar.columns[selectedColumnId].tf = new_tf;
 				p.headerBar.saveColumns();
-			};
+			}
 			break;
 		case 3:
 			var tf2 = p.headerBar.columns[selectedColumnId].tf2;
@@ -761,7 +761,7 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_tf2) {
 				p.headerBar.columns[selectedColumnId].tf2 = new_tf2;
 				p.headerBar.saveColumns();
-			};
+			}
 			break;
 		case 4:
 			var sortOrder = p.headerBar.columns[selectedColumnId].sortOrder;
@@ -771,9 +771,9 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_sortOrder) {
 				p.headerBar.columns[selectedColumnId].sortOrder = new_sortOrder;
 				p.headerBar.saveColumns();
-			};
+			}
 			break;
-		};
+		}
 		break;
 	case 2: // Groups
 		var selectedColumnId = p.settings.pages[pageId].elements[0].selectedId;
@@ -791,9 +791,9 @@ function settings_textboxes_action(pageId, elementId) {
 				var fin = p.list.groupby.length;
 				for (var i = 0; i < fin; i++) {
 					p.settings.pages[pageId].elements[0].arr.push(p.list.groupby[i].label);
-				};
+				}
 				full_repaint();
-			};
+			}
 			break;
 		case 2:
 			var tf = p.list.groupby[selectedColumnId].tf;
@@ -803,7 +803,7 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_tf) {
 				p.list.groupby[selectedColumnId].tf = new_tf;
 				p.list.saveGroupBy();
-			};
+			}
 			break;
 		case 3:
 			var sortOrder = p.list.groupby[selectedColumnId].sortOrder;
@@ -813,7 +813,7 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_sortOrder) {
 				p.list.groupby[selectedColumnId].sortOrder = new_sortOrder;
 				p.list.saveGroupBy();
-			};
+			}
 			break;
 		case 4:
 			var playlistFilter = p.list.groupby[selectedColumnId].playlistFilter;
@@ -823,7 +823,7 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_playlistFilter) {
 				p.list.groupby[selectedColumnId].playlistFilter = new_playlistFilter;
 				p.list.saveGroupBy();
-			};
+			}
 			break;
 		case 5:
 			var extraRows = p.list.groupby[selectedColumnId].extraRows;
@@ -833,7 +833,7 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_extraRows) {
 				p.list.groupby[selectedColumnId].extraRows = new_extraRows;
 				p.list.saveGroupBy();
-			};
+			}
 			break;
 		case 18:
 			var l1 = p.list.groupby[selectedColumnId].l1;
@@ -843,7 +843,7 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_l1) {
 				p.list.groupby[selectedColumnId].l1 = new_l1;
 				p.list.saveGroupBy();
-			};
+			}
 			break;
 		case 19:
 			var r1 = p.list.groupby[selectedColumnId].r1;
@@ -853,7 +853,7 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_r1) {
 				p.list.groupby[selectedColumnId].r1 = new_r1;
 				p.list.saveGroupBy();
-			};
+			}
 			break;
 		case 20:
 			var l2 = p.list.groupby[selectedColumnId].l2;
@@ -863,7 +863,7 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_l2) {
 				p.list.groupby[selectedColumnId].l2 = new_l2;
 				p.list.saveGroupBy();
-			};
+			}
 			break;
 		case 21:
 			var r2 = p.list.groupby[selectedColumnId].r2;
@@ -873,9 +873,9 @@ function settings_textboxes_action(pageId, elementId) {
 			if (new_r2) {
 				p.list.groupby[selectedColumnId].r2 = new_r2;
 				p.list.saveGroupBy();
-			};
+			}
 			break;
-		};
+		}
 		break;
 	case 3: // Appearance
 		switch (elementId) {
@@ -889,12 +889,12 @@ function settings_textboxes_action(pageId, elementId) {
 				window.SetProperty("CUSTOM Default Wallpaper Path", properties.wallpaperpath);
 				// refresh wallpaper
 				p.wallpaperImg = setWallpaperImg();
-			};
+			}
 			break;
-		};
+		}
 		break;
-	};
-};
+	}
+}
 
 // =================================================================== // Objects
 
@@ -945,8 +945,8 @@ oCheckBox = function (id, x, y, label, linkedVariable, func, parentPageId) {
 			this.button = new button(this.checkbox_normal_on.Resize(button_zoomSize, button_zoomSize, 7), this.checkbox_hover_on.Resize(button_zoomSize, button_zoomSize, 7), this.checkbox_hover_on.Resize(button_zoomSize, button_zoomSize, 7));
 		} else {
 			this.button = new button(this.checkbox_normal_off.Resize(button_zoomSize, button_zoomSize, 7), this.checkbox_hover_off.Resize(button_zoomSize, button_zoomSize, 7), this.checkbox_hover_off.Resize(button_zoomSize, button_zoomSize, 7));
-		};
-	};
+		}
+	}
 	this.setButtons();
 
 	this.draw = function (gr) {
@@ -957,40 +957,40 @@ oCheckBox = function (id, x, y, label, linkedVariable, func, parentPageId) {
 				this.button.update(this.checkbox_normal_on.Resize(button_zoomSize, button_zoomSize, 7), this.checkbox_hover_on.Resize(button_zoomSize, button_zoomSize, 7), this.checkbox_hover_on.Resize(button_zoomSize, button_zoomSize, 7));
 			} else {
 				this.button.update(this.checkbox_normal_off.Resize(button_zoomSize, button_zoomSize, 7), this.checkbox_hover_off.Resize(button_zoomSize, button_zoomSize, 7), this.checkbox_hover_off.Resize(button_zoomSize, button_zoomSize, 7));
-			};
+			}
 			this.prevStatus = this.status;
-		};
+		}
 		this.ly = this.y - (p.settings.pages[this.parentPageId].offset * cSettings.rowHeight);
 		if (this.ly > cSettings.topBarHeight) {
 			var button_y = this.ly - 1 + Math.ceil((p.settings.txtHeight + 10 - this.button.h) / 2);
 			this.button.draw(gr, this.x, button_y, 255);
 			var label_x = this.x + this.button.w + zoom(5, g_dpi);
 			gr.GdiDrawText(this.label, gdi_font(p.settings.fontname, p.settings.txtHeight, 1), (this.status ? p.settings.color2 : p.settings.color1), label_x, this.ly, p.settings.w, p.settings.txtHeight + 10, g_LDT);
-		};
-	};
+		}
+	}
 
 	this.on_mouse = function (event, x, y, delta) {
 		if (this.ly <= cSettings.topBarHeight) {
 			return;
-		};
+		}
 		var state = this.button.checkstate(event, x, y);
 		switch (event) {
 		case "up":
 			if (state == ButtonStates.hover) {
 				this.status = !this.status;
 				eval(gfunc + "(" + this.id + "," + this.status + "," + this.parentPageId + ")");
-			};
+			}
 			break;
-		};
+		}
 		return state;
-	};
+	}
 
-	this.on_key = function (event, vkey) {};
+	this.on_key = function (event, vkey) {}
 
-	this.on_char = function (code) {};
+	this.on_char = function (code) {}
 
-	this.on_focus = function (is_focused) {};
-};
+	this.on_focus = function (is_focused) {}
+}
 
 oRadioButton = function (id, x, y, label, linkedVariable, func, parentPageId) {
 	this.objType = "RB";
@@ -1038,8 +1038,8 @@ oRadioButton = function (id, x, y, label, linkedVariable, func, parentPageId) {
 			this.button = new button(this.radiobt_normal_on.Resize(button_zoomSize, button_zoomSize, 7), this.radiobt_hover_on.Resize(button_zoomSize, button_zoomSize, 7), this.radiobt_hover_on.Resize(button_zoomSize, button_zoomSize, 7));
 		} else {
 			this.button = new button(this.radiobt_normal_off.Resize(button_zoomSize, button_zoomSize, 7), this.radiobt_hover_off.Resize(button_zoomSize, button_zoomSize, 7), this.radiobt_hover_off.Resize(button_zoomSize, button_zoomSize, 7));
-		};
-	};
+		}
+	}
 	this.setButtons();
 
 	this.draw = function (gr) {
@@ -1048,37 +1048,37 @@ oRadioButton = function (id, x, y, label, linkedVariable, func, parentPageId) {
 			this.button.update(this.radiobt_normal_on.Resize(button_zoomSize, button_zoomSize, 7), this.radiobt_hover_on.Resize(button_zoomSize, button_zoomSize, 7), this.radiobt_hover_on.Resize(button_zoomSize, button_zoomSize, 7));
 		} else {
 			this.button.update(this.radiobt_normal_off.Resize(button_zoomSize, button_zoomSize, 7), this.radiobt_hover_off.Resize(button_zoomSize, button_zoomSize, 7), this.radiobt_hover_off.Resize(button_zoomSize, button_zoomSize, 7));
-		};
+		}
 		this.ly = this.y - (p.settings.pages[this.parentPageId].offset * cSettings.rowHeight);
 		if (this.ly > cSettings.topBarHeight) {
 			var button_y = this.ly - 1 + Math.ceil((p.settings.txtHeight + 10 - this.button.h) / 2);
 			this.button.draw(gr, this.x, button_y, 255);
 			var label_x = this.x + this.button.w + zoom(5, g_dpi);
 			gr.GdiDrawText(this.label, gdi_font(p.settings.fontname, p.settings.txtHeight, 1), (this.status ? p.settings.color2 : p.settings.color1), label_x, this.ly, p.settings.w, p.settings.txtHeight + 10, g_LDT);
-		};
-	};
+		}
+	}
 
 	this.on_mouse = function (event, x, y, delta) {
 		if (this.ly <= cSettings.topBarHeight) {
 			return;
-		};
+		}
 		var state = this.button.checkstate(event, x, y);
 		switch (event) {
 		case "up":
 			if (state == ButtonStates.hover) {
 				eval(gfunc + "(" + this.id + "," + this.status + "," + this.parentPageId + ")");
-			};
+			}
 			break;
-		};
+		}
 		return state;
-	};
+	}
 
-	this.on_key = function (event, vkey) {};
+	this.on_key = function (event, vkey) {}
 
-	this.on_char = function (code) {};
+	this.on_char = function (code) {}
 
-	this.on_focus = function (is_focused) {};
-};
+	this.on_focus = function (is_focused) {}
+}
 
 oTextBox = function (id, x, y, w, h, label, value, func, parentPageId) {
 	this.objType = "TB";
@@ -1098,33 +1098,33 @@ oTextBox = function (id, x, y, w, h, label, value, func, parentPageId) {
 
 	this.repaint = function () {
 		window.RepaintRect(this.x, this.ly, this.w, this.h * 2);
-	};
+	}
 
 	this.draw = function (gr) {
 		this.ly = this.y - (p.settings.pages[this.parentPageId].offset * cSettings.rowHeight);
 		if (this.ly + this.h > cSettings.topBarHeight) {
 			gr.GdiDrawText(this.label, gdi_font(p.settings.fontname, p.settings.txtHeight, 5), p.settings.color1, this.x, this.ly, p.list.w - p.settings.pages[this.parentPageId].scrollbarWidth - 10, this.h, g_LDT);
 			this.inputbox.draw(gr, this.x, this.ly + this.h);
-		};
-	};
+		}
+	}
 
 	this.on_mouse = function (event, x, y, delta) {
 		if (this.ly + this.h <= cSettings.topBarHeight) {
 			return;
-		};
+		}
 		if (!p.settings.pages[1].elements[0].ishover) {
 			if (this.ly > cSettings.topBarHeight + zoom(5, g_dpi)) {
 				this.inputbox.check(event, x, y, delta);
-			};
-		};
-	};
+			}
+		}
+	}
 
 	this.on_key = function (event, vkey) {
 		switch (event) {
 		case "down":
 			this.inputbox.on_key_down(vkey);
 			break;
-		};
+		}
 
 		var kmask = GetKeyboardMask();
 		// specific action on RETURN for the textbox Object
@@ -1135,8 +1135,8 @@ oTextBox = function (id, x, y, w, h, label, value, func, parentPageId) {
 				this.inputbox.select = false;
 				this.inputbox.default_text = this.inputbox.text; // set default text to new value validated
 				this.inputbox.repaint();
-			};
-		};
+			}
+		}
 		// specific action on TAB for the textbox Object
 		if (this.inputbox.edit && !g_textbox_tabbed) {
 			if (vkey == VK_TAB && (kmask == KMask.none || kmask == KMask.shift)) {
@@ -1158,16 +1158,16 @@ oTextBox = function (id, x, y, w, h, label, value, func, parentPageId) {
 						if (p.settings.pages[this.parentPageId].elements[i].objType == "TB") {
 							if (first_textbox_id < 0) {
 								first_textbox_id = i;
-							};
+							}
 							if (next_textbox_id < 0 && i > this.id) {
 								next_textbox_id = i;
 								break;
-							};
-						};
-					};
+							}
+						}
+					}
 					if (next_textbox_id < 0) {
 						next_textbox_id = first_textbox_id;
-					};
+					}
 				} else {
 					// scan elements to find objectType = "TB" / TextBox
 					var first_textbox_id = -1;
@@ -1177,17 +1177,17 @@ oTextBox = function (id, x, y, w, h, label, value, func, parentPageId) {
 						if (p.settings.pages[this.parentPageId].elements[i].objType == "TB") {
 							if (first_textbox_id < 0) {
 								first_textbox_id = i;
-							};
+							}
 							if (next_textbox_id < 0 && i < this.id) {
 								next_textbox_id = i;
 								break;
-							};
-						};
-					};
+							}
+						}
+					}
 					if (next_textbox_id < 0) {
 						next_textbox_id = first_textbox_id;
-					};
-				};
+					}
+				}
 
 				// set focus and edit mode to the next textbox found
 				p.settings.pages[this.parentPageId].elements[next_textbox_id].inputbox.on_focus(true);
@@ -1216,19 +1216,19 @@ oTextBox = function (id, x, y, w, h, label, value, func, parentPageId) {
 						p.settings.pages[this.parentPageId].offset = maxOffset;
 					p.settings.pages[this.parentPageId].scrollbar.reSet(p.settings.pages[this.parentPageId].total_rows, cSettings.rowHeight, p.settings.pages[this.parentPageId].offset);
 					full_repaint();
-				};
-			};
-		};
-	};
+				}
+			}
+		}
+	}
 
 	this.on_char = function (code) {
 		this.inputbox.on_char(code);
-	};
+	}
 
 	this.on_focus = function (is_focused) {
 		this.inputbox.on_focus(is_focused);
-	};
-};
+	}
+}
 
 oSlider = function (id, w, h, range, color_mode, value, parentPageId, parentWidgetId) {
 	this.id = id;
@@ -1259,13 +1259,13 @@ oSlider = function (id, w, h, range, color_mode, value, parentPageId, parentWidg
 		this.ratioValue = (x - this.Zx) / this.Zw;
 		var v = Math.floor(this.range * this.ratioValue);
 		return v;
-	};
+	}
 
 	this.setCursorPos = function (v) {
 		this.ratioPos = v / this.range;
 		var Zcx = Math.floor(((this.Zw - this.Zcw) * this.ratioPos) - (this.Zcw / 2) * 0);
 		return Zcx;
-	};
+	}
 
 	this.adjustSize = function () {
 		this.Zw = zoom(this.w, g_dpi);
@@ -1273,7 +1273,7 @@ oSlider = function (id, w, h, range, color_mode, value, parentPageId, parentWidg
 		this.Zcw = zoom(this.cw, g_dpi);
 		this.Zch = zoom(this.ch, g_dpi);
 		this.Zcx = this.setCursorPos(this.value);
-	};
+	}
 	this.adjustSize();
 
 	this.draw = function (gr, x, y) {
@@ -1296,7 +1296,7 @@ oSlider = function (id, w, h, range, color_mode, value, parentPageId, parentWidg
 		case "B":
 			gr.FillSolidRect(left_padding + this.Zx, this.Zy, this.Zw, this.Zh, RGB(0, 0, 255));
 			break;
-		};
+		}
 		gr.FillGradRect(left_padding + this.Zx - 1, this.Zy, this.Zw, this.Zh, 0, RGB(0, 0, 0), 0, 1.0);
 
 		// draw cursor
@@ -1308,20 +1308,20 @@ oSlider = function (id, w, h, range, color_mode, value, parentPageId, parentWidg
 			var cursor_color = RGB(180, 180, 180);
 			gr.FillSolidRect(this.Zx + 0, this.Zcy, this.Zcw, this.Zch, cursor_color);
 			gr.DrawRect(this.Zx + 0, this.Zcy, this.Zcw - 1, this.Zch - 1, 1.0, RGB(30, 30, 30));
-		};
+		}
 
-	};
+	}
 
 	this.isHoverCursor = function (x, y) {
 		var widget_x = p.settings.pages[this.parentPageId].elements[this.parentWidgetId].x;
 		this.left_padding = widget_x + g_z10;
 		var tmp = (x >= this.left_padding + this.Zcx - 1 && x <= this.left_padding + this.Zcx + this.Zcw + 1 && y >= this.Zcy && y <= this.Zcy + this.Zch);
 		return tmp;
-	};
+	}
 
 	this.isHoverBar = function (x, y) {
 		return (x >= this.Zx && x <= this.Zx + this.Zw && y >= this.Zy && y <= this.Zy + this.Zh);
-	};
+	}
 
 	this.on_mouse = function (event, x, y, delta) {
 		if (p.settings.pages[this.parentPageId].elements[this.parentWidgetId].colorEnabled) {
@@ -1336,7 +1336,7 @@ oSlider = function (id, w, h, range, color_mode, value, parentPageId, parentWidg
 				} else if (this.isHoverCursor(x, y)) {
 					this.drag = true;
 					this.dragX = x;
-				};
+				}
 				break;
 			case "up":
 				if (this.drag) {
@@ -1348,7 +1348,7 @@ oSlider = function (id, w, h, range, color_mode, value, parentPageId, parentWidg
 					this.dragX = 0;
 					//
 					p.settings.pages[this.parentPageId].elements[this.parentWidgetId].repaint();
-				};
+				}
 				break;
 			case "move":
 				if (this.drag) {
@@ -1356,12 +1356,12 @@ oSlider = function (id, w, h, range, color_mode, value, parentPageId, parentWidg
 						this.value = this.setValue(x);
 						this.Zcx = this.setCursorPos(this.value);
 						p.settings.pages[this.parentPageId].elements[this.parentWidgetId].repaint();
-					};
-				};
+					}
+				}
 				break;
-			};
-		};
-	};
+			}
+		}
+	}
 
 	this.on_key = function (event, vkey) {
 		if (!p.timer_onKey) {
@@ -1382,14 +1382,14 @@ oSlider = function (id, w, h, range, color_mode, value, parentPageId, parentWidg
 				this.Zcx = this.setCursorPos(this.value);
 				p.settings.pages[this.parentPageId].elements[this.parentWidgetId].repaint();
 				break;
-			};
+			}
 			p.timer_onKey = window.SetTimeout(function () {
 					p.timer_onKey && window.ClearTimeout(p.timer_onKey);
 					p.timer_onKey = false;
 				}, 150);
-		};
-	};
-};
+		}
+	}
+}
 
 oWidget = function (id, x, y, w, h, label, color_id, func, parentPageId) {
 	this.objType = "WG";
@@ -1426,9 +1426,9 @@ oWidget = function (id, x, y, w, h, label, color_id, func, parentPageId) {
 		case 4:
 			var arr = window.GetProperty("SYSTEM.COLOR HIGHLIGHT", "255-175-50").split("-");
 			break;
-		};
+		}
 		break;
-	};
+	}
 	this.sliders.push(new oSlider(0, slider_w, slider_h, slider_range, "R", arr[0], this.parentPageId, this.id));
 	this.sliders.push(new oSlider(1, slider_w, slider_h, slider_range, "G", arr[1], this.parentPageId, this.id));
 	this.sliders.push(new oSlider(2, slider_w, slider_h, slider_range, "B", arr[2], this.parentPageId, this.id));
@@ -1436,7 +1436,7 @@ oWidget = function (id, x, y, w, h, label, color_id, func, parentPageId) {
 	this.repaint = function () {
 		this.ly = Math.floor(this.y - (p.settings.pages[this.parentPageId].offset * cSettings.rowHeight));
 		window.RepaintRect(this.x, this.ly, this.w, this.h + this.slider_y);
-	};
+	}
 
 	this.refresh = function () {
 		switch (this.parentPageId) {
@@ -1457,14 +1457,14 @@ oWidget = function (id, x, y, w, h, label, color_id, func, parentPageId) {
 			case 4:
 				var arr = window.GetProperty("SYSTEM.COLOR HIGHLIGHT", "255-175-50").split("-");
 				break;
-			};
+			}
 			break;
-		};
+		}
 		for (var v = 0; v < 3; v++) {
 			this.sliders[v].value = arr[v];
 			this.sliders[v].Zcx = this.sliders[v].setCursorPos(arr[v]);
-		};
-	};
+		}
+	}
 
 	this.draw = function (gr) {
 		gr.SetSmoothingMode(0);
@@ -1478,7 +1478,7 @@ oWidget = function (id, x, y, w, h, label, color_id, func, parentPageId) {
 			break;
 		default:
 			this.colorEnabled = true;
-		};
+		}
 
 		// draw widget label
 		var label_y = g_z10;
@@ -1509,8 +1509,8 @@ oWidget = function (id, x, y, w, h, label, color_id, func, parentPageId) {
 				gr.GdiDrawText("B", gdi_font(g_fname, g_fsize - 2, 0), g_color_normal_txt, this.x + g_z10, this.ly + this.slider_y + sliders_spacing * 2 + zoom(1, g_dpi), mode_w, slider_h, g_LDT);
 				gr.GdiDrawText((this.colorEnabled ? this.sliders[i].value : "0"), gdi_font(g_fname, g_fsize - 2, 0), g_color_normal_txt, this.x + label_y + this.sliders[0].Zw + label_y + zoom(5, g_dpi), this.ly + this.slider_y + sliders_spacing * 2 + zoom(1, g_dpi), cube_left_padding, slider_h, g_LDT);
 				break;
-			};
-		};
+			}
+		}
 
 		// draw color cube
 		var cubx = this.x + label_y + this.sliders[0].Zw + label_y + cube_left_padding + g_z2;
@@ -1528,20 +1528,20 @@ oWidget = function (id, x, y, w, h, label, color_id, func, parentPageId) {
 			gr.SetSmoothingMode(2);
 			gr.DrawLine(cubx, cuby, cubx + cubw - 1, cuby + cubh - 1, 1.0, RGB(255, 50, 50));
 			gr.SetSmoothingMode(0);
-		};
+		}
 		// widget frame
 		this.w = slider_left_padding + this.sliders[0].Zw + cube_left_padding + cubw + g_z10;
 		this.h = sliders_spacing * 2 + this.sliders[0].Zh * 1 + label_y * 2;
 		gr.DrawRect(this.x, this.ly + this.slider_y - label_y, this.w, this.h, 1.0, p.settings.color1);
-	};
+	}
 
 	this.isHoverCursor = function (x, y) {
 		return (x >= this.Zcx && x <= this.Zcx + this.Zcw && y >= this.Zcy && y <= this.Zcy + this.Zch);
-	};
+	}
 
 	this.isHoverBar = function (x, y) {
 		return (x >= this.Zx && x <= this.Zx + this.Zw && y >= this.Zy && y <= this.Zy + this.Zh);
-	};
+	}
 
 	this.updateColor = function () {
 		switch (this.parentPageId) {
@@ -1550,52 +1550,52 @@ oWidget = function (id, x, y, w, h, label, color_id, func, parentPageId) {
 			case 0:
 				if (properties.enableCustomColors) {
 					g_color_normal_txt = RGB(this.sliders[0].value, this.sliders[1].value, this.sliders[2].value);
-				};
+				}
 				var rgb_str = this.sliders[0].value + "-" + this.sliders[1].value + "-" + this.sliders[2].value;
 				window.SetProperty("SYSTEM.COLOR TEXT NORMAL", rgb_str);
 				break;
 			case 1:
 				if (properties.enableCustomColors) {
 					g_color_selected_txt = RGB(this.sliders[0].value, this.sliders[1].value, this.sliders[2].value);
-				};
+				}
 				var rgb_str = this.sliders[0].value + "-" + this.sliders[1].value + "-" + this.sliders[2].value;
 				window.SetProperty("SYSTEM.COLOR TEXT SELECTED", rgb_str);
 				break;
 			case 2:
 				if (properties.enableCustomColors) {
 					g_color_normal_bg = RGB(this.sliders[0].value, this.sliders[1].value, this.sliders[2].value);
-				};
+				}
 				var rgb_str = this.sliders[0].value + "-" + this.sliders[1].value + "-" + this.sliders[2].value;
 				window.SetProperty("SYSTEM.COLOR BACKGROUND NORMAL", rgb_str);
 				break;
 			case 3:
 				if (properties.enableCustomColors) {
 					g_color_selected_bg = RGB(this.sliders[0].value, this.sliders[1].value, this.sliders[2].value);
-				};
+				}
 				var rgb_str = this.sliders[0].value + "-" + this.sliders[1].value + "-" + this.sliders[2].value;
 				window.SetProperty("SYSTEM.COLOR BACKGROUND SELECTED", rgb_str);
 				break;
 			case 4:
 				if (properties.enableCustomColors) {
 					g_color_highlight = RGB(this.sliders[0].value, this.sliders[1].value, this.sliders[2].value);
-				};
+				}
 				var rgb_str = this.sliders[0].value + "-" + this.sliders[1].value + "-" + this.sliders[2].value;
 				window.SetProperty("SYSTEM.COLOR HIGHLIGHT", rgb_str);
 				break;
-			};
+			}
 			p.settings.refreshColors();
 			p.list.setItemColors();
 			p.playlistManager.setColors();
 			break;
-		};
-	};
+		}
+	}
 
 	this.on_mouse = function (event, x, y, delta) {
 		// check sliders
 		var fin = this.sliders.length;
 		for (var i = 0; i < fin; i++) {
 			this.sliders[i].on_mouse(event, x, y);
-		};
+		}
 		if (p.settings.color_updated) { // if a slider has been moved, color is to update
 			this.updateColor();
 		} else {
@@ -1605,9 +1605,9 @@ oWidget = function (id, x, y, w, h, label, color_id, func, parentPageId) {
 				p.settings.colorWidgetFocusedId = -1;
 				p.settings.colorSliderFocusedId = -1;
 				full_repaint();
-			};
-		};
-	};
+			}
+		}
+	}
 
 	this.on_key = function (event, vkey) {
 		// if this widget has the focus, check on_key on the slider (to move it left or right)
@@ -1616,15 +1616,15 @@ oWidget = function (id, x, y, w, h, label, color_id, func, parentPageId) {
 				this.sliders[p.settings.colorSliderFocusedId].on_key(event, vkey);
 				if (p.settings.color_updated) { // if a slider has been moved, color is to update
 					this.updateColor();
-				};
-			};
-		};
-	};
+				}
+			}
+		}
+	}
 
-	this.on_char = function (code) {};
+	this.on_char = function (code) {}
 
-	this.on_focus = function (is_focused) {};
-};
+	this.on_focus = function (is_focused) {}
+}
 
 oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, selectedId, func, parentObject, parentPageId, offset) {
 	this.objType = "LB";
@@ -1652,7 +1652,7 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 
 	this.repaint = function () {
 		window.RepaintRect(this.x, this.ly, this.w, this.h);
-	};
+	}
 
 	this.showSelected = function (rowId) {
 		this.selectedId = rowId;
@@ -1662,9 +1662,9 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 			this.scrollbar.updateCursorPos(this.offset);
 		} else {
 			this.offset = 0;
-		};
+		}
 		eval(gfunc + "(" + this.parentPageId + ", " + this.id + ", " + this.selectedId + ")");
-	};
+	}
 
 	this.reSet = function (list_array) {
 		this.arr = list_array;
@@ -1676,8 +1676,8 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 			this.scrollbarWidth = this.scrollbar.w;
 		} else {
 			this.scrollbarWidth = 0;
-		};
-	};
+		}
+	}
 	this.reSet(this.arr);
 
 	this.resize = function (x, y, w, h, arr) {
@@ -1698,8 +1698,8 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 			this.scrollbarWidth = this.scrollbar.w;
 		} else {
 			this.scrollbarWidth = 0;
-		};
-	};
+		}
+	}
 
 	this.draw = function (gr) {
 		var row = 0;
@@ -1712,14 +1712,14 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 			this.scrollbarWidth = this.scrollbar.w;
 		} else {
 			this.scrollbarWidth = 0;
-		};
+		}
 
 		var text_padding = 5;
 
 		// listbox bg
 		if (this.label.length > 0) {
 			gr.GdiDrawText(this.label, gdi_font(p.settings.fontname, p.settings.txtHeight, 5), p.settings.color1, this.x, this.ly - this.rowHeight - g_z2, this.w, this.rowHeight, g_LDT);
-		};
+		}
 		gr.FillSolidRect(this.x, this.ly, this.w, this.h + 1, RGB(240, 240, 240));
 		gr.DrawRect(this.x - 1, this.ly - 1, this.w + 1, this.h + 2, 1.0, RGB(180, 180, 180));
 
@@ -1739,18 +1739,18 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 			case 2:
 				isCustom = (p.list.groupby[i].ref.substr(0, 6) == "Custom");
 				break;
-			};
+			}
 			if (i == this.selectedId)
 				gr.FillSolidRect(this.x + 1, this.ly + row * this.rowHeight + 1, this.w - this.scrollbarWidth - 2, this.rowHeight - 1, RGBA(150, 150, 150, 200));
 			gr.GdiDrawText((isCustom ? "[" : "") + this.arr[i] + (isCustom ? "]" : ""), gdi_font(p.settings.fontname, p.settings.txtHeight, (i == this.selectedId ? 1 : 0)), (i == this.selectedId ? RGB(0, 0, 0) : RGB(0, 0, 0)), this.x + text_padding, this.ly + row * this.rowHeight, this.w - this.scrollbarWidth - text_padding * 2, this.rowHeight, g_LDT);
 			row++;
-		};
-	};
+		}
+	}
 
 	this.isHoverObject = function (x, y) {
 		var test = (x >= this.x && x <= this.x + this.w && y >= this.ly && y <= this.ly + this.h);
 		return test;
-	};
+	}
 
 	this.on_mouse = function (event, x, y, delta) {
 		this.ishover = this.isHoverObject(x, y);
@@ -1766,8 +1766,8 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 				if (this.ishoverRow) {
 					var new_selectedId = Math.floor((y - this.ly) / this.rowHeight) + this.offset;
 					eval(gfunc + "(" + this.parentPageId + ", " + this.id + ", " + new_selectedId + ")");
-				};
-			};
+				}
+			}
 			break;
 		case "dblclk":
 			this.on_mouse("down", x, y);
@@ -1783,8 +1783,8 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 					var new_selectedId = Math.floor((y - this.ly) / this.rowHeight) + this.offset;
 					eval(gfunc + "(" + this.parentPageId + ", " + this.id + ", " + new_selectedId + ")");
 					this.contextMenu(x, y, new_selectedId);
-				};
-			};
+				}
+			}
 			break;
 		case "move":
 			if (this.scrollbar.visible)
@@ -1794,10 +1794,10 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 			if (this.ishover) {
 				if (this.scrollbar.visible && this.ishover)
 					this.scrollbar.check(event, x, y, delta);
-			};
+			}
 			break;
-		};
-	};
+		}
+	}
 
 	this.on_key = function (event, vkey) {
 		switch (event) {
@@ -1809,7 +1809,7 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 				var row_idx = this.selectedId - this.offset;
 				if (row_idx <= 0) {
 					this.showSelected(new_selectedId);
-				};
+				}
 				break;
 			case VK_DOWN:
 				var new_selectedId = (this.selectedId < this.arr.length - 1 ? this.selectedId + 1 : this.arr.length - 1);
@@ -1817,16 +1817,16 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 				var row_idx = this.selectedId - this.offset;
 				if (row_idx > 2) { // 2 = max index row of the listbox, because listbox height is 3 rows
 					this.showSelected(new_selectedId);
-				};
+				}
 				break;
-			};
+			}
 			break;
-		};
-	};
+		}
+	}
 
-	this.on_char = function (code) {};
+	this.on_char = function (code) {}
 
-	this.on_focus = function (is_focused) {};
+	this.on_focus = function (is_focused) {}
 
 	this.contextMenu = function (x, y, id) {
 		var fin;
@@ -1839,15 +1839,15 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 				var source_ref = p.headerBar.columns[id].ref;
 				if (source_ref != "Cover" && source_ref != "State" && source_ref != "Mood" && source_ref != "Rating") {
 					_menu.AppendMenuItem(MF_STRING, 10, "Duplicate this Column");
-				};
-			};
+				}
+			}
 			break;
 		case 2:
 			if (p.list.totalGroupBy < properties.max_patterns) {
 				_menu.AppendMenuItem(MF_STRING, 20, "Duplicate this Pattern");
-			};
+			}
 			break;
-		};
+		}
 
 		idx = _menu.TrackPopupMenu(x, y);
 		switch (true) {
@@ -1859,7 +1859,7 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 			fin = p.headerBar.columns.length;
 			for (var i = 0; i < fin; i++) {
 				tmp_array.push(p.headerBar.columns[i].ref);
-			};
+			}
 			tmp_array.sort();
 			// get free number to affect to the new User column to create
 			fin = tmp_array.length;
@@ -1867,9 +1867,9 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 				if (tmp_array[i].substr(0, 6) == "Custom") {
 					if (tmp_array[i].substr(tmp_array[i].length - 2, 2) == num(no_user, 2)) {
 						no_user++;
-					};
-				};
-			};
+					}
+				}
+			}
 
 			var c0 = p.headerBar.columns[id].label;
 			var c1 = p.headerBar.columns[id].tf;
@@ -1886,7 +1886,7 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 			fin = p.headerBar.columns.length;
 			for (var i = 0; i < fin; i++) {
 				arr.push(p.headerBar.columns[i].ref);
-			};
+			}
 			p.settings.pages[1].elements[0].reSet(arr);
 			p.headerBar.saveColumns();
 			p.settings.pages[1].elements[0].showSelected(p.headerBar.columns.length - 1);
@@ -1915,17 +1915,17 @@ oListBox = function (id, object_name, x, y, w, h, row_height, label, arr, select
 			fin = p.list.groupby.length;
 			for (var i = 0; i < fin; i++) {
 				arr.push(p.list.groupby[i].label);
-			};
+			}
 			p.settings.pages[2].elements[0].reSet(arr);
 			p.list.saveGroupBy();
 			p.settings.pages[2].elements[0].showSelected(p.list.groupby.length - 1);
 			full_repaint();
 			break;
-		};
+		}
 		_menu.Dispose();
 		return true;
-	};
-};
+	}
+}
 
 oPage = function (id, objectName, label, nbrows) {
 	this.id = id;
@@ -1947,7 +1947,7 @@ oPage = function (id, objectName, label, nbrows) {
 
 	this.repaint = function () {
 		full_repaint();
-	};
+	}
 
 	this.init = function () {
 		var txtbox_x = 20;
@@ -1981,7 +1981,7 @@ oPage = function (id, objectName, label, nbrows) {
 			var fin = p.headerBar.columns.length;
 			for (var i = 0; i < fin; i++) {
 				arr.push(p.headerBar.columns[i].label);
-			};
+			}
 			var listBoxRowHeight = zoom(21, g_dpi);
 			var listBoxHeight = Math.floor(wh - (cSettings.topBarHeight + rh * 1.75 + p.settings.txtHeight) - 25);
 			var listBoxWidth = zoom(100, g_dpi);
@@ -2015,7 +2015,7 @@ oPage = function (id, objectName, label, nbrows) {
 			var fin = p.list.groupby.length;
 			for (var i = 0; i < fin; i++) {
 				arr.push(p.list.groupby[i].label);
-			};
+			}
 			var listBoxRowHeight = zoom(21, g_dpi);
 			var listBoxHeight = Math.floor(wh - (cSettings.topBarHeight + rh * 1.75 + p.settings.txtHeight) - 25);
 			var listBoxWidth = zoom(170, g_dpi);
@@ -2040,7 +2040,7 @@ oPage = function (id, objectName, label, nbrows) {
 			if (p.list.groupby[listBoxCurrentId].collapsedHeight < 0 || p.list.groupby[listBoxCurrentId].collapsedHeight > 4) {
 				p.list.groupby[listBoxCurrentId].collapsedHeight = (p.list.groupby[listBoxCurrentId].collapsedHeight < 0 ? 0 : 4);
 				p.list.saveGroupBy();
-			};
+			}
 			var v = p.list.groupby[listBoxCurrentId].collapsedHeight;
 			this.elements.push(new oRadioButton(6, txtbox_x, cSettings.topBarHeight + rh * 16.0, "0", (v == 0), "settings_radioboxes_action", this.id));
 			this.elements.push(new oRadioButton(7, txtbox_x + spaceBetween_w, cSettings.topBarHeight + rh * 16.0, "1", (v == 1), "settings_radioboxes_action", this.id));
@@ -2053,7 +2053,7 @@ oPage = function (id, objectName, label, nbrows) {
 			if (p.list.groupby[listBoxCurrentId].expandedHeight < 0 || p.list.groupby[listBoxCurrentId].expandedHeight > 4) {
 				p.list.groupby[listBoxCurrentId].expandedHeight = (p.list.groupby[listBoxCurrentId].expandedHeight < 0 ? 0 : 4);
 				p.list.saveGroupBy();
-			};
+			}
 			var v = p.list.groupby[listBoxCurrentId].expandedHeight;
 			this.elements.push(new oRadioButton(11, txtbox_x, cSettings.topBarHeight + rh * 17.5, "0", (v == 0), "settings_radioboxes_action", this.id));
 			this.elements.push(new oRadioButton(12, txtbox_x + spaceBetween_w, cSettings.topBarHeight + rh * 17.5, "1", (v == 1), "settings_radioboxes_action", this.id));
@@ -2092,7 +2092,7 @@ oPage = function (id, objectName, label, nbrows) {
 			if (properties.wallpapermode != 0 && properties.wallpapermode != 4 && properties.wallpapermode != -1) {
 				properties.wallpapermode = 0;
 				window.SetProperty("CUSTOM Wallpaper Type", properties.wallpapermode);
-			};
+			}
 			this.elements.push(new oRadioButton(1, txtbox_x, cSettings.topBarHeight + rh * 4.0, "Album", (properties.wallpapermode == 0), "settings_radioboxes_action", this.id));
 			this.elements.push(new oRadioButton(2, txtbox_x + spaceBetween_w, cSettings.topBarHeight + rh * 4.0, "Artist", (properties.wallpapermode == 4), "settings_radioboxes_action", this.id));
 			this.elements.push(new oRadioButton(3, txtbox_x + spaceBetween_w * 2, cSettings.topBarHeight + rh * 4.0, "Default", (properties.wallpapermode == -1), "settings_radioboxes_action", this.id));
@@ -2106,7 +2106,7 @@ oPage = function (id, objectName, label, nbrows) {
 			if (properties.wallpaperalpha != 125 && properties.wallpaperalpha != 150 && properties.wallpaperalpha != 172 && properties.wallpaperalpha != 200 && properties.wallpaperalpha != 225) {
 				properties.wallpaperalpha = 175;
 				window.SetProperty("CUSTOM Wallpaper Alpha", properties.wallpaperalpha);
-			};
+			}
 			this.elements.push(new oRadioButton(5, txtbox_x, cSettings.topBarHeight + rh * 7.5, "50%", (properties.wallpaperalpha == 125), "settings_radioboxes_action", this.id));
 			this.elements.push(new oRadioButton(6, txtbox_x + spaceBetween_w, cSettings.topBarHeight + rh * 7.5, "60%", (properties.wallpaperalpha == 150), "settings_radioboxes_action", this.id));
 			this.elements.push(new oRadioButton(7, txtbox_x + spaceBetween_w * 2, cSettings.topBarHeight + rh * 7.5, "70%", (properties.wallpaperalpha == 175), "settings_radioboxes_action", this.id));
@@ -2130,8 +2130,8 @@ oPage = function (id, objectName, label, nbrows) {
 			this.elements.push(new oWidget(15, txtbox_x + left_padding, Math.floor(cSettings.topBarHeight + rh * 21.75), wgt_w, wgt_h, "Custom Color - Selected Background", 3, "settings_HSLwidgets_action", this.id));
 			this.elements.push(new oWidget(16, txtbox_x + left_padding, Math.floor(cSettings.topBarHeight + rh * 25.00), wgt_w, wgt_h, "Custom Color - Highlight", 4, "settings_HSLwidgets_action", this.id));
 			break;
-		};
-	};
+		}
+	}
 
 	this.reSet = function () {
 		this.elements.splice(0, this.elements.length);
@@ -2142,9 +2142,9 @@ oPage = function (id, objectName, label, nbrows) {
 			this.scrollbarWidth = this.scrollbar.w;
 		} else {
 			this.scrollbarWidth = 0;
-		};
+		}
 		this.init();
-	};
+	}
 
 	this.setSize = function () {
 		this.x = p.settings.x;
@@ -2161,16 +2161,16 @@ oPage = function (id, objectName, label, nbrows) {
 			this.scrollbarWidth = this.scrollbar.w;
 		} else {
 			this.scrollbarWidth = 0;
-		};
+		}
 		this.init();
-	};
+	}
 
 	this.draw = function (gr) {
 
 		var fin = this.elements.length;
 		for (var i = 0; i < fin; i++) {
 			this.elements[i].draw(gr);
-		};
+		}
 
 		// draw extra elements
 		var rh = cSettings.rowHeight;
@@ -2196,7 +2196,7 @@ oPage = function (id, objectName, label, nbrows) {
 				p.settings.newbutton.draw(gr, nx, ny, 255);
 			} else {
 				gr.DrawImage(p.settings.newColumn_no, nx, ny, p.settings.newColumn_no.Width, p.settings.newColumn_no.Height, 0, 0, p.settings.newColumn_no.Width, p.settings.newColumn_no.Height, 0, 255);
-			};
+			}
 			// delete user column button
 			var spaceBetween_w = g_z10;
 			var dx = 20 + listBoxWidth + zoom(30, g_dpi);
@@ -2207,7 +2207,7 @@ oPage = function (id, objectName, label, nbrows) {
 				p.settings.delbutton.draw(gr, dx, dy, 255);
 			} else {
 				gr.DrawImage(p.settings.delColumn_no, dx, dy, p.settings.delColumn_no.Width, p.settings.delColumn_no.Height, 0, 0, p.settings.delColumn_no.Width, p.settings.delColumn_no.Height, 0, 255);
-			};
+			}
 			break;
 		case 2:
 			var listBoxWidth = zoom(170, g_dpi);
@@ -2218,7 +2218,7 @@ oPage = function (id, objectName, label, nbrows) {
 				p.settings.newbuttonPattern.draw(gr, nx, ny, 255);
 			} else {
 				gr.DrawImage(p.settings.newPattern_no, nx, ny, p.settings.newPattern_no.Width, p.settings.newPattern_no.Height, 0, 0, p.settings.newPattern_no.Width, p.settings.newPattern_no.Height, 0, 255);
-			};
+			}
 			// delete pattern button
 			var spaceBetween_w = g_z10;
 			var dx = 20 + listBoxWidth + zoom(30, g_dpi);
@@ -2229,7 +2229,7 @@ oPage = function (id, objectName, label, nbrows) {
 				p.settings.delbuttonPattern.draw(gr, dx, dy, 255);
 			} else {
 				gr.DrawImage(p.settings.delPattern_no, dx, dy, p.settings.delPattern_no.Width, p.settings.delPattern_no.Height, 0, 0, p.settings.delPattern_no.Width, p.settings.delPattern_no.Height, 0, 255);
-			};
+			}
 
 			gr.FillSolidRect(txtbox_x, cSettings.topBarHeight + rh * 10.75 - (this.offset * cSettings.rowHeight), p.settings.w - 20 * 2 - cScrollBar.width, cHeaderBar.borderWidth, p.settings.color1);
 
@@ -2250,13 +2250,13 @@ oPage = function (id, objectName, label, nbrows) {
 			gr.GdiDrawText("Wallpaper Alpha Shading", gdi_font(p.settings.fontname, p.settings.txtHeight, 5), p.settings.color1, txtbox_x, cSettings.topBarHeight + rh * 6.75 - (this.offset * cSettings.rowHeight), p.settings.w - 10, p.settings.txtHeight + 10, g_LDT);
 			gr.GdiDrawText("Customize Panel Colors", gdi_font(p.settings.fontname, p.settings.txtHeight, 5), p.settings.color1, txtbox_x, cSettings.topBarHeight + rh * 10.25 - (this.offset * cSettings.rowHeight), p.settings.w - 10, p.settings.txtHeight + 10, g_LDT);
 			break;
-		};
+		}
 
 		// draw scrollbar
 		if (this.scrollbarWidth > 0) {
 			this.scrollbar.drawXY(gr, p.settings.x + p.settings.w - cScrollBar.width, p.settings.y + cSettings.topBarHeight + cHeaderBar.height);
-		};
-	};
+		}
+	}
 
 	this.newButtonCheck = function (event, x, y) {
 		var fin;
@@ -2275,7 +2275,7 @@ oPage = function (id, objectName, label, nbrows) {
 				fin = p.headerBar.columns.length;
 				for (var i = 0; i < fin; i++) {
 					tmp_array.push(p.headerBar.columns[i].ref);
-				};
+				}
 				tmp_array.sort();
 				// get free number to affect to the new User column to create
 				fin = tmp_array.length;
@@ -2283,9 +2283,9 @@ oPage = function (id, objectName, label, nbrows) {
 					if (tmp_array[i].substr(0, 6) == "Custom") {
 						if (tmp_array[i].substr(tmp_array[i].length - 2, 2) == num(no_user, 2)) {
 							no_user++;
-						};
-					};
-				};
+						}
+					}
+				}
 
 				p.headerBar.columns.push(new oColumn("Custom " + num(no_user, 2), "null", "null", 0, "Custom " + num(no_user, 2), 0, "null"));
 				p.headerBar.totalColumns++;
@@ -2294,16 +2294,16 @@ oPage = function (id, objectName, label, nbrows) {
 				fin = p.headerBar.columns.length;
 				for (var i = 0; i < fin; i++) {
 					arr.push(p.headerBar.columns[i].ref);
-				};
+				}
 				p.settings.pages[1].elements[0].reSet(arr);
 				p.headerBar.saveColumns();
 				p.settings.pages[1].elements[0].showSelected(p.headerBar.columns.length - 1);
 				full_repaint();
-			};
+			}
 			break;
-		};
+		}
 		return state;
-	};
+	}
 
 	this.delButtonCheck = function (event, x, y) {
 		var fin;
@@ -2327,8 +2327,8 @@ oPage = function (id, objectName, label, nbrows) {
 						for (var k = 0; k < fin; k++) {
 							if (p.headerBar.columns[k].percent > 0) {
 								nbvis++;
-							};
-						};
+							}
+						}
 						if (nbvis > 1) {
 							var RemovedColumnSize = Math.abs(p.headerBar.columns[idx].percent);
 							p.headerBar.columns[idx].percent = 0;
@@ -2339,8 +2339,8 @@ oPage = function (id, objectName, label, nbrows) {
 								if (k != idx && p.headerBar.columns[k].percent > 0) {
 									totalColsToResizeUp++;
 									last_idx = k;
-								};
-							};
+								}
+							}
 							var add_value = Math.floor(RemovedColumnSize / totalColsToResizeUp);
 							var reste = RemovedColumnSize - (add_value * totalColsToResizeUp);
 							fin = p.headerBar.columns.length;
@@ -2349,15 +2349,15 @@ oPage = function (id, objectName, label, nbrows) {
 									p.headerBar.columns[k].percent = Math.abs(p.headerBar.columns[k].percent) + add_value;
 									if (reste > 0 && k == last_idx) {
 										p.headerBar.columns[k].percent = Math.abs(p.headerBar.columns[k].percent) + reste;
-									};
-								};
+									}
+								}
 								p.headerBar.columns[k].w = Math.abs(p.headerBar.w * p.headerBar.columns[k].percent / 100000);
-							};
+							}
 						} else {
 							// it's the last column visible, delete not possile for now !!!
 							return false;
-						};
-					};
+						}
+					}
 					// ok, NOW we can delete this column, let's do it!
 					var tmp_array = p.headerBar.columns.slice(0, p.headerBar.columns.length);
 					p.headerBar.columns.splice(0, p.headerBar.columns.length);
@@ -2365,8 +2365,8 @@ oPage = function (id, objectName, label, nbrows) {
 					for (var i = 0; i < fin; i++) {
 						if (i != idx) {
 							p.headerBar.columns.push(tmp_array[i]);
-						};
-					};
+						}
+					}
 					//
 					p.headerBar.totalColumns--;
 					window.SetProperty("SYSTEM.HeaderBar.TotalColumns", p.headerBar.totalColumns);
@@ -2374,7 +2374,7 @@ oPage = function (id, objectName, label, nbrows) {
 					fin = p.headerBar.columns.length;
 					for (var i = 0; i < fin; i++) {
 						arr.push(p.headerBar.columns[i].ref);
-					};
+					}
 					p.settings.pages[1].elements[0].reSet(arr);
 					p.headerBar.saveColumns();
 					var new_idx = (idx == 0 ? 0 : idx - 1);
@@ -2383,12 +2383,12 @@ oPage = function (id, objectName, label, nbrows) {
 				} else {
 					// we could not delete a native column!
 					return false;
-				};
-			};
+				}
+			}
 			break;
-		};
+		}
 		return state;
-	};
+	}
 
 	this.newButtonPatternCheck = function (event, x, y) {
 		var fin;
@@ -2408,16 +2408,16 @@ oPage = function (id, objectName, label, nbrows) {
 				fin = p.list.groupby.length;
 				for (var i = 0; i < fin; i++) {
 					arr.push(p.list.groupby[i].label);
-				};
+				}
 				p.settings.pages[2].elements[0].reSet(arr);
 				p.list.saveGroupBy();
 				p.settings.pages[2].elements[0].showSelected(p.list.groupby.length - 1);
 				full_repaint();
-			};
+			}
 			break;
-		};
+		}
 		return state;
-	};
+	}
 
 	this.delButtonPatternCheck = function (event, x, y) {
 		var fin;
@@ -2439,15 +2439,15 @@ oPage = function (id, objectName, label, nbrows) {
 					for (var i = 0; i < fin; i++) {
 						if (i != idx) {
 							p.list.groupby.push(tmp_array[i]);
-						};
-					};
+						}
+					}
 					p.list.totalGroupBy--;
 					window.SetProperty("SYSTEM.Groups.TotalGroupBy", p.list.totalGroupBy);
 					var arr = [];
 					fin = p.list.groupby.length;
 					for (var i = 0; i < fin; i++) {
 						arr.push(p.list.groupby[i].label);
-					};
+					}
 					p.settings.pages[2].elements[0].reSet(arr);
 					p.list.saveGroupBy();
 					var new_idx = (idx == 0 ? 0 : idx - 1);
@@ -2461,17 +2461,17 @@ oPage = function (id, objectName, label, nbrows) {
 						p.list.updateHandleList(plman.ActivePlaylist, false);
 						p.list.setItems(true);
 						p.scrollbar.setCursor(p.list.totalRowVisible, p.list.totalRows, p.list.offset);
-					};
+					}
 					full_repaint();
 				} else {
 					// we could not delete a native "Group By" pattern!
 					return false;
-				};
-			};
+				}
+			}
 			break;
-		};
+		}
 		return state;
-	};
+	}
 
 	this.on_mouse = function (event, x, y, delta) {
 		this.ishover = (x >= this.x && x <= this.x + this.w && y >= this.y && y <= this.y + this.h);
@@ -2484,7 +2484,7 @@ oPage = function (id, objectName, label, nbrows) {
 			break;
 		default:
 			var isHoverListBox = false;
-		};
+		}
 
 		switch (event) {
 		case "dblclk":
@@ -2498,11 +2498,11 @@ oPage = function (id, objectName, label, nbrows) {
 				if (!isHoverListBox) {
 					if (this.scrollbar.visible) {
 						this.scrollbar.check(event, x, y, delta);
-					};
-				};
-			};
+					}
+				}
+			}
 			break;
-		};
+		}
 
 		switch (this.id) {
 		case 1:
@@ -2511,9 +2511,9 @@ oPage = function (id, objectName, label, nbrows) {
 					var fin = this.elements.length;
 					for (var i = 0; i < fin; i++) {
 						this.elements[i].on_mouse(event, x, y, delta);
-					};
-				};
-			};
+					}
+				}
+			}
 			break;
 		case 2:
 			if (this.delButtonPatternCheck(event, x, y) != ButtonStates.hover) {
@@ -2521,18 +2521,18 @@ oPage = function (id, objectName, label, nbrows) {
 					var fin = this.elements.length;
 					for (var i = 0; i < fin; i++) {
 						this.elements[i].on_mouse(event, x, y, delta);
-					};
-				};
-			};
+					}
+				}
+			}
 			break;
 		default:
 			var fin = this.elements.length;
 			for (var i = 0; i < fin; i++) {
 				this.elements[i].on_mouse(event, x, y, delta);
-			};
-		};
-	};
-};
+			}
+		}
+	}
+}
 
 oSettings = function () {
 	// inputbox variables
@@ -2558,12 +2558,12 @@ oSettings = function () {
 		this.color1 = blendColors(g_color_normal_bg, g_color_normal_txt, 0.5);
 		this.color2 = g_color_normal_txt;
 		this.color3 = g_color_normal_bg;
-	};
+	}
 	this.setColors();
 
 	this.repaint = function () {
 		full_repaint();
-	};
+	}
 
 	this.setButtons = function () {
 
@@ -2729,7 +2729,7 @@ oSettings = function () {
 		this.closebutton = new button(this.close_off.Resize(button_zoomSize, button_zoomSize, 7), this.close_ov.Resize(button_zoomSize, button_zoomSize, 7), this.close_ov.Resize(button_zoomSize, button_zoomSize, 7));
 
 		pic.ReleaseGraphics(gpic);
-	};
+	}
 
 	this.refreshColors = function () {
 		get_colors();
@@ -2744,11 +2744,11 @@ oSettings = function () {
 				case "RB":
 					this.pages[p].elements[e].setButtons();
 					break;
-				};
-			};
-		};
+				}
+			}
+		}
 		full_repaint();
-	};
+	}
 
 	this.setSize = function (x, y, w, h) {
 		this.x = x;
@@ -2764,12 +2764,12 @@ oSettings = function () {
 			this.pages.push(new oPage(1, "p.settings.pages[1]", "Columns", 16));
 			this.pages.push(new oPage(2, "p.settings.pages[2]", "Groups", 33));
 			this.pages.push(new oPage(3, "p.settings.pages[3]", "Appearance", 28));
-		};
+		}
 		var fin = this.pages.length;
 		for (var i = 0; i < fin; i++) {
 			this.pages[i].setSize();
-		};
-	};
+		}
+	}
 
 	this.draw = function (gr) {
 		var padding = 10;
@@ -2817,7 +2817,7 @@ oSettings = function () {
 			if (i == this.currentPageId) {
 				cx = tx;
 				cw = tw + tpad * 2;
-			};
+			}
 
 			// image off
 			tmp_tab_img_off = gdi.CreateImage(tw + tpad * 2, th + 4);
@@ -2835,7 +2835,7 @@ oSettings = function () {
 
 			this.tabButtons[i].draw(gr, tx, ty - 3, 255);
 			tx += tw + tpad * 2;
-		};
+		}
 
 		// active tab bg
 		gr.FillSolidRect(cx + zoom(1, g_dpi), ty - g_z2, cw - zoom(1, g_dpi), th + zoom(4.0, g_dpi), g_color_normal_bg);
@@ -2854,7 +2854,7 @@ oSettings = function () {
 		var tmp_tab_img = null;
 
 		gr.SetSmoothingMode(0);
-	};
+	}
 
 	this.closeButtonCheck = function (event, x, y) {
 		var state = this.closebutton.checkstate(event, x, y);
@@ -2871,11 +2871,11 @@ oSettings = function () {
 				update_playlist(properties.collapseGroupsByDefault);
 				p.playlistManager.refresh("", false, false, false);
 				full_repaint();
-			};
+			}
 			break;
-		};
+		}
 		return state;
-	};
+	}
 
 	this.on_mouse = function (event, x, y, delta) {
 		var state = null,
@@ -2893,16 +2893,16 @@ oSettings = function () {
 						this.currentPageId = i;
 						this.tabButtons[i].state = ButtonStates.normal;
 						full_repaint();
-					};
+					}
 					break;
-				};
-			};
+				}
+			}
 			if (!found) {
 				this.color_updated = false;
 				this.pages[this.currentPageId].on_mouse(event, x, y, delta);
-			};
-		};
-	};
+			}
+		}
+	}
 
-	this.on_focus = function (is_focused) {};
-};
+	this.on_focus = function (is_focused) {}
+}

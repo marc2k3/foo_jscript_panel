@@ -9,7 +9,7 @@ oBorder = function () {
 
 	this.isHover = function (x, y) {
 		return (x >= this.x - 3 && x <= this.x + this.w + 2 && y >= this.y && y <= this.y + this.h);
-	};
+	}
 
 	this.on_mouse = function (event, x, y) {
 		this.ishover = (x >= this.x - 3 && x <= this.x + this.w + 2 && y >= this.y && y <= this.y + this.h);
@@ -18,7 +18,7 @@ oBorder = function () {
 			if (this.ishover) {
 				this.sourceX = x;
 				this.drag = true;
-			};
+			}
 			break;
 		case "up":
 			this.drag = false;
@@ -26,11 +26,11 @@ oBorder = function () {
 		case "move":
 			if (this.drag) {
 				this.delta = x - this.sourceX;
-			};
+			}
 			break;
-		};
-	};
-};
+		}
+	}
+}
 
 oColumn = function () {
 	this.label = arguments[0];
@@ -46,7 +46,7 @@ oColumn = function () {
 
 	this.isHover = function (x, y) {
 		return (x > this.x && x < this.x + this.w && y >= this.y && y <= this.y + this.h);
-	};
+	}
 
 	this.on_mouse = function (event, x, y) {
 		this.ishover = (x > this.x + 2 && x < this.x + this.w - 2 && y >= this.y && y <= this.y + this.h);
@@ -54,14 +54,14 @@ oColumn = function () {
 		case "down":
 			if (this.ishover && this.percent > 0) {
 				this.drag = true;
-			};
+			}
 			break;
 		case "up":
 			this.drag = false;
 			break;
-		};
-	};
-};
+		}
+	}
+}
 
 oHeaderBar = function () {
 	this.visible = true;
@@ -76,7 +76,7 @@ oHeaderBar = function () {
 	this.resetSortIndicators = function () {
 		this.sortedColumnId = -1;
 		this.sortedColumnDirection = 1;
-	};
+	}
 	this.resetSortIndicators();
 
 	this.borderHover = false;
@@ -89,7 +89,7 @@ oHeaderBar = function () {
 		} else {
 			var color_txt = g_color_normal_txt;
 			var color_bg = g_color_normal_bg;
-		};
+		}
 
 		// normal playlistManager slide Image
 		this.slide_open_normal = gdi.CreateImage(cScrollBar.width, this.h);
@@ -143,8 +143,8 @@ oHeaderBar = function () {
 			this.button = new button(this.slide_close_normal, this.slide_close_hover, this.slide_close_down);
 		} else {
 			this.button = new button(this.slide_open_normal, this.slide_open_hover, this.slide_open_down);
-		};
-	};
+		}
+	}
 
 	this.setSize = function (x, y, w, h) {
 		this.x = x;
@@ -154,11 +154,11 @@ oHeaderBar = function () {
 		this.setButtons();
 		this.txtHeight = cHeaderBar.txtHeight;
 		this.borderWidth = cHeaderBar.borderWidth;
-	};
+	}
 
 	this.repaint = function () {
 		full_repaint();
-	};
+	}
 
 	this.calculateColumns = function () {
 		var tmp = this.x;
@@ -174,21 +174,21 @@ oHeaderBar = function () {
 					// start >> on last column, adjust width of last drawn column to fit headerbar width!
 					if (this.columns[i].x + this.columns[i].w >= this.x + this.w) { // if last col width go ahead of the max width (1 pixel more!) downsize col width !
 						this.columns[i].w = (this.x + this.w) - this.columns[i].x + 1; // +1 to fit the whole headerbar width due to the -1 in draw width of each column in DrawRect below
-					};
+					}
 					if (this.columns[i].x + this.columns[i].w < this.x + this.w && this.columns[i].x + this.columns[i].w > this.x + this.w - 4) { // if there is a gap of 1 pixel at the end, fill it!
 						this.columns[i].w = (this.x + this.w) - this.columns[i].x + 1;
-					};
+					}
 					// end <<
-				};
+				}
 				tmp = this.columns[i].x + this.columns[i].w;
 			} else {
 				this.columns[i].x = tmp;
 				this.columns[i].y = this.y;
 				this.columns[i].w = 0;
 				this.columns[i].h = this.h;
-			};
-		};
-	};
+			}
+		}
+	}
 
 	this.drawHiddenPanel = function (gr) {
 		gr.FillSolidRect(this.x, this.y, this.w + cScrollBar.width, 1, g_color_normal_txt & 0x15ffffff);
@@ -206,7 +206,7 @@ oHeaderBar = function () {
 		// tweak to only reset mouse cursor to arrowafter a column sorting
 		if (this.columnDragged_saved == 3 && this.columnDragged == 0) {
 			this.columnDragged_saved = 0;
-		};
+		}
 
 		// calc column metrics for calculating border metrics as well
 		this.calculateColumns();
@@ -234,8 +234,8 @@ oHeaderBar = function () {
 							gr.FillSolidRect(cx, cy, cw, this.h, g_color_normal_txt & 0x30ffffff);
 						} else {
 							gr.FillSolidRect(cx, cy, cw, this.h, g_color_normal_txt & 0x15ffffff);
-						};
-					};
+						}
+					}
 					// draw column header infos
 					if (this.columns[j].tf != "null" || this.columns[j].sortOrder != "null") {
 						// draw sort indicator (direction)
@@ -243,19 +243,19 @@ oHeaderBar = function () {
 							sx = Math.floor(cx + this.columns[j].w / 2 - 3);
 							sh = cy + 1;
 							images.sortdirection && gr.DrawImage(images.sortdirection, sx, sh, images.sortdirection.Width, images.sortdirection.Height, 0, 0, images.sortdirection.Width, images.sortdirection.Height, (this.sortedColumnDirection > 0 ? 180 : 0), 130);
-						};
-					};
+						}
+					}
 					gr.GdiDrawText(this.columns[j].label, gdi_font(g_fname, this.txtHeight, 1), g_color_normal_txt, cx + (this.borderWidth * 2), cy + 1, cw - (this.borderWidth * 4) - 1, this.h, this.columns[j].DT_align | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX | DT_END_ELLIPSIS);
 				} else if (j == this.columnDraggedId && this.columnDragged == 2) {
 					gr.FillGradRect(cx, cy, cw, this.h, 90, RGBA(0, 0, 0, 60), 0, 1.0);
-				};
-			};
+				}
+			}
 
 			if (this.borders[i].drag) {
 				gr.FillSolidRect(Math.floor(bx - 0), this.y, this.borders[i].w, this.h, g_color_normal_txt);
-			};
+			}
 			tmp = bx + this.borderWidth;
-		};
+		}
 
 		// draw last colum at the right of the last border Object
 		for (j = this.totalColumns - 1; j >= 0; j--) {
@@ -272,8 +272,8 @@ oHeaderBar = function () {
 							gr.FillSolidRect(cx, cy, cw, this.h, g_color_normal_txt & 0x30ffffff);
 						} else {
 							gr.FillSolidRect(cx, cy, cw, this.h, g_color_normal_txt & 0x15ffffff);
-						};
-					};
+						}
+					}
 					// draw last column header info
 					if (this.columns[j].tf != "null" || this.columns[j].sortOrder != "null") {
 						// draw sort indicator (direction)
@@ -281,15 +281,15 @@ oHeaderBar = function () {
 							sx = Math.floor(cx + this.columns[j].w / 2 - 3);
 							sh = cy + 1;
 							images.sortdirection && gr.DrawImage(images.sortdirection, sx, sh, images.sortdirection.Width, images.sortdirection.Height, 0, 0, images.sortdirection.Width, images.sortdirection.Height, (this.sortedColumnDirection > 0 ? 180 : 0), 130);
-						};
-					};
+						}
+					}
 					gr.GdiDrawText(this.columns[j].label, gdi_font(g_fname, this.txtHeight, 1), g_color_normal_txt, cx + (this.borderWidth * 2), cy + 1, cw - (this.borderWidth * 4) - 1, this.h, this.columns[j].DT_align | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX | DT_END_ELLIPSIS);
 				} else if (j == this.columnDraggedId && this.columnDragged == 2) {
 					gr.FillGradRect(cx, cy, cw, this.h, 90, RGBA(0, 0, 0, 70), 0, 1.0);
-				};
+				}
 				break;
-			};
-		};
+			}
+		}
 
 		// draw dragged column header (last item drawn to be always on the top)
 		if (this.columnDragged > 1 && this.columnDraggedId != null) {
@@ -305,10 +305,10 @@ oHeaderBar = function () {
 			gr.DrawRect(cx + 1, cy + 2, Math.floor(this.columns[this.columnDraggedId].w - 5), this.h - 5, 1.0, blendColors(g_color_normal_txt, g_color_normal_bg, 0.55));
 			// header text info
 			gr.GdiDrawText(this.columns[this.columnDraggedId].label, gdi_font(g_fname, this.txtHeight, 1), g_color_normal_bg, cx + (this.borderWidth * 2), cy + 1, this.columns[this.columnDraggedId].w - (this.borderWidth * 4) - 2, this.h, this.columns[this.columnDraggedId].DT_align | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX | DT_END_ELLIPSIS);
-		};
+		}
 		// draw settings button
 		this.button.draw(gr, this.x + this.w, this.y, 255);
-	};
+	}
 
 	this.saveColumns = function () {
 		var tmp;
@@ -337,12 +337,12 @@ oHeaderBar = function () {
 				case 6:
 					tmp = tmp + this.columns[i].sortOrder;
 					break;
-				};
+				}
 				// add separator ';'
 				if (i < this.columns.length - 1) {
 					tmp = tmp + "^^";
-				};
-			};
+				}
+			}
 			switch (j) {
 			case 0:
 				window.SetProperty("SYSTEM.HeaderBar.label", tmp);
@@ -365,10 +365,10 @@ oHeaderBar = function () {
 			case 6:
 				window.SetProperty("SYSTEM.HeaderBar.sort", tmp);
 				break;
-			};
-		};
+			}
+		}
 		this.initColumns();
-	};
+	}
 
 	this.initColumns = function () {
 		var borderPercent = 0;
@@ -404,15 +404,15 @@ oHeaderBar = function () {
 				case 6:
 					fields.push(new Array("%album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", "%album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", "null", "%tracknumber% | %album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %title%", "%title% | %album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber%", "%date% | %album artist% | %album% | %discnumber% | %tracknumber% | %title%", "%artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", "$if2(%album%,%artist%) | $if(%album%,%date%,'9999') | %album artist% | %discnumber% | %tracknumber% | %title%", "%genre% | %album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", "%mood% | %album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", "%rating% | %album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", "$if2(%play_counter%,$if2(%play_count%,0)) | %album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", "%__bitrate% | %album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", "$if2(%length%,' 0:00') | %album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%"));
 					break;
-				};
+				}
 				// convert array to csv string
 				tmp = "";
 				for (var j = 0; j < fields[i].length; j++) {
 					tmp = tmp + fields[i][j];
 					if (j < fields[i].length - 1) {
 						tmp = tmp + "^^";
-					};
-				};
+					}
+				}
 				// save CSV string into window Properties
 				switch (i) {
 				case 0:
@@ -436,8 +436,8 @@ oHeaderBar = function () {
 				case 6:
 					window.SetProperty("SYSTEM.HeaderBar.sort", tmp);
 					break;
-				};
-			};
+				}
+			}
 			// create column Objects
 			this.totalColumns = fields[0].length;
 			window.SetProperty("SYSTEM.HeaderBar.TotalColumns", this.totalColumns);
@@ -446,11 +446,11 @@ oHeaderBar = function () {
 				if (this.columns[k].percent > 0) {
 					if (previousColumnToDrawId >= 0) {
 						this.borders.push(new oBorder(previousColumnToDrawId, k, borderPercent));
-					};
+					}
 					borderPercent += Math.round(this.columns[k].percent);
 					previousColumnToDrawId = k;
-				};
-			};
+				}
+			}
 
 		} else {
 			var fields = [];
@@ -479,22 +479,22 @@ oHeaderBar = function () {
 				case 6:
 					tmp = window.GetProperty("SYSTEM.HeaderBar.sort", "?^^?^^?^^?^^?^^?^^?^^?^^?^^?^^?^^?^^?^^?");
 					break;
-				};
+				}
 				fields.push(tmp.split("^^"));
-			};
+			}
 			for (var k = 0; k < this.totalColumns; k++) {
 				this.columns.push(new oColumn(fields[0][k], fields[1][k], fields[2][k], fields[3][k], fields[4][k], fields[5][k], fields[6][k]));
 				if (this.columns[k].percent > 0) {
 					if (previousColumnToDrawId >= 0) {
 						this.borders.push(new oBorder(previousColumnToDrawId, k, borderPercent));
-					};
+					}
 					borderPercent += Math.round(this.columns[k].percent);
 					previousColumnToDrawId = k;
-				};
-			};
+				}
+			}
 			this.calculateColumns();
-		};
-	};
+		}
+	}
 
 	this.buttonCheck = function (event, x, y) {
 		if (!dragndrop.moved) {
@@ -505,23 +505,23 @@ oHeaderBar = function () {
 				case "down":
 					if (state == ButtonStates.down) {
 						this.buttonClicked = true;
-					};
+					}
 					break;
 				case "up":
 					if (this.buttonClicked && state == ButtonStates.hover) {
 						togglePlaylistManager();
 						this.button.state = ButtonStates.hover;
-					};
+					}
 					this.buttonClicked = false;
 					break;
 				case "leave":
 					this.button.state = ButtonStates.normal;
 					break;
-				};
+				}
 				return state;
-			};
-		};
-	};
+			}
+		}
+	}
 
 	this.on_mouse = function (event, x, y, delta) {
 		var tmp = "",
@@ -543,8 +543,8 @@ oHeaderBar = function () {
 								this.borderDragged = true;
 								this.borderDraggedId = i;
 								full_repaint();
-							};
-						};
+							}
+						}
 						// if no click on a border (no border drag), check columns:
 						if (!this.borderDragged) {
 							for (var i = 0; i < this.columns.length; i++) {
@@ -557,15 +557,15 @@ oHeaderBar = function () {
 									} else {
 										this.columnDragged = 2;
 										window.SetCursor(IDC_SIZEALL);
-									};
+									}
 									this.columnDraggedId = i;
 									this.columnDraggedIdHistoric = i;
 									this.repaint();
 									break;
-								};
-							};
-						};
-					};
+								}
+							}
+						}
+					}
 					break;
 				case "up":
 					if (this.borderDragged) {
@@ -582,14 +582,14 @@ oHeaderBar = function () {
 									tmp = tmp + percents[j];
 									if (j < percents.length - 1) {
 										tmp = tmp + "^^";
-									};
-								};
+									}
+								}
 								window.SetProperty("SYSTEM.HeaderBar.percent", tmp);
 								// update border object status
 								this.borders[i].on_mouse(event, x, y);
 								this.repaint();
-							};
-						};
+							}
+						}
 						this.borderDragged = false;
 						this.borderDraggedId = -1;
 						this.on_mouse("move", x, y); // call "Move" to set mouse cursor if border hover
@@ -597,7 +597,7 @@ oHeaderBar = function () {
 						if (this.columnDragged == 1) {
 							if (this.columnDraggedId == 0) {
 								this.columns[0].on_mouse(event, x, y);
-							};
+							}
 							if (this.columnDraggedId > 0 || (this.columnDraggedId == 0 && this.columns[this.columnDraggedId].isHover(x, y))) {
 								window.SetCursor(IDC_WAIT);
 								this.sortedColumnDirection = (this.columnDraggedId == this.sortedColumnId) ? (0 - this.sortedColumnDirection) : 1;
@@ -611,23 +611,23 @@ oHeaderBar = function () {
 									plman.SortByFormatV2(plman.ActivePlaylist, this.columns[this.columnDraggedId].sortOrder, this.sortedColumnDirection);
 								} else {
 									plman.SortByFormatV2(plman.ActivePlaylist, this.columns[this.columnDraggedId].tf, this.sortedColumnDirection);
-								};
+								}
 								update_playlist(properties.collapseGroupsByDefault);
 							} else {
 								this.columns[this.columnDraggedId].drag = false;
 								this.columnDragged = 0;
 								this.columnDragged_saved = 0;
-							};
+							}
 						} else {
 							for (var i = 0; i < this.columns.length; i++) {
 								this.columns[i].on_mouse(event, x, y);
-							};
+							}
 							this.columnDragged = 0;
 							this.on_mouse("move", x, y); // call "Move" to set mouse cursor if border hover
-						};
+						}
 						this.columnDraggedId = null;
 						this.repaint();
-					};
+					}
 					break;
 				case "right":
 					if (this.ishover) {
@@ -637,12 +637,12 @@ oHeaderBar = function () {
 								this.columnRightClicked = i;
 								this.repaint();
 								break;
-							};
-						};
+							}
+						}
 						if (!utils.IsKeyPressed(VK_SHIFT)) {
 							this.contextMenu(x, y, this.columnRightClicked);
-						};
-					};
+						}
+					}
 					break;
 				case "move":
 					this.borderHover = false;
@@ -650,8 +650,8 @@ oHeaderBar = function () {
 						if (this.borders[i].isHover(x, y)) {
 							this.borderHover = true;
 							break;
-						};
-					};
+						}
+					}
 					if (this.columnDragged < 1) {
 						if (this.borderHover || this.borderDragged) {
 							window.SetCursor(IDC_SIZEWE);
@@ -660,8 +660,8 @@ oHeaderBar = function () {
 								window.SetCursor(IDC_ARROW);
 						} else {
 							window.SetCursor(IDC_ARROW);
-						};
-					};
+						}
+					}
 					if (this.borderDragged) {
 						for (var i = 0; i < this.borders.length; i++) {
 							this.borders[i].on_mouse(event, x, y);
@@ -677,9 +677,9 @@ oHeaderBar = function () {
 									this.columns[this.borders[i].rightId].percent = addedPercent - this.columns[this.borders[i].leftId].percent;
 									this.borders[i].sourceX = x;
 									full_repaint();
-								};
-							};
-						};
+								}
+							}
+						}
 					} else if (this.columnDraggedId != 0 && (this.columnDragged == 1 || this.columnDragged == 2)) {
 						this.columnDragged = 2;
 						window.SetCursor(IDC_SIZEALL);
@@ -695,24 +695,24 @@ oHeaderBar = function () {
 											this.sortedColumnId = this.columnDraggedId;
 										} else if (this.columnDraggedId == this.sortedColumnId) {
 											this.sortedColumnId = i;
-										};
+										}
 										this.columnDraggedId = i;
 										break;
-									};
-								};
-							};
-						};
+									}
+								}
+							}
+						}
 						this.saveColumns();
 						full_repaint();
-					};
+					}
 					break;
 				case "leave":
 					full_repaint();
 					break;
-				};
-			};
-		};
-	};
+				}
+			}
+		}
+	}
 
 	this.contextMenu = function (x, y, column_index) {
 		var idx;
@@ -743,21 +743,21 @@ oHeaderBar = function () {
 						if (default_pattern_index < 0 && arr_pl[n] == "*") {
 							default_pattern_index = m;
 							playlist_pattern_index = (playlist_pattern_index < 0 ? m : playlist_pattern_index);
-						};
+						}
 						if (arr_pl[n] == pl_name) {
 							found = true;
 							playlist_pattern_index = m;
-						};
-					};
-				};
-			};
-		};
+						}
+					}
+				}
+			}
+		}
 
 		// main Menu entries
 		if (fb.IsPlaying) {
 			_menu.AppendMenuItem(MF_STRING, 10, "Show Now Playing Track");
 			_menu.AppendMenuSeparator();
-		};
+		}
 		_menu.AppendMenuItem(MF_STRING, 11, "Panel Settings...");
 
 		// Groups submenu entries
@@ -777,23 +777,23 @@ oHeaderBar = function () {
 			var totalGroupBy = p.list.groupby.length;
 			for (var i = 0; i < totalGroupBy; i++) {
 				_patterns.AppendMenuItem(((!found && default_pattern_index < 0) ? MF_STRING : MF_GRAYED), groupByMenuIdx + i, p.list.groupby[i].label);
-			};
+			}
 			if (!found && default_pattern_index < 0) {
 				_patterns.CheckMenuRadioItem(groupByMenuIdx, groupByMenuIdx + totalGroupBy - 1, cGroup.pattern_idx + groupByMenuIdx);
 			} else {
 				_patterns.CheckMenuRadioItem(groupByMenuIdx, groupByMenuIdx + totalGroupBy - 1, playlist_pattern_index + groupByMenuIdx);
-			};
+			}
 
 			_sorts.AppendTo(_groups, MF_STRING, "Apply Group Sorting");
 			var sortByMenuIdx = 50;
 			for (var i = 0; i < totalGroupBy; i++) {
 				_sorts.AppendMenuItem((p.list.groupby[i].sortOrder != "null" && ((!found && default_pattern_index < 0) || playlist_pattern_index == i) ? MF_STRING : MF_GRAYED), sortByMenuIdx + i, p.list.groupby[i].label);
-			};
+			}
 			_groups.AppendMenuSeparator();
 			_groups.AppendMenuItem(p.list.totalRows > 0 && !properties.autocollapse && cGroup.expanded_height > 0 && cGroup.collapsed_height > 0 ? MF_STRING : MF_GRAYED, 80, "Collapse All");
 			_groups.AppendMenuItem(p.list.totalRows > 0 && !properties.autocollapse && cGroup.expanded_height > 0 && cGroup.collapsed_height > 0 ? MF_STRING : MF_GRAYED, 90, "Expand All");
 
-		};
+		}
 
 		// Columns submenu entries
 		var columnMenuIdx = 100;
@@ -808,9 +808,9 @@ oHeaderBar = function () {
 				_columns.AppendMenuItem(MF_STRING, columnMenuIdx + i, "[" + this.columns[i].label + "]");
 			} else {
 				_columns.AppendMenuItem(MF_STRING, columnMenuIdx + i, this.columns[i].label);
-			};
+			}
 			_columns.CheckMenuItem(columnMenuIdx + i, this.columns[i].w > 0 ? 1 : 0);
-		};
+		}
 
 		idx = _menu.TrackPopupMenu(x, y);
 		switch (true) {
@@ -822,10 +822,10 @@ oHeaderBar = function () {
 			var arr = [];
 			for (var i = 0; i < p.headerBar.columns.length; i++) {
 				arr.push(p.headerBar.columns[i].ref);
-			};
+			}
 			for (i = 0; i < p.settings.pages.length; i++) {
 				p.settings.pages[i].reSet();
-			};
+			}
 			p.settings.pages[1].elements[0].reSet(arr);
 			cSettings.visible = true;
 			break;
@@ -834,10 +834,10 @@ oHeaderBar = function () {
 			var arr = [];
 			for (var i = 0; i < p.headerBar.columns.length; i++) {
 				arr.push(p.headerBar.columns[i].ref);
-			};
+			}
 			for (i = 0; i < p.settings.pages.length; i++) {
 				p.settings.pages[i].reSet();
-			};
+			}
 			p.settings.pages[1].elements[0].reSet(arr);
 			p.settings.pages[1].elements[0].showSelected(column_index);
 			cSettings.visible = true;
@@ -847,10 +847,10 @@ oHeaderBar = function () {
 			var arr = [];
 			for (var i = 0; i < p.list.groupby.length; i++) {
 				arr.push(p.list.groupby[i].label);
-			};
+			}
 			for (i = 0; i < p.settings.pages.length; i++) {
 				p.settings.pages[i].reSet();
-			};
+			}
 			p.settings.pages[2].elements[0].reSet(arr);
 			p.settings.pages[2].elements[0].showSelected(cGroup.pattern_idx);
 			cSettings.visible = true;
@@ -860,7 +860,7 @@ oHeaderBar = function () {
 				properties.showgroupheaders = false;
 			} else {
 				properties.showgroupheaders = true;
-			};
+			}
 			window.SetProperty("*GROUP: Show Group Headers", properties.showgroupheaders);
 
 			if (cGroup.collapsed_height > 0) {
@@ -872,7 +872,7 @@ oHeaderBar = function () {
 			} else {
 				cGroup.collapsed_height = cGroup.default_collapsed_height;
 				cGroup.expanded_height = cGroup.default_expanded_height;
-			};
+			}
 
 			// refresh playlist
 			p.list.updateHandleList(plman.ActivePlaylist, false);
@@ -899,12 +899,12 @@ oHeaderBar = function () {
 				p.list.setItems(true);
 				p.scrollbar.setCursor(p.list.totalRowVisible, p.list.totalRows, p.list.offset);
 				full_repaint();
-			};
+			}
 			break;
 		case (idx >= 50 && idx < 80):
 			if ((!found && default_pattern_index < 0) || playlist_pattern_index == idx - sortByMenuIdx) {
 				plman.SortByFormatV2(plman.ActivePlaylist, p.list.groupby[idx - sortByMenuIdx].sortOrder, 1);
-			};
+			}
 			break;
 		case (idx == 80):
 			resize_panels();
@@ -937,8 +937,8 @@ oHeaderBar = function () {
 					if (k != idx - 100 && this.columns[k].percent > newColumnSize) {
 						totalColsToResizeDown++;
 						last_idx = k;
-					};
-				};
+					}
+				}
 				var minus_value = Math.floor(newColumnSize / totalColsToResizeDown);
 				var reste = newColumnSize - (minus_value * totalColsToResizeDown);
 				for (var k = 0; k < this.columns.length; k++) {
@@ -946,10 +946,10 @@ oHeaderBar = function () {
 						this.columns[k].percent = Math.abs(this.columns[k].percent) - minus_value;
 						if (reste > 0 && k == last_idx) {
 							this.columns[k].percent = Math.abs(this.columns[k].percent) - reste;
-						};
-					};
+						}
+					}
 					this.columns[k].w = Math.abs(this.w * this.columns[k].percent / 100000);
-				};
+				}
 				this.saveColumns();
 			} else {
 				// check if it's not the last column visible, otherwise, we coundn't hide it!
@@ -957,8 +957,8 @@ oHeaderBar = function () {
 				for (var k = 0; k < this.columns.length; k++) {
 					if (this.columns[k].percent > 0) {
 						nbvis++;
-					};
-				};
+					}
+				}
 				if (nbvis > 1) {
 					var RemovedColumnSize = Math.abs(this.columns[idx - 100].percent);
 					this.columns[idx - 100].percent = 0;
@@ -968,8 +968,8 @@ oHeaderBar = function () {
 						if (k != idx - 100 && this.columns[k].percent > 0) {
 							totalColsToResizeUp++;
 							last_idx = k;
-						};
-					};
+						}
+					}
 					var add_value = Math.floor(RemovedColumnSize / totalColsToResizeUp);
 					var reste = RemovedColumnSize - (add_value * totalColsToResizeUp);
 					for (var k = 0; k < this.columns.length; k++) {
@@ -977,13 +977,13 @@ oHeaderBar = function () {
 							this.columns[k].percent = Math.abs(this.columns[k].percent) + add_value;
 							if (reste > 0 && k == last_idx) {
 								this.columns[k].percent = Math.abs(this.columns[k].percent) + reste;
-							};
-						};
+							}
+						}
 						this.columns[k].w = Math.abs(this.w * this.columns[k].percent / 100000);
-					};
+					}
 					this.saveColumns();
-				};
-			};
+				}
+			}
 			this.initColumns();
 
 			// set minimum rows / cover column size
@@ -999,13 +999,13 @@ oHeaderBar = function () {
 			} else {
 				cover.column = false;
 				cGroup.count_minimum = cGroup.default_count_minimum;
-			};
+			}
 			update_playlist(properties.collapseGroupsByDefault);
 			break;
-		};
+		}
 		_menu.Dispose();
 		this.columnRightClicked = -1;
 		full_repaint();
 		return true;
-	};
-};
+	}
+}

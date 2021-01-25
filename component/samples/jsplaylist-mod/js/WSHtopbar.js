@@ -14,17 +14,17 @@ oTopBar = function () {
 		this.setButtons();
 		this.txt1Height = cTopBar.txtHeight;
 		this.txt2Height = Math.ceil(cTopBar.txtHeight * 70 / 100);
-	};
+	}
 
 	this.calc_playlist_duration = function () {
 		var s = 0;
 		if (p.list) {
 			for (var i = 0; i < p.list.count; i++) {
 				s += p.list.handleList.Item(i).Length;
-			};
-		};
+			}
+		}
 		return s;
-	};
+	}
 
 	this.setDatas = function () {
 		this.playlist_name = plman.GetPlaylistName(plman.ActivePlaylist);
@@ -44,22 +44,22 @@ oTopBar = function () {
 						if (default_pattern_index < 0 && arr_pl[n] == "*") {
 							default_pattern_index = m;
 							this.pattern_idx = (this.pattern_idx < 0 ? m : this.pattern_idx);
-						};
+						}
 						if (arr_pl[n] == this.playlist_name) {
 							found = true;
 							this.pattern_idx = m;
-						};
-					};
-				};
-			};
-		};
+						}
+					}
+				}
+			}
+		}
 		if (found) {
 			this.filter_type = 1;
 		} else if (default_pattern_index > -1) {
 			this.filter_type = 2;
 		} else {
 			this.filter_type = 0;
-		};
+		}
 
 		this.playlist_count = plman.PlaylistItemCount(plman.ActivePlaylist);
 		if (this.playlist_count > 0) {
@@ -68,12 +68,12 @@ oTopBar = function () {
 				this.totalDurationText = utils.FormatDuration(this.playlist_total_seconds);
 			} else {
 				this.totalDurationText = "";
-			};
+			}
 		} else {
 			this.playlist_total_seconds = 0;
 			this.totalDurationText = "";
-		};
-	};
+		}
+	}
 	this.setDatas();
 
 	this.setButtons = function () {
@@ -102,7 +102,7 @@ oTopBar = function () {
 		this.close_ov.ReleaseGraphics(gb);
 
 		this.button = new button(this.close_off, this.close_ov, this.close_ov);
-	};
+	}
 
 	this.draw = function (gr) {
 		if (this.visible) {
@@ -129,11 +129,11 @@ oTopBar = function () {
 				gr.DrawString(this.playlist_count > 0 ? (this.playlist_count + (this.playlist_count > 1 ? " tracks. " : " track. ") + this.totalDurationText) : "empty playlist", gdi_font("segoe ui", this.txt2Height, 0), g_color_normal_txt & 0x88ffffff, this.x + logoW + borderHeight, Math.ceil(cTopBar.height / 2) + 1 + borderHeight, this.w - logoW - 15, 32, lt_stringformat);
 			} else {
 				gr.DrawString(this.playlist_count > 0 ? (this.playlist_count + (this.playlist_count > 1 ? " streams " : " stream ")) : "empty playlist", gdi_font("segoe ui", this.txt2Height, 0), g_color_normal_txt & 0x88ffffff, this.x + logoW + cHeaderBar.borderWidth, Math.ceil(cTopBar.height / 2) + 1 + borderHeight, this.w - logoW - 15, 32, lt_stringformat);
-			};
+			}
 			// draw close button
 			this.button.draw(gr, this.x + this.w - zoom(20, g_dpi), this.y + zoom(4, g_dpi), 255);
-		};
-	};
+		}
+	}
 
 	this.buttonCheck = function (event, x, y) {
 		var state = this.button.checkstate(event, x, y);
@@ -141,7 +141,7 @@ oTopBar = function () {
 		case "down":
 			if (state == ButtonStates.down) {
 				this.buttonClicked = true;
-			};
+			}
 			break;
 		case "up":
 			if (this.buttonClicked && state == ButtonStates.hover) {
@@ -150,11 +150,11 @@ oTopBar = function () {
 				window.SetProperty("SYSTEM.TopBar.Visible", cTopBar.visible);
 				resize_panels();
 				full_repaint();
-			};
+			}
 			break;
-		};
+		}
 		return state;
-	};
+	}
 
 	this.check = function (event, x, y) {
 		if (!p.scrollbar.clicked) {
@@ -168,17 +168,17 @@ oTopBar = function () {
 					if (this.is_hover) {
 						if (!utils.IsKeyPressed(VK_SHIFT)) {
 							this.contextMenu(x, y);
-						};
-					};
+						}
+					}
 					break;
-				};
-			};
-		};
-	};
+				}
+			}
+		}
+	}
 
 	this.repaint = function () {
 		window.RepaintRect(this.x, this.y, this.w, this.h);
-	};
+	}
 
 	this.contextMenu = function (x, y) {
 		var idx;
@@ -193,16 +193,16 @@ oTopBar = function () {
 			var arr = [];
 			for (var i = 0; i < p.headerBar.columns.length; i++) {
 				arr.push(p.headerBar.columns[i].ref);
-			};
+			}
 			for (i = 0; i < p.settings.pages.length; i++) {
 				p.settings.pages[i].reSet();
-			};
+			}
 			p.settings.pages[1].elements[0].reSet(arr);
 			cSettings.visible = true;
 			full_repaint();
 			break;
-		};
+		}
 		_menu.Dispose();
 		return true;
-	};
-};
+	}
+}
