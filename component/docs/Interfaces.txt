@@ -95,6 +95,25 @@ interface IFb {
 		*/
 
 	Methods:
+		// Shortcuts to main menu commands
+		fb.AddDirectory() (void)
+		fb.AddFiles() (void)
+		fb.Exit() (void)
+		fb.LoadPlaylist() (void)
+		fb.Next() (void)
+		fb.Pause() (void)
+		fb.Play() (void)
+		fb.PlayOrPause() (void)
+		fb.Prev() (void)
+		fb.Random() (void)
+		fb.SavePlaylist() (void)
+		fb.ShowConsole() (void)
+		fb.ShowPreferences() (void)
+		fb.Stop() (void)
+		fb.VolumeDown() (void)
+		fb.VolumeMute() (void)
+		fb.VolumeUp() (void)
+
 		fb.AcquireUiSelectionHolder() (IUiSelectionHolder)
 
 			interface IUiSelectionHolder {
@@ -169,10 +188,6 @@ interface IFb {
 				}
 			}
 			*/
-
-		fb.AddDirectory() (void)
-
-		fb.AddFiles() (void)
 
 		fb.CheckClipboardContents() (boolean)
 		/*
@@ -286,8 +301,6 @@ interface IFb {
 
 		fb.DoDragDrop(handle_list, effect) (uint);
 		// https://github.com/marc2k3/foo_jscript_panel/wiki/Drag-and-Drop
-
-		fb.Exit() (void)
 
 		fb.GetClipboardContents() (IMetadbHandleList)
 		/*
@@ -471,20 +484,6 @@ interface IFb {
 		console.log(fb.IsMetadbInMediaLibrary(np)); // If false, playing track is not in Media Library.
 		*/
 
-		fb.LoadPlaylist() (void)
-
-		fb.Next() (void)
-
-		fb.Pause() (void)
-
-		fb.Play() (void)
-
-		fb.PlayOrPause() (void)
-
-		fb.Prev() (void)
-
-		fb.Random() (void)
-
 		// IMPORTANT: As of v2.2.0, the following menu methods all require the full paths to their commands.
 
 		fb.RunContextCommand(command) (boolean)
@@ -513,25 +512,17 @@ interface IFb {
 		fb.RunMainMenuCommand("File/Add Location...");
 		*/
 
-		fb.SavePlaylist() (void)
-
 		fb.SetDSPPreset(idx) (void)
 		// See fb.GetDSPPresets()
 
 		fb.SetOutputDevice(output, device) (void)
 		// See fb.GetOutputDevices()
 
-		fb.ShowConsole() (void)
-
 		fb.ShowLibrarySearchUI(query) (void)
 		// Opens the Library>Search window populated with the query you set.
 
 		fb.ShowPopupMessage(message[, title]) (void)
 		// title: default "JScript Panel"
-
-		fb.ShowPreferences() (void)
-
-		fb.Stop() (void)
 
 		fb.TitleFormat(pattern) (ITitleFormat)
 
@@ -575,12 +566,6 @@ interface IFb {
 					>> True
 					*/
 			}
-
-		fb.VolumeDown() (void)
-
-		fb.VolumeMute() (void)
-
-		fb.VolumeUp() (void)
 }
 
 interface IGdi {
