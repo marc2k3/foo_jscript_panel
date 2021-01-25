@@ -208,6 +208,7 @@ library foo_jscript_panel
 		HRESULT RemoveDuplicates();
 		HRESULT RemoveDuplicatesByFormat(ITitleFormat* script);
 		HRESULT RemoveRange(UINT from, UINT count);
+		HRESULT SaveAs(BSTR filename);
 		HRESULT UpdateFileInfoFromJSON(BSTR str);
 		[propget] HRESULT Count([out, retval] UINT* out);
 		[propget] HRESULT Item(UINT index, [out, retval] IMetadbHandle** out);

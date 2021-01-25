@@ -38,6 +38,7 @@ public:
 	STDMETHODIMP RemoveDuplicates() override;
 	STDMETHODIMP RemoveDuplicatesByFormat(ITitleFormat* script) override;
 	STDMETHODIMP RemoveRange(UINT from, UINT count) override;
+	STDMETHODIMP SaveAs(BSTR filename) override;
 	STDMETHODIMP UpdateFileInfoFromJSON(BSTR str) override;
 	STDMETHODIMP get_Count(UINT* out) override;
 	STDMETHODIMP get_Item(UINT index, IMetadbHandle** out) override;

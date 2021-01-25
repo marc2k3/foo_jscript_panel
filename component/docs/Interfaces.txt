@@ -2315,6 +2315,25 @@ interface IMetadbHandleList {
 		handle_list.RemoveRange(10, 20);
 		*/
 
+		SaveAs(filename) (void)
+		/*
+		Saves using native foobar2000 .fpl format so you should use that as the file extension. The parent
+		folder must already exist.
+
+		Example:
+		plman.GetPlaylistItems(plman.ActivePlaylist).SaveAs("z:\\blah.fpl");
+
+		If you want to save a .m3u8 playlist, you can build a string by looping over a handle list and appending
+		the path for each item to a new line and then saving as a plain text file.
+
+		var str = "";
+		var items = plman.GetPlaylistItems(plman.ActivePlaylist);
+		for (var i = 0; i < items.Count; i++) {
+			str += items.Item(i).Path + "\r\n";
+		}
+		utils.WriteTextFile("z:\\blah.m3u8", str);
+		*/
+
 		UpdateFileInfoFromJSON(str) (void)
 		// https://github.com/marc2k3/foo_jscript_panel/wiki/UpdateFileInfoFromJSON
 }

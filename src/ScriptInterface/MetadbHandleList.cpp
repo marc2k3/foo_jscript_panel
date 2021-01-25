@@ -372,6 +372,17 @@ STDMETHODIMP MetadbHandleList::RemoveRange(UINT from, UINT count)
 	return S_OK;
 }
 
+STDMETHODIMP MetadbHandleList::SaveAs(BSTR filename)
+{
+	try
+	{
+		playlist_loader::g_save_playlist(from_wide(filename), m_handles, fb2k::noAbort);
+	}
+	catch (...) {}
+
+	return S_OK;
+}
+
 STDMETHODIMP MetadbHandleList::UpdateFileInfoFromJSON(BSTR str)
 {
 	const size_t count = m_handles.get_count();
