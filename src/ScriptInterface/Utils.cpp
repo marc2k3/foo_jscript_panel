@@ -235,7 +235,7 @@ STDMETHODIMP Utils::IsFile(BSTR filename, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_variant_bool(std::filesystem::is_regular_file(std::filesystem::path(filename)));
+	*out = to_variant_bool(FileHelper(filename).is_file());
 	return S_OK;
 }
 
@@ -243,7 +243,7 @@ STDMETHODIMP Utils::IsFolder(BSTR folder, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_variant_bool(std::filesystem::is_directory(std::filesystem::path(folder)));
+	*out = to_variant_bool(FileHelper(folder).is_folder());
 	return S_OK;
 }
 

@@ -10,14 +10,24 @@ public:
 
 	WStrings list_files(bool recur = false)
 	{
-		if (recur) return list_t<std::filesystem::recursive_directory_iterator>(is_file);
-		return list_t(is_file);
+		if (recur) return list_t<std::filesystem::recursive_directory_iterator>(entry::is_file);
+		return list_t(entry::is_file);
 	}
 
 	WStrings list_folders(bool recur = false)
 	{
-		if (recur) return list_t<std::filesystem::recursive_directory_iterator>(is_folder);
-		return list_t(is_folder);
+		if (recur) return list_t<std::filesystem::recursive_directory_iterator>(entry::is_folder);
+		return list_t(entry::is_folder);
+	}
+
+	bool is_file()
+	{
+		return std::filesystem::is_regular_file(m_path);
+	}
+
+	bool is_folder()
+	{
+		return std::filesystem::is_directory(m_path);
 	}
 
 	bool write(jstring content)
@@ -103,21 +113,17 @@ public:
 	}
 
 private:
-	static bool is_file(const std::filesystem::directory_entry& entry)
+	struct entry
 	{
-		return entry.is_regular_file();
-	}
-
-	static bool is_folder(const std::filesystem::directory_entry& entry)
-	{
-		return entry.is_directory();
-	}
+		static bool is_file(const std::filesystem::directory_entry& entry) { return entry.is_regular_file(); }
+		static bool is_folder(const std::filesystem::directory_entry& entry) { return entry.is_directory(); }
+	};
 
 	template <typename T = std::filesystem::directory_iterator>
 	WStrings list_t(std::function<bool(const std::filesystem::directory_entry&)> check_entry)
 	{
 		WStrings wstrings;
-		if (std::filesystem::is_directory(m_path))
+		if (is_folder())
 		{
 			for (const auto& p : T(m_path, std::filesystem::directory_options::skip_permission_denied))
 			{
