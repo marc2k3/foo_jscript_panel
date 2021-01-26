@@ -1,4 +1,4 @@
-## v2.5.2-dev
+## v2.5.2
 - Add `IMetadbHandleList` `SaveAs` method which saves using the native `foobar2000` `fpl` format. The docs also give an example of how to save an `m3u8` playlist using `utils.WriteTextFile`.
 - `IUiSelectionHolder` `SetSelection` now takes an optional `type` argument.
 - Fix `utils.ReadUTF8` so it now strips the `BOM` if present. `utils.ReadTextFile` already did this. Although its presence didn't affect display, it could cause `JSON.parse` to fail. It never affected included samples because files are always written without `BOM`.
