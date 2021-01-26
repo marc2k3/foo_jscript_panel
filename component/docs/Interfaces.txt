@@ -2323,15 +2323,13 @@ interface IMetadbHandleList {
 		Example:
 		plman.GetPlaylistItems(plman.ActivePlaylist).SaveAs("z:\\blah.fpl");
 
-		If you want to save a .m3u8 playlist, you can build a string by looping over a handle list and appending
-		the path for each item to a new line and then saving as a plain text file.
+		If you want to save a .m3u8 playlist, you can build a string by getting the path for each item and
+		adding it to a new line in a plain text file.
 
-		var str = "";
+		var tfo = fb.TitleFormat("%path%");
 		var items = plman.GetPlaylistItems(plman.ActivePlaylist);
-		for (var i = 0; i < items.Count; i++) {
-			str += items.Item(i).Path + "\r\n";
-		}
-		utils.WriteTextFile("z:\\blah.m3u8", str);
+		var text = tfo.EvalWithMetadbs(items).toArray().join("\r\n"); // this should be faster than looping over the handle list
+		utils.WriteTextFile("z:\\blah.m3u8", text);
 		*/
 
 		UpdateFileInfoFromJSON(str) (void)
