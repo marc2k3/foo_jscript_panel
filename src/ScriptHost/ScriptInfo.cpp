@@ -7,8 +7,8 @@ ScriptInfo::ScriptInfo()
 	{
 		s_replacements =
 		{
-			{ "%fb2k_profile_path%", Component::get_profile_path().get_ptr() },
-			{ "%fb2k_component_path%", Component::get_path().get_ptr() },
+			{ L"%fb2k_profile_path%", Component::get_profile_path() },
+			{ L"%fb2k_component_path%", Component::get_path() },
 		};
 	}
 }
@@ -27,7 +27,7 @@ std::string ScriptInfo::extract_value(const std::string& str)
 
 void ScriptInfo::add_import(const std::string& str)
 {
-	std::string path = extract_value(str);
+	std::wstring path = to_wide(extract_value(str));
 	if (path.length())
 	{
 		for (const auto& [what, with] : s_replacements)

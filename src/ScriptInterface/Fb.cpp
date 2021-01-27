@@ -283,7 +283,7 @@ STDMETHODIMP Fb::GetSelectionType(UINT* out)
 
 	const GUID type = ui_selection_manager_v2::get()->get_selection_type(0);
 	const auto it = std::ranges::find_if(guids::selections, [type](const GUID* g) { return *g == type; });
-	*out = it != guids::selections.end() ? std::ranges::distance(guids::selections.begin(), it) : 0;
+	*out = std::ranges::distance(guids::selections.begin(), it);
 	return S_OK;
 }
 
@@ -504,7 +504,7 @@ STDMETHODIMP Fb::get_ComponentPath(BSTR* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_bstr(Component::get_path());
+	*out = SysAllocString(Component::get_path().data());
 	return S_OK;
 }
 
@@ -520,7 +520,7 @@ STDMETHODIMP Fb::get_FoobarPath(BSTR* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_bstr(Component::get_fb2k_path());
+	*out = SysAllocString(Component::get_fb2k_path().data());
 	return S_OK;
 }
 
@@ -568,7 +568,7 @@ STDMETHODIMP Fb::get_ProfilePath(BSTR* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = to_bstr(Component::get_profile_path());
+	*out = SysAllocString(Component::get_profile_path().data());
 	return S_OK;
 }
 

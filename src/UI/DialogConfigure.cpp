@@ -118,9 +118,9 @@ void CDialogConfigure::BuildMenu()
 	CMenu menu = GetMenu();
 	CMenu samples = CreateMenu();
 	CMenu docs = CreateMenu();
-	const std::string component_folder = Component::get_path().get_ptr();
+	const std::wstring component_folder = Component::get_path();
 
-	for (size_t i = ID_SAMPLES_BEGIN; const std::wstring& folder : FileHelper(component_folder + "samples").list_folders())
+	for (size_t i = ID_SAMPLES_BEGIN; const std::wstring& folder : FileHelper(component_folder + L"samples").list_folders())
 	{
 		CMenu sub = CreatePopupMenu();
 		for (const std::filesystem::path& path : FileHelper(folder).list_files())
@@ -131,7 +131,7 @@ void CDialogConfigure::BuildMenu()
 		samples.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(sub.m_hMenu), folder.substr(folder.find_last_of(L"\\") + 1).data());
 	}
 
-	for (size_t i = ID_DOCS_BEGIN; const std::filesystem::path& path : FileHelper(component_folder + "docs").list_files())
+	for (size_t i = ID_DOCS_BEGIN; const std::filesystem::path& path : FileHelper(component_folder + L"docs").list_files())
 	{
 		m_docs.emplace_back(path.wstring());
 		docs.AppendMenu(MF_STRING, i++, path.stem().wstring().data());

@@ -13,7 +13,7 @@ ScriptHost::ScriptHost(PanelWindow* panel)
 
 ScriptHost::~ScriptHost() {}
 
-DWORD ScriptHost::GenerateSourceContext(jstring path)
+DWORD ScriptHost::GenerateSourceContext(const std::wstring& path)
 {
 	m_context_to_path_map.emplace(++m_last_source_context, path);
 	return m_last_source_context;
@@ -102,7 +102,7 @@ HRESULT ScriptHost::InitScriptEngine()
 HRESULT ScriptHost::ParseScripts(IActiveScriptParsePtr& parser)
 {
 	HRESULT hr = S_OK;
-	std::string path;
+	std::wstring path;
 	string8 code;
 	const size_t count = m_info.m_imports.size();
 	size_t import_errors = 0;
@@ -120,12 +120,12 @@ HRESULT ScriptHost::ParseScripts(IActiveScriptParsePtr& parser)
 					FB2K_console_formatter() << m_info.m_build_string;
 					import_errors++;
 				}
-				FB2K_console_formatter() << "Error: Failed to load " << path.c_str();
+				FB2K_console_formatter() << "Error: Failed to load " << path.data();
 			}
 		}
 		else // main
 		{
-			path = "<main>";
+			path = L"<main>";
 			code = m_panel->m_config.m_code;
 		}
 
@@ -262,7 +262,7 @@ STDMETHODIMP ScriptHost::OnScriptError(IActiveScriptError* err)
 	{
 		if (m_context_to_path_map.contains(ctx))
 		{
-			formatter << "File: " << m_context_to_path_map.at(ctx) << "\n";
+			formatter << "File: " << m_context_to_path_map.at(ctx).data() << "\n";
 		}
 		formatter << "Line: " << (line + 1) << ", Col: " << (charpos + 1) << "\n";
 	}

@@ -8,29 +8,24 @@ namespace Component
 		return std::string(static_cast<const char*>(pures->GetPointer()), pures->GetSize());
 	}
 
-	static string8 get_path()
+	static std::wstring get_path()
 	{
-		string8 path;
-		uGetModuleFileName(core_api::get_my_instance(), path);
-		path = pfc::string_directory(path);
-		path.add_char('\\');
-		return path;
+		std::array<wchar_t, MAX_PATH> path;
+		GetModuleFileName(core_api::get_my_instance(), path.data(), path.size());
+		return std::filesystem::path(path.data()).parent_path().wstring() + std::filesystem::path::preferred_separator;
 	}
 
-	static string8 get_fb2k_path()
+	static std::wstring get_fb2k_path()
 	{
-		string8 path;
-		uGetModuleFileName(nullptr, path);
-		path = pfc::string_directory(path);
-		path.add_char('\\');
-		return path;
+		std::array<wchar_t, MAX_PATH> path;
+		GetModuleFileName(nullptr, path.data(), path.size());
+		return std::filesystem::path(path.data()).parent_path().wstring() + std::filesystem::path::preferred_separator;
 	}
 
-	static string8 get_profile_path()
+	static std::wstring get_profile_path()
 	{
 		string8 path;
 		filesystem::g_get_display_path(core_api::get_profile_path(), path);
-		path.add_char('\\');
-		return path;
+		return to_wide(path) + std::filesystem::path::preferred_separator;
 	}
 }

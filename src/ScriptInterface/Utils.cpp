@@ -166,20 +166,18 @@ STDMETHODIMP Utils::Glob(BSTR pattern, UINT exc_mask, UINT inc_mask, VARIANT* ou
 	if (!out) return E_POINTER;
 
 	WStrings files;
-	static constexpr auto sep = L"\\";
-
 	WIN32_FIND_DATA data;
 	HANDLE hFindFile = FindFirstFile(pattern, &data);
 	if (hFindFile != INVALID_HANDLE_VALUE)
 	{
-		std::wstring dir = std::filesystem::path(pattern).parent_path().wstring() + sep;
+		std::wstring folder = std::filesystem::path(pattern).parent_path().wstring() + std::filesystem::path::preferred_separator;
 
 		do
 		{
 			const DWORD attr = data.dwFileAttributes;
 			if ((attr & inc_mask) && !(attr & exc_mask))
 			{
-				files.emplace_back(dir + data.cFileName);
+				files.emplace_back(folder + data.cFileName);
 			}
 		} while (FindNextFile(hFindFile, &data));
 		FindClose(hFindFile);
@@ -281,14 +279,13 @@ STDMETHODIMP Utils::ListFolders(BSTR folder, VARIANT_BOOL recur, VARIANT* out)
 
 	WStrings folders = FileHelper(folder).list_folders(to_bool(recur));
 	const size_t count = folders.size();
-	static constexpr auto sep = L"\\";
 
 	ComArrayWriter writer;
 	if (!writer.create(count)) return E_OUTOFMEMORY;
 
 	for (size_t i = 0; i < count; ++i)
 	{
-		if (!writer.put_item(i, folders[i] + sep)) return E_OUTOFMEMORY;
+		if (!writer.put_item(i, folders[i] + std::filesystem::path::preferred_separator)) return E_OUTOFMEMORY;
 	}
 
 	out->vt = VT_ARRAY | VT_VARIANT;
