@@ -3,13 +3,12 @@
 class AsyncArtTask : public SimpleThreadTask
 {
 public:
-	AsyncArtTask(CWindow hwnd, const metadb_handle_ptr& handle, size_t id, bool need_stub, bool only_embed, bool no_load)
+	AsyncArtTask(CWindow hwnd, const metadb_handle_ptr& handle, size_t id, bool need_stub, bool only_embed)
 		: m_hwnd(hwnd)
 		, m_handle(handle)
 		, m_id(id)
 		, m_need_stub(need_stub)
-		, m_only_embed(only_embed)
-		, m_no_load(no_load) {}
+		, m_only_embed(only_embed) {}
 
 	void run() override
 	{
@@ -32,7 +31,7 @@ public:
 			}
 			else
 			{
-				bitmap = AlbumArt::get(m_handle, m_id, m_need_stub, m_no_load, image_path);
+				bitmap = AlbumArt::get(m_handle, m_id, m_need_stub, image_path);
 			}
 		}
 
@@ -43,7 +42,6 @@ public:
 private:
 	CWindow m_hwnd;
 	bool m_need_stub = true;
-	bool m_no_load = false;
 	bool m_only_embed = false;
 	metadb_handle_ptr m_handle;
 	size_t m_id = 0;

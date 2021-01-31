@@ -99,12 +99,12 @@ STDMETHODIMP Utils::FormatFileSize(UINT64 bytes, BSTR* out)
 	return S_OK;
 }
 
-STDMETHODIMP Utils::GetAlbumArtAsync(UINT window_id, IMetadbHandle* handle, UINT art_id, VARIANT_BOOL need_stub, VARIANT_BOOL only_embed, VARIANT_BOOL no_load)
+STDMETHODIMP Utils::GetAlbumArtAsync(UINT window_id, IMetadbHandle* handle, UINT art_id, VARIANT_BOOL need_stub, VARIANT_BOOL only_embed, VARIANT_BOOL /* FFS */)
 {
 	metadb_handle* ptr = nullptr;
 	GET_PTR(handle, ptr);
 
-	auto task = std::make_unique<AsyncArtTask>(reinterpret_cast<HWND>(window_id), ptr, art_id, to_bool(need_stub), to_bool(only_embed), to_bool(no_load));
+	auto task = std::make_unique<AsyncArtTask>(reinterpret_cast<HWND>(window_id), ptr, art_id, to_bool(need_stub), to_bool(only_embed));
 	SimpleThreadPool::instance().add_task(std::move(task));
 	return S_OK;
 }
@@ -125,7 +125,7 @@ STDMETHODIMP Utils::GetAlbumArtV2(IMetadbHandle* handle, UINT art_id, VARIANT_BO
 	GET_PTR(handle, ptr);
 
 	string8 dummy;
-	*out = AlbumArt::get(ptr, art_id, to_bool(need_stub), false, dummy);
+	*out = AlbumArt::get(ptr, art_id, to_bool(need_stub), dummy);
 	return S_OK;
 }
 

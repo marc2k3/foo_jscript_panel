@@ -41,7 +41,7 @@ STDMETHODIMP MetadbHandle::GetAlbumArt(UINT art_id, VARIANT_BOOL need_stub, VARI
 	if (m_handle.is_empty() || !out) return E_POINTER;
 
 	string8 image_path;
-	IGdiBitmap* bitmap = AlbumArt::get(m_handle, art_id, to_bool(need_stub), false, image_path);
+	IGdiBitmap* bitmap = AlbumArt::get(m_handle, art_id, to_bool(need_stub), image_path);
 
 	_variant_t var;
 	var.vt = VT_DISPATCH;

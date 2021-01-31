@@ -121,18 +121,19 @@ namespace AlbumArt
 		return nullptr;
 	}
 
-	static IGdiBitmap* get(const metadb_handle_ptr& handle, size_t id, bool need_stub, bool no_load, pfc::string_base& image_path)
+	static IGdiBitmap* get(const metadb_handle_ptr& handle, size_t id, bool need_stub, pfc::string_base& image_path)
 	{
 		const GUID what = id_to_guid(id);
-
-		auto api = album_art_manager_v2::get();
 		album_art_data_ptr data;
 		album_art_extractor_instance_v2::ptr ptr;
+		album_art_path_list::ptr pathlist;
+		auto api = album_art_manager_v2::get();
 
 		try
 		{
 			ptr = api->open(pfc::list_single_ref_t<metadb_handle_ptr>(handle), pfc::list_single_ref_t<GUID>(what), fb2k::noAbort);
 			data = ptr->query(what, fb2k::noAbort);
+			pathlist = ptr->query_paths(what, fb2k::noAbort);
 		}
 		catch (...)
 		{
@@ -142,6 +143,7 @@ namespace AlbumArt
 				{
 					ptr = api->open_stub(fb2k::noAbort);
 					data = ptr->query(what, fb2k::noAbort);
+					pathlist = ptr->query_paths(what, fb2k::noAbort);
 				}
 				catch (...) {}
 			}
@@ -149,29 +151,23 @@ namespace AlbumArt
 
 		if (data.is_valid())
 		{
-			album_art_path_list::ptr pathlist = ptr->query_paths(what, fb2k::noAbort);
 			if (pathlist->get_count() > 0)
 			{
 				filesystem::g_get_display_path(pathlist->get_path(0), image_path);
 			}
-			if (!no_load)
-			{
-				return data_to_bitmap(data);
-			}
+			return data_to_bitmap(data);
 		}
 		return nullptr;
 	}
 
 	static IGdiBitmap* get_embedded(jstring path, size_t id)
 	{
-		const GUID what = id_to_guid(id);
-
 		album_art_extractor::ptr ptr;
 		if (album_art_extractor::g_get_interface(ptr, path))
 		{
 			try
 			{
-				album_art_data_ptr data = ptr->open(nullptr, path, fb2k::noAbort)->query(what, fb2k::noAbort);
+				album_art_data_ptr data = ptr->open(nullptr, path, fb2k::noAbort)->query(id_to_guid(id), fb2k::noAbort);
 				if (data.is_valid()) return data_to_bitmap(data);
 			}
 			catch (...) {}

@@ -21,7 +21,7 @@ function get_art(metadb, albumIndex, art_id) {
 	if (brw.groups[albumIndex].load_requested == 0) {
 		brw.groups[albumIndex].load_requested = 1;
 		window.SetTimeout(function () {
-			utils.GetAlbumArtAsync(window.ID, metadb, art_id, false, false, false);
+			utils.GetAlbumArtAsync(window.ID, metadb, art_id, false, false);
 		}, 10);
 	}
 	return img;

@@ -1124,7 +1124,7 @@ interface IUtils {
 		>> 7.9 GB
 		*/
 
-		utils.GetAlbumArtAsync(window_id, handle[, art_id, need_stub, only_embed, no_load]);
+		utils.GetAlbumArtAsync(window_id, handle[, art_id, need_stub, only_embed]);
 		/*
 		window_id: window.ID
 		art_id: default 0.
@@ -1137,8 +1137,9 @@ interface IUtils {
 
 		need_stub: boolean, default true.
 		only_embed: boolean, default false. If true, "need_stub" and "no_load" are ignored.
-		no_load: boolean, default false. If true, "image" parameter will be null in on_get_album_art_done callback.
 		See samples\basic\GetAlbumArtAsync.txt
+
+		As of v2.5.3, the previously optional no_load parameter is ignored.
 		*/
 
 		utils.GetAlbumArtEmbedded(rawpath[, art_id]) (IGdiBitmap)
