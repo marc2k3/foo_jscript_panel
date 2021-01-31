@@ -357,7 +357,7 @@ STDMETHODIMP Utils::ReplaceIllegalChars(BSTR str, VARIANT_BOOL modern, BSTR* out
 	}
 	else
 	{
-		*out = to_bstr(replaceIllegalNameChars(ustr.replace("?", "")));
+		*out = to_bstr(replaceIllegalNameChars(ustr));
 	}
 	return S_OK;
 }
