@@ -1135,8 +1135,8 @@ interface IUtils {
 		3: icon
 		4: artist
 
-		need_stub: boolean, default true.
-		only_embed: boolean, default false. If true, "need_stub" and "no_load" are ignored.
+		need_stub: boolean, default true. Ignored if only_embed is true.
+		only_embed: boolean, default false.
 		See samples\basic\GetAlbumArtAsync.txt
 
 		As of v2.5.3, the previously optional no_load parameter is ignored.
@@ -2082,7 +2082,7 @@ interface IMetadbHandle {
 		3: icon
 		4: artist
 
-		need_stub: boolean, default true. Ignhored if only_embed is true.
+		need_stub: boolean, default true. Ignored if only_embed is true.
 		only_embed: boolean, default false.
 		*/
 }
