@@ -113,7 +113,8 @@ STDMETHODIMP Utils::GetAlbumArtEmbedded(BSTR rawpath, UINT art_id, IGdiBitmap** 
 {
 	if (!out) return E_POINTER;
 
-	*out = AlbumArt::get_embedded(from_wide(rawpath), art_id);
+	album_art_data_ptr data = AlbumArt::get_embedded(from_wide(rawpath), art_id);
+	*out = AlbumArt::data_to_bitmap(data);
 	return S_OK;
 }
 
@@ -125,7 +126,8 @@ STDMETHODIMP Utils::GetAlbumArtV2(IMetadbHandle* handle, UINT art_id, VARIANT_BO
 	GET_PTR(handle, ptr);
 
 	string8 dummy;
-	*out = AlbumArt::get(ptr, art_id, to_bool(need_stub), dummy);
+	album_art_data_ptr data = AlbumArt::get(ptr, art_id, to_bool(need_stub), dummy);
+	*out = AlbumArt::data_to_bitmap(data);
 	return S_OK;
 }
 

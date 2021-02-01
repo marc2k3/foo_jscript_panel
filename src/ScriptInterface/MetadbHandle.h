@@ -20,6 +20,7 @@ public:
 	STDMETHODIMP SetLoved(UINT loved) override;
 	STDMETHODIMP SetPlaycount(UINT playcount) override;
 	STDMETHODIMP SetRating(UINT rating) override;
+	STDMETHODIMP ShowAlbumArtViewer(UINT art_id, VARIANT_BOOL need_stub, VARIANT_BOOL only_embed) override;
 	STDMETHODIMP get_FileSize(UINT64* out) override;
 	STDMETHODIMP get_Length(double* out) override;
 	STDMETHODIMP get_Path(BSTR* out) override;

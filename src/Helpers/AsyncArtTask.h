@@ -18,21 +18,24 @@ public:
 
 		if (m_handle.is_valid())
 		{
+			album_art_data_ptr data;
 			handle = new ComObjectImpl<MetadbHandle>(m_handle);
 
 			if (m_only_embed)
 			{
 				const string8 path = m_handle->get_path();
-				bitmap = AlbumArt::get_embedded(path, m_id);
-				if (bitmap)
+				data = AlbumArt::get_embedded(path, m_id);
+				if (data.is_valid())
 				{
 					filesystem::g_get_display_path(path, image_path);
 				}
 			}
 			else
 			{
-				bitmap = AlbumArt::get(m_handle, m_id, m_need_stub, image_path);
+				data = AlbumArt::get(m_handle, m_id, m_need_stub, image_path);
 			}
+
+			bitmap = AlbumArt::data_to_bitmap(data);
 		}
 
 		AsyncArtData data(handle, m_id, bitmap, to_bstr(image_path));

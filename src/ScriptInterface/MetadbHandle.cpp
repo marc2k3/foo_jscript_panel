@@ -41,11 +41,11 @@ STDMETHODIMP MetadbHandle::GetAlbumArt(UINT art_id, VARIANT_BOOL need_stub, VARI
 	if (m_handle.is_empty() || !out) return E_POINTER;
 
 	string8 image_path;
-	IGdiBitmap* bitmap = AlbumArt::get(m_handle, art_id, to_bool(need_stub), image_path);
+	album_art_data_ptr data = AlbumArt::get(m_handle, art_id, to_bool(need_stub), image_path);
 
 	_variant_t var;
 	var.vt = VT_DISPATCH;
-	var.pdispVal = bitmap;
+	var.pdispVal = AlbumArt::data_to_bitmap(data);
 
 	ComArrayWriter writer;
 	if (!writer.create(2)) return E_OUTOFMEMORY;
@@ -157,6 +157,47 @@ STDMETHODIMP MetadbHandle::SetRating(UINT rating)
 			db::set(hash, tmp);
 		}
 	}
+	return S_OK;
+}
+
+STDMETHODIMP MetadbHandle::ShowAlbumArtViewer(UINT art_id, VARIANT_BOOL need_stub, VARIANT_BOOL only_embed)
+{
+	if (m_handle.is_empty()) return E_POINTER;
+
+	string8 message;
+	auto api = fb2k::imageViewer::tryGet();
+	if (api.is_valid())
+	{
+		album_art_data_ptr data;
+		if (to_bool(only_embed))
+		{
+			data = AlbumArt::get_embedded(m_handle->get_path(), art_id);
+		}
+		else
+		{
+			string8 dummy;
+			data = AlbumArt::get(m_handle, art_id, to_bool(need_stub), dummy);
+		}
+
+		if (data.is_valid())
+		{
+			api->show(core_api::get_main_window(), data);
+		}
+		else
+		{
+			message = "Album art not found.";
+		}
+	}
+	else
+	{
+		message = "ShowAlbumArtViewer requires foobar2000 v1.6.2 or later.";
+	}
+
+	if (message.get_length() > 0)
+	{
+		popup_message::g_show(message, jsp::component_name);
+	}
+
 	return S_OK;
 }
 

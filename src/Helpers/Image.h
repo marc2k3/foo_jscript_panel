@@ -101,27 +101,30 @@ namespace AlbumArt
 
 	static IGdiBitmap* data_to_bitmap(const album_art_data_ptr& data)
 	{
-		const auto ptr = (const uint8_t*)data->get_ptr();
-		const size_t bytes = data->get_size();
-
-		pfc::com_ptr_t<IStream> stream;
-		stream.attach(SHCreateMemStream(ptr, bytes));
-		if (stream.is_valid())
+		if (data.is_valid())
 		{
-			auto bitmap = std::make_unique<Gdiplus::Bitmap>(stream.get_ptr(), TRUE);
-			if (ensure_gdiplus_object(bitmap))
+			const auto ptr = (const uint8_t*)data->get_ptr();
+			const size_t bytes = data->get_size();
+
+			pfc::com_ptr_t<IStream> stream;
+			stream.attach(SHCreateMemStream(ptr, bytes));
+			if (stream.is_valid())
 			{
-				return new ComObjectImpl<GdiBitmap>(std::move(bitmap));
-			}
-			else if (ImageHelper::is_webp(ptr, bytes))
-			{
-				return ImageHelper::webp_to_bitmap(ptr, bytes);
+				auto bitmap = std::make_unique<Gdiplus::Bitmap>(stream.get_ptr(), TRUE);
+				if (ensure_gdiplus_object(bitmap))
+				{
+					return new ComObjectImpl<GdiBitmap>(std::move(bitmap));
+				}
+				else if (ImageHelper::is_webp(ptr, bytes))
+				{
+					return ImageHelper::webp_to_bitmap(ptr, bytes);
+				}
 			}
 		}
 		return nullptr;
 	}
 
-	static IGdiBitmap* get(const metadb_handle_ptr& handle, size_t id, bool need_stub, pfc::string_base& image_path)
+	static album_art_data_ptr get(const metadb_handle_ptr& handle, size_t id, bool need_stub, pfc::string_base& image_path)
 	{
 		const GUID what = id_to_guid(id);
 		album_art_data_ptr data;
@@ -149,29 +152,25 @@ namespace AlbumArt
 			}
 		}
 
-		if (data.is_valid())
+		if (pathlist.is_valid() && pathlist->get_count() > 0)
 		{
-			if (pathlist->get_count() > 0)
-			{
-				filesystem::g_get_display_path(pathlist->get_path(0), image_path);
-			}
-			return data_to_bitmap(data);
+			filesystem::g_get_display_path(pathlist->get_path(0), image_path);
 		}
-		return nullptr;
+		return data;
 	}
 
-	static IGdiBitmap* get_embedded(jstring path, size_t id)
+	static album_art_data_ptr get_embedded(jstring path, size_t id)
 	{
+		album_art_data_ptr data;
 		album_art_extractor::ptr ptr;
 		if (album_art_extractor::g_get_interface(ptr, path))
 		{
 			try
 			{
-				album_art_data_ptr data = ptr->open(nullptr, path, fb2k::noAbort)->query(id_to_guid(id), fb2k::noAbort);
-				if (data.is_valid()) return data_to_bitmap(data);
+				data = ptr->open(nullptr, path, fb2k::noAbort)->query(id_to_guid(id), fb2k::noAbort);
 			}
 			catch (...) {}
 		}
-		return nullptr;
+		return data;
 	}
 }

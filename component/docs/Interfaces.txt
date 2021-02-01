@@ -2069,6 +2069,22 @@ interface IMetadbHandle {
 
 					MetaValueCount(idx) (uint)
 			}
+
+		ShowAlbumArtViewer([art_id, need_stub, only_embed]) (void)
+		/*
+		Requires foobar2000 v1.6.2 or later. Displays a popup text message if not supported / album art not found.
+
+		art_id: default 0.
+
+		0: front
+		1: back
+		2: disc
+		3: icon
+		4: artist
+
+		need_stub: boolean, default true. Ignhored if only_embed is true.
+		only_embed: boolean, default false.
+		*/
 }
 
 interface IMetadbHandleList {

@@ -169,6 +169,7 @@ library foo_jscript_panel
 		HRESULT SetLoved(UINT loved);
 		HRESULT SetPlaycount(UINT playcount);
 		HRESULT SetRating(UINT rating);
+		HRESULT ShowAlbumArtViewer([defaultvalue(0)] UINT art_id, [defaultvalue(-1)] VARIANT_BOOL need_stub, [defaultvalue(0)] VARIANT_BOOL only_embed);
 		[propget] HRESULT FileSize([out, retval] UINT64* out);
 		[propget] HRESULT Length([out, retval] double* out);
 		[propget] HRESULT Path([out, retval] BSTR* out);
