@@ -1,3 +1,10 @@
+## v2.5.3-dev
+- Add `IMetadbHandle` `ShowAlbumArtViewer` which uses the new internal viewer added in foobar2000 `v1.6.2`. You will see a popup text message if you try and use it on earlier versions. Check the docs for options.
+- The included `Album art` sample now has 3 choices available for the `double click` action. Use the right click menu to choose.
+  * Open using external viewer
+  * Open using new internal viewer mentioned above
+  * Open containing folder
+
 ## v2.5.2
 - Add `IMetadbHandleList` `SaveAs` method which saves using the native `foobar2000` `fpl` format. The docs also give an example of how to save an `m3u8` playlist using `utils.WriteTextFile`.
 - `IUiSelectionHolder` `SetSelection` now takes an optional `type` argument.
