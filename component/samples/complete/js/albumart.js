@@ -86,11 +86,21 @@ _.mixin({
 		
 		this.lbtn_dblclk = function (x, y) {
 			if (this.trace(x, y)) {
-				if (_.isFile(this.path)) {
-					if ((panel.metadb && panel.metadb.Path == this.path) || !this.properties.double_click_opens) {
+				if (panel.metadb && _.isFile(this.path)) {
+					switch (this.properties.double_click_mode.value) {
+					case 0:
+						if (panel.metadb.Path == this.path) {
+							_.explorer(this.path);
+						} else {
+							_.run(this.path);
+						}
+						break;
+					case 1:
+						panel.metadb.ShowAlbumArtViewer(this.properties.id.value);
+						break;
+					case 2:
 						_.explorer(this.path);
-					} else {
-						_.run(this.path);
+						break;
 					}
 				}
 				return true;
@@ -124,9 +134,10 @@ _.mixin({
 			panel.m.AppendMenuSeparator();
 			panel.m.AppendMenuItem(panel.metadb ? MF_STRING : MF_GRAYED, 1040, 'Google image search');
 			panel.m.AppendMenuSeparator();
-			panel.s10.AppendMenuItem(MF_STRING, 1050, "Opens image in default viewer");
-			panel.s10.AppendMenuItem(MF_STRING, 1051, "Opens containing folder");
-			panel.s10.CheckMenuRadioItem(1050, 1051, this.properties.double_click_opens ? 1050 : 1051);
+			panel.s10.AppendMenuItem(MF_STRING, 1050, "Opens image in external viewer");
+			panel.s10.AppendMenuItem(MF_STRING, 1051, "Opens image using fb2k viewer");
+			panel.s10.AppendMenuItem(MF_STRING, 1052, "Opens containing folder");
+			panel.s10.CheckMenuRadioItem(1050, 1052, this.properties.double_click_mode.value + 1050);
 			panel.s10.AppendTo(panel.m, MF_STRING, 'Double click');
 			panel.m.AppendMenuSeparator();
 		}
@@ -170,10 +181,9 @@ _.mixin({
 				_.run('https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(panel.tf('%album artist%[ %album%]')));
 				break;
 			case 1050:
-				this.properties.double_click_opens = true;
-				break;
 			case 1051:
-				this.properties.double_click_opens = false;
+			case 1052:
+				this.properties.double_click_mode.set(idx - 1050);
 				break;
 			}
 		}
@@ -216,7 +226,7 @@ _.mixin({
 			cd : new _.p('2K3.ARTREADER.CD', false),
 			id : new _.p('2K3.ARTREADER.ID', 0),
 			shadow : new _.p('2K3.ARTREADER.SHADOW', false),
-			double_click_opens : new _.p('2K3.ARTREADER.DOUBLE.CLICK.OPENS', true)
+			double_click_mode : new _.p('2K3.ARTREADER.DOUBLE.CLICK.MODE', 0) // 0 external viewer 1 fb2k viewer 2 explorer
 		};
 	}
 });
