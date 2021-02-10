@@ -22,7 +22,7 @@
 - Fix editor bug that caused crashes if `foo_wave_seekbar` was installed.
 
 ## v2.5.0.1
-- Fix `utils.Glob` bug where each item in the returned array had no separator between the filename and parent folder.
+- Fix `utils.Glob` bug introduced in `v2.4.3.1` where each item in the returned array had no separator between the filename and parent folder.
 
 ## v2.5.0
 - The internal mechanism for saving per panel settings has changed. All scripts/settings from previous versions will be kept as you upgrade but the changes mean you can no longer downgrade to earlier versions without losing scripts embedded in each panel. Exporting your current layout before upgrading is highly recommended. Then if the worst happens, you can always re-import your theme with an earlier version.
