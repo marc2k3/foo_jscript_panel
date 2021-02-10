@@ -3,14 +3,39 @@
 class ContextMenuCommand
 {
 public:
-	ContextMenuCommand(const std::wstring& command) : m_command(from_wide(command)) {}
+	ContextMenuCommand(const std::wstring& command) : m_command(from_wide(command))
+	{
+		if (playback_control::get()->is_playing())
+		{
+			m_inited = true;
+			contextmenu_manager::g_create(m_cm);
+			m_cm->init_context_now_playing(contextmenu_manager::flag_view_full);
+		}
+	}
 
-	bool execute_recur(contextmenu_node* parent, jstring p = "")
+	ContextMenuCommand(const std::wstring& command, metadb_handle_list_cref handles) : m_command(from_wide(command))
+	{
+		if (handles.get_count() > 0)
+		{
+			m_inited = true;
+			contextmenu_manager::g_create(m_cm);
+			m_cm->init_context(handles, contextmenu_manager::flag_view_full);
+		}
+	}
+
+	bool execute()
+	{
+		if (!m_inited) return false;
+		return execute_recur(m_cm->get_root());
+	}
+
+private:
+	bool execute_recur(contextmenu_node* parent, jstring parent_path = "")
 	{
 		for (uint32_t i = 0; i < parent->get_num_children(); ++i)
 		{
 			contextmenu_node* child = parent->get_child(i);
-			string8 path = p;
+			string8 path = parent_path;
 			path.add_string(child->get_name());
 
 			switch (child->get_type())
@@ -34,7 +59,8 @@ public:
 		return false;
 	}
 
-private:
+	bool m_inited = false;
+	contextmenu_manager::ptr m_cm;
 	string8 m_command;
 };
 
@@ -61,21 +87,24 @@ public:
 		for (auto e = service_enum_t<mainmenu_commands>(); !e.finished(); ++e)
 		{
 			auto ptr = *e;
+			mainmenu_commands_v2::ptr v2_ptr;
+			ptr->cast(v2_ptr);
+
+			const string8 parent_path = build_parent_path(ptr->get_parent());
+
 			for (uint32_t i = 0; i < ptr->get_command_count(); ++i)
 			{
-				string8 path = build_parent_path(ptr->get_parent());
-
-				mainmenu_commands_v2::ptr v2_ptr;
-				if (ptr->cast(v2_ptr) && v2_ptr->is_command_dynamic(i))
+				if (v2_ptr.is_valid() && v2_ptr->is_command_dynamic(i))
 				{
 					mainmenu_node::ptr node = v2_ptr->dynamic_instantiate(i);
-					if (execute_recur(node, path))
+					if (execute_recur(node, parent_path))
 					{
 						return true;
 					}
 				}
 				else
 				{
+					string8 path = parent_path;
 					string8 name;
 					ptr->get_name(i, name);
 					path.add_string(name);
@@ -91,9 +120,9 @@ public:
 	}
 
 private:
-	bool execute_recur(mainmenu_node::ptr node, jstring p)
+	bool execute_recur(mainmenu_node::ptr node, jstring parent_path)
 	{
-		string8 path = p;
+		string8 path = parent_path;
 		string8 text;
 		uint32_t flags;
 		node->get_display(text, flags);
@@ -102,7 +131,7 @@ private:
 		switch (node->get_type())
 		{
 		case mainmenu_node::type_group:
-			if (text.get_length()) path.add_char('/');
+			path.end_with('/');
 			for (uint32_t i = 0; i < node->get_children_count(); ++i)
 			{
 				mainmenu_node::ptr child = node->get_child(i);

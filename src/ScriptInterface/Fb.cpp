@@ -352,14 +352,7 @@ STDMETHODIMP Fb::RunContextCommand(BSTR command, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = VARIANT_FALSE;
-	if (playback_control::get()->is_playing())
-	{
-		contextmenu_manager::ptr cm;
-		contextmenu_manager::g_create(cm);
-		cm->init_context_now_playing(contextmenu_manager::flag_view_full);
-		*out = to_variant_bool(ContextMenuCommand(command).execute_recur(cm->get_root()));
-	}
+	*out = to_variant_bool(ContextMenuCommand(command).execute());
 	return S_OK;
 }
 
@@ -386,10 +379,7 @@ STDMETHODIMP Fb::RunContextCommandWithMetadb(BSTR command, VARIANT handle_or_han
 	}
 
 	if (items.get_count() == 0) return E_INVALIDARG;
-	contextmenu_manager::ptr cm;
-	contextmenu_manager::g_create(cm);
-	cm->init_context(items, contextmenu_manager::flag_view_full);
-	*out = to_variant_bool(ContextMenuCommand(command).execute_recur(cm->get_root()));
+	*out = to_variant_bool(ContextMenuCommand(command, items).execute());
 	return S_OK;
 }
 
