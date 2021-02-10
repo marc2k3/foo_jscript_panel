@@ -6,18 +6,6 @@
 SM_CXVSCROLL = 2;
 SM_CYHSCROLL = 3;
 
-DLGC_WANTARROWS = 0x0001; /* Control wants arrow keys         */
-DLGC_WANTTAB = 0x0002; /* Control wants tab keys           */
-DLGC_WANTALLKEYS = 0x0004; /* Control wants all keys           */
-DLGC_WANTMESSAGE = 0x0004; /* Pass message to control          */
-DLGC_HASSETSEL = 0x0008; /* Understands EM_SETSEL message    */
-DLGC_DEFPUSHBUTTON = 0x0010; /* Default pushbutton               */
-DLGC_UNDEFPUSHBUTTON = 0x0020; /* Non-default pushbutton           */
-DLGC_RADIOBUTTON = 0x0040; /* Radio button                     */
-DLGC_WANTCHARS = 0x0080; /* Want WM_CHAR messages            */
-DLGC_STATIC = 0x0100; /* Static item: don't include       */
-DLGC_BUTTON = 0x2000; /* Button item: can be checked      */
-
 // }}
 // Use with MenuManager()
 // {{
@@ -514,88 +502,6 @@ String.prototype.repeat = function (num) {
 		return "";
 	}
 	return new Array(g + 1).join(this);
-}
-
-function cloneObject(obj) {
-	var clone = {};
-	for (var i in obj) {
-		if (typeof(obj[i]) == "object" && obj[i] != null)
-			clone[i] = cloneObject(obj[i]);
-		else
-			clone[i] = obj[i];
-	}
-	return clone;
-}
-
-function compareObject(o1, o2) {
-	for (var p in o1) {
-		if (o1[p] != o2[p]) {
-			return false;
-		}
-	}
-	for (var p in o2) {
-		if (o1[p] != o2[p]) {
-			return false;
-		}
-	}
-	return true;
-}
-
-function getTimestamp() {
-	var d,
-	s1,
-	s2,
-	s3,
-	hh,
-	min,
-	sec,
-	timestamp;
-	d = new Date();
-	s1 = d.getFullYear();
-	s2 = (d.getMonth() + 1);
-	s3 = d.getDate();
-	hh = d.getHours();
-	min = d.getMinutes();
-	sec = d.getSeconds();
-	if (s3.length == 1)
-		s3 = "0" + s3;
-	timestamp = s1 + ((s2 < 10) ? "-0" : "-") + s2 + ((s3 < 10) ? "-0" : "-") + s3 + ((hh < 10) ? " 0" : " ") + hh + ((min < 10) ? ":0" : ":") + min + ((sec < 10) ? ":0" : ":") + sec;
-	return timestamp;
-}
-
-// --- UIHacks
-
-MainMenuState = {
-	Show: 0,
-	Hide: 1,
-	Auto: 2
-}
-
-FrameStyle = {
-	Default: 0,
-	SmallCaption: 1,
-	NoCaption: 2,
-	NoBorder: 3
-}
-
-MoveStyle = {
-	Default: 0,
-	Middle: 1,
-	Left: 2,
-	Both: 3
-}
-
-AeroEffect = {
-	Default: 0,
-	Disabled: 1,
-	GlassFrame: 2,
-	SheetOfGlass: 3
-}
-
-WindowState = {
-	Normal: 0,
-	Minimized: 1,
-	Maximized: 2
 }
 
 var fonts = {};

@@ -103,13 +103,12 @@ _.mixin({
 					this.get_loved_tracks(this.page);
 				} else {
 					console.log(this.loved_tracks.length, 'loved tracks were found on Last.fm.');
-					var tfo = fb.TitleFormat('$lower(%artist% - %title%)');
 					var items = fb.GetLibraryItems();
-					items.OrderByFormat(tfo, 1);
+					items.OrderByFormat(this.tfo.key, 1);
 					var items_to_refresh = fb.CreateHandleList();
 					for (var i = 0; i < items.Count; i++) {
 						var m = items.Item(i);
-						var current = tfo.EvalWithMetadb(m);
+						var current = this.tfo.key.EvalWithMetadb(m);
 						var idx = _.indexOf(this.loved_tracks, current);
 						if (idx > -1) {
 							this.loved_tracks.splice(idx, 1);
@@ -127,7 +126,7 @@ _.mixin({
 						});
 					}
 					items_to_refresh.RefreshStats();
-					_.dispose(tfo, items, items_to_refresh);
+					_.dispose(items, items_to_refresh);
 				}
 				return;
 			case 'track.love':
@@ -195,12 +194,9 @@ _.mixin({
 		}
 		
 		this.tfo = {
+			key : fb.TitleFormat('$lower(%artist% - %title%)'),
 			artist : fb.TitleFormat('%artist%'),
 			title : fb.TitleFormat('%title%'),
-			album : fb.TitleFormat('[%album%]'),
-			loved : fb.TitleFormat('$if2(%JSP_LOVED%,0)'),
-			playcount : fb.TitleFormat('$if2(%JSP_PLAYCOUNT%,0)'),
-			first_played : fb.TitleFormat('%JSP_FIRST_PLAYED%')
 		};
 		
 		_.createFolder(folders.data);

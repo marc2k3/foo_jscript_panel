@@ -92,36 +92,6 @@ function drawImage(gr, img, src_x, src_y, src_w, src_h, auto_fill, border, alpha
 SM_CXVSCROLL = 2;
 SM_CYHSCROLL = 3;
 
-DLGC_WANTARROWS = 0x0001; /* Control wants arrow keys         */
-DLGC_WANTTAB = 0x0002; /* Control wants tab keys           */
-DLGC_WANTALLKEYS = 0x0004; /* Control wants all keys           */
-DLGC_WANTMESSAGE = 0x0004; /* Pass message to control          */
-DLGC_HASSETSEL = 0x0008; /* Understands EM_SETSEL message    */
-DLGC_DEFPUSHBUTTON = 0x0010; /* Default pushbutton               */
-DLGC_UNDEFPUSHBUTTON = 0x0020; /* Non-default pushbutton           */
-DLGC_RADIOBUTTON = 0x0040; /* Radio button                     */
-DLGC_WANTCHARS = 0x0080; /* Want WM_CHAR messages            */
-DLGC_STATIC = 0x0100; /* Static item: don't include       */
-DLGC_BUTTON = 0x2000; /* Button item: can be checked      */
-
-// Used in utils.Glob()
-// For more information, see: http://msdn.microsoft.com/en-us/library/ee332330%28VS.85%29.aspx
-FILE_ATTRIBUTE_READONLY = 0x00000001;
-FILE_ATTRIBUTE_HIDDEN = 0x00000002;
-FILE_ATTRIBUTE_SYSTEM = 0x00000004;
-FILE_ATTRIBUTE_DIRECTORY = 0x00000010;
-FILE_ATTRIBUTE_ARCHIVE = 0x00000020;
-//FILE_ATTRIBUTE_DEVICE            = 0x00000040; // do not use
-FILE_ATTRIBUTE_NORMAL = 0x00000080;
-FILE_ATTRIBUTE_TEMPORARY = 0x00000100;
-FILE_ATTRIBUTE_SPARSE_FILE = 0x00000200;
-FILE_ATTRIBUTE_REPARSE_POINT = 0x00000400;
-FILE_ATTRIBUTE_COMPRESSED = 0x00000800;
-FILE_ATTRIBUTE_OFFLINE = 0x00001000;
-FILE_ATTRIBUTE_NOT_CONTENT_INDEXED = 0x00002000;
-FILE_ATTRIBUTE_ENCRYPTED = 0x00004000;
-//FILE_ATTRIBUTE_VIRTUAL           = 0x00010000; // do not use
-
 // }}
 // Use with MenuManager()
 // {{

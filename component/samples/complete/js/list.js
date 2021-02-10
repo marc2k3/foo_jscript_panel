@@ -280,7 +280,7 @@ _.mixin({
 				break;
 			}
 			if (this.mode != 'queue_viewer') {
-				panel.m.AppendMenuItem(_.isFile(this.filename) ? MF_STRING : MF_GRAYED, 1999, 'Open containing folder');
+				panel.m.AppendMenuItem(utils.IsFile(this.filename) ? MF_STRING : MF_GRAYED, 1999, 'Open containing folder');
 				panel.m.AppendMenuSeparator();
 			}
 		}
@@ -304,23 +304,23 @@ _.mixin({
 				this.save();
 				break;
 			case 1100:
-				this.properties.mode.set(0);
+				this.properties.mode.value = 0;
 				this.reset();
 				break;
 			case 1101:
 			case 1102:
-				this.properties.mode.set(idx - 1100);
+				this.properties.mode.value = idx - 1100;
 				this.update();
 				break;
 			case 1110:
 			case 1111:
-				this.properties.link.set(idx - 1110);
+				this.properties.link.value = idx - 1110;
 				this.update();
 				break;
 			case 1120:
 			case 1121:
 			case 1122:
-				this.properties.method.set(idx - 1120);
+				this.properties.method.value = idx - 1120;
 				this.update();
 				break;
 			case 1130:
@@ -329,11 +329,11 @@ _.mixin({
 			case 1133:
 			case 1134:
 			case 1135:
-				this.properties.period.set(idx - 1130);
+				this.properties.period.value = idx - 1130;
 				this.update();
 				break;
 			case 1140:
-				this.properties.colour.set(utils.ColourPicker(window.ID, this.properties.colour.value));
+				this.properties.colour.value = utils.ColourPicker(window.ID, this.properties.colour.value);
 				window.Repaint();
 				break;
 			case 1150:
@@ -341,7 +341,7 @@ _.mixin({
 				break;
 			case 1200:
 			case 1201:
-				this.properties.mode.set(idx - 1200);
+				this.properties.mode.value = idx - 1200;
 				this.reset();
 				break;
 			case 1300:
@@ -366,7 +366,7 @@ _.mixin({
 				break;
 			case 1400:
 				var tmp = utils.InputBox(window.ID, 'Enter title formatting', window.Name, this.properties.tf.value);
-				this.properties.tf.set(tmp || this.properties.tf.default_);
+				this.properties.tf.value = tmp || this.properties.tf.default_;
 				_.dispose(this.tfo);
 				this.tfo = fb.TitleFormat(this.properties.tf.value);
 				this.update();
@@ -398,7 +398,7 @@ _.mixin({
 			this.spacer_w = _.textWidth('0000', panel.fonts.normal);
 			switch (this.mode) {
 			case 'autoplaylists':
-				if (_.isFile(this.filename)) {
+				if (utils.IsFile(this.filename)) {
 					this.data = _(_.jsonParseFile(this.filename))
 						.forEach(function (item) {
 							item.width = _.textWidth(item.name, panel.fonts.normal);
@@ -411,7 +411,7 @@ _.mixin({
 				switch (this.properties.mode.value) {
  				case 0:
 					this.filename = _.artistFolder(this.artist) + 'lastfm.artist.getSimilar.json';
-					if (_.isFile(this.filename)) {
+					if (utils.IsFile(this.filename)) {
 						this.data = _(_.get(_.jsonParseFile(this.filename), 'similarartists.artist', []))
 							.map(function (item) {
 								return {
@@ -434,7 +434,7 @@ _.mixin({
 						break;
 					}
 					this.filename = folders.lastfm + lastfm.username + '.' + this.methods[this.properties.method.value].method + '.' + this.periods[this.properties.period.value].period + '.json';
-					if (_.isFile(this.filename)) {
+					if (utils.IsFile(this.filename)) {
 						var data = _.get(_.jsonParseFile(this.filename), this.methods[this.properties.method.value].json, []);
 						for (var i = 0; i < data.length; i++) {
 							if (this.properties.method.value == 0) {
@@ -465,7 +465,7 @@ _.mixin({
 						break;
 					}
 					this.filename = folders.lastfm + lastfm.username + '.user.getRecentTracks.json';
-					if (_.isFile(this.filename)) {
+					if (utils.IsFile(this.filename)) {
 						this.data = _(_.get(_.jsonParseFile(this.filename), 'recenttracks.track', []))
 							.filter('date')
 							.map(function (item) {
@@ -488,7 +488,7 @@ _.mixin({
 					this.mb_offset = 0;
 					this.attempt = 1;
 					this.filename = _.artistFolder(this.artist) + 'musicbrainz.releases.' + this.mb_id + '.json';
-					if (_.isFile(this.filename)) {
+					if (utils.IsFile(this.filename)) {
 						var data = _(_.jsonParseFile(this.filename))
 							.sortByOrder(['first-release-date', 'title'], ['desc', 'asc'])
 							.map(function (item) {
@@ -523,7 +523,7 @@ _.mixin({
 					}
 				} else {
 					this.filename = _.artistFolder(this.artist) + 'musicbrainz.links.' + this.mb_id + '.json';
-					if (_.isFile(this.filename)) {
+					if (utils.IsFile(this.filename)) {
 						var url = 'https://musicbrainz.org/artist/' + this.mb_id;
 						this.data = _(_.get(_.jsonParseFile(this.filename), 'relations', []))
 							.map(function (item) {

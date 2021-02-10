@@ -357,7 +357,7 @@ _.mixin({
 				panel.m.AppendMenuItem(MF_STRING, 1531, 'Delete image');
 				panel.m.AppendMenuSeparator();
 			}
-			panel.m.AppendMenuItem(_.isFolder(this.folder) ? MF_STRING : MF_GRAYED, 1540, 'Open containing folder');
+			panel.m.AppendMenuItem(utils.IsFolder(this.folder) ? MF_STRING : MF_GRAYED, 1540, 'Open containing folder');
 			panel.m.AppendMenuSeparator();
 		}
 		
@@ -365,7 +365,7 @@ _.mixin({
 			switch (idx) {
 			case 1000:
 			case 1001:
-				this.properties.source.set(idx - 1000);
+				this.properties.source.value = idx - 1000;
 				this.artist = '';
 				this.folder = '';
 				panel.item_focus_change();
@@ -375,7 +375,7 @@ _.mixin({
 				break;
 			case 1003:
 				var tmp = utils.InputBox(window.ID, 'Enter title formatting or an absolute path to a folder.\n\n%profile% will resolve to your foobar2000 profile folder or the program folder if using portable mode.', window.Name, this.properties.tf.value);
-				this.properties.tf.set(tmp || this.properties.tf.default_);
+				this.properties.tf.value = tmp || this.properties.tf.default_;
 				this.folder = '';
 				panel.item_focus_change();
 				break;
@@ -388,7 +388,7 @@ _.mixin({
 			case 1020:
 			case 1025:
 			case 1030:
-				this.properties.limit.set(idx - 1010);
+				this.properties.limit.value = idx - 1010;
 				break;
 			case 1050:
 			case 1051:
@@ -396,7 +396,7 @@ _.mixin({
 			case 1053:
 			case 1054:
 			case 1055:
-				this.properties.mode.set(idx - 1050);
+				this.properties.mode.value = idx - 1050;
 				this.size(true);
 				window.Repaint();
 				break;
@@ -406,7 +406,7 @@ _.mixin({
 			case 1200:
 			case 1250:
 			case 1300:
-				this.properties.px.set(idx - 1000);
+				this.properties.px.value = idx - 1000;
 				this.size(true);
 				window.Repaint();
 				break;
@@ -414,11 +414,11 @@ _.mixin({
 			case 1405:
 			case 1410:
 			case 1420:
-				this.properties.cycle.set(idx - 1400);
+				this.properties.cycle.value = idx - 1400;
 				break;
 			case 1500:
 			case 1501:
-				this.properties.sort.set(idx - 1500);
+				this.properties.sort.value = idx - 1500;
 				if (this.images.length > 1) {
 					this.update();
 				}
@@ -427,7 +427,7 @@ _.mixin({
 			case 1511:
 			case 1512:
 			case 1513:
-				this.properties.aspect.set(idx - 1510);
+				this.properties.aspect.value = idx - 1510;
 				window.Repaint();
 				break;
 			case 1520:

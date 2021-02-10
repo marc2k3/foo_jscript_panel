@@ -33,7 +33,7 @@ _.mixin({
 				if (this.img) {
 					this.tooltip = 'Original dimensions: ' + this.img.Width + 'x' + this.img.Height + 'px';
 					this.path = tmp[1];
-					if (_.isFile(this.path)) {
+					if (utils.IsFile(this.path)) {
 						this.tooltip += '\nPath: ' + this.path;
 						if (panel.metadb.Path != this.path) {
 							this.tooltip += '\nSize: ' + utils.FormatFileSize(fso.GetFile(this.path).Size);
@@ -57,7 +57,7 @@ _.mixin({
 				if (id > 4) {
 					id = 0;
 				}
-				this.properties.id.set(id);
+				this.properties.id.value = id;
 				_.tt('');
 				panel.item_focus_change();
 				return true;
@@ -86,7 +86,7 @@ _.mixin({
 		
 		this.lbtn_dblclk = function (x, y) {
 			if (this.trace(x, y)) {
-				if (panel.metadb && _.isFile(this.path)) {
+				if (panel.metadb && utils.IsFile(this.path)) {
 					switch (this.properties.double_click_mode.value) {
 					case 0:
 						if (panel.metadb.Path == this.path) {
@@ -130,7 +130,7 @@ _.mixin({
 			panel.m.AppendMenuItem(MF_STRING, 1023, 'Centre');
 			panel.m.CheckMenuRadioItem(1020, 1023, this.properties.aspect.value + 1020);
 			panel.m.AppendMenuSeparator();
-			panel.m.AppendMenuItem(_.isFile(this.path) ? MF_STRING : MF_GRAYED, 1030, 'Open containing folder');
+			panel.m.AppendMenuItem(utils.IsFile(this.path) ? MF_STRING : MF_GRAYED, 1030, 'Open containing folder');
 			panel.m.AppendMenuSeparator();
 			panel.m.AppendMenuItem(panel.metadb ? MF_STRING : MF_GRAYED, 1040, 'Google image search');
 			panel.m.AppendMenuSeparator();
@@ -164,14 +164,14 @@ _.mixin({
 			case 1012:
 			case 1013:
 			case 1014:
-				this.properties.id.set(idx - 1010);
+				this.properties.id.value = idx - 1010;
 				panel.item_focus_change();
 				break;
 			case 1020:
 			case 1021:
 			case 1022:
 			case 1023:
-				this.properties.aspect.set(idx - 1020);
+				this.properties.aspect.value = idx - 1020;
 				window.RepaintRect(this.x, this.y, this.w, this.h);
 				break;
 			case 1030:
@@ -183,7 +183,7 @@ _.mixin({
 			case 1050:
 			case 1051:
 			case 1052:
-				this.properties.double_click_mode.set(idx - 1050);
+				this.properties.double_click_mode.value = idx - 1050;
 				break;
 			}
 		}

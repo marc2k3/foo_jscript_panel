@@ -16,7 +16,7 @@ _.mixin({
 	artistFolder : function (artist) {
 		var a = utils.ReplaceIllegalChars(artist, false);
 		var folder = folders.artists + a;
-		if (_.isFolder(folder)) {
+		if (utils.IsFolder(folder)) {
 			return fso.GetFolder(folder) + '\\';
 		} else {
 			folder = folders.artists + _.trunc(a, 64);
@@ -130,12 +130,12 @@ _.mixin({
 		return temp_bmp;
 	},
 	createFolder : function (folder) {
-		if (!_.isFolder(folder)) {
+		if (!utils.IsFolder(folder)) {
 			fso.CreateFolder(folder);
 		}
 	},
 	deleteFile : function (file) {
-		if (_.isFile(file)) {
+		if (utils.IsFile(file)) {
 			try {
 				fso.DeleteFile(file);
 			} catch (e) {
@@ -198,19 +198,8 @@ _.mixin({
 		gr.FillGradRect(x, y, w, h, 90, _.RGBA(0, 0, 0, 230), _.RGBA(0, 0, 0, 200));
 	},
 	explorer : function (file) {
-		if (_.isFile(file)) {
+		if (utils.IsFile(file)) {
 			WshShell.Run('explorer /select,' + _.q(file));
-		}
-	},
-	fbDate : function (t) {
-		var offset = new Date().getTimezoneOffset() * 60;
-		if (typeof t == 'number') {
-			t -= offset;
-			var tmp = new Date(t * 1000).toISOString(); // ES5 only
-			return tmp.substring(0, 10) + ' ' + tmp.substring(11, 19);
-		} else {
-			var tmp = new Date(t.substring(0, 10) + "T" + t.substring(11, 19) + "Z");
-			return (Date.parse(tmp) / 1000) + offset;
 		}
 	},
 	fbEscape : function (value) {
@@ -256,34 +245,6 @@ _.mixin({
 			return files;
 		}
 	},
-	hacks : function () {
-		this.disable = function () {
-			this.uih.MainMenuState = this.MainMenuState.Show;
-			this.uih.FrameStyle = this.FrameStyle.Default;
-			this.uih.StatusBarState = true;
-		}
-		
-		this.enable = function () {
-			this.uih.MainMenuState = this.MainMenuState.Hide;
-			this.uih.FrameStyle = this.FrameStyle.NoBorder;
-			this.uih.StatusBarState = false;
-		}
-		
-		this.set_caption = function (x, y, w, h) {
-			this.uih.SetPseudoCaption(x, y, w, h);
-		}
-		
-		this.MainMenuState = { Show : 0, Hide : 1, Auto : 2 };
-		this.FrameStyle = { Default : 0, SmallCaption : 1, NoCaption : 2, NoBorder : 3 };
-		this.MoveStyle = { Default : 0, Middle : 1, Left : 2, Both : 3 };
-		
-		this.uih = new ActiveXObject('UIHacks');
-		this.uih.MoveStyle = this.MoveStyle.Default;
-		this.uih.DisableSizing = false;
-		this.uih.BlockMaximize = false;
-		this.uih.MinSize = false;
-		this.uih.MaxSize = false;
-	},
 	help : function (x, y, flags) {
 		var m = window.CreatePopupMenu();
 		_.forEach(ha_links, function (item, i) {
@@ -308,17 +269,11 @@ _.mixin({
 		_.dispose(m);
 	},
 	img : function (value) {
-		if (_.isFile(value)) {
+		if (utils.IsFile(value)) {
 			return gdi.Image(value);
 		} else {
 			return gdi.Image(folders.images + value);
 		}
-	},
-	isFile : function (file) {
-		return _.isString(file) ? fso.FileExists(file) : false;
-	},
-	isFolder : function (folder) {
-		return _.isString(folder) ? fso.FolderExists(folder) : false;
 	},
 	isUUID : function (value) {
 		var re = /^[0-9a-f]{8}-[0-9a-f]{4}-[345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
@@ -413,30 +368,31 @@ _.mixin({
 	open : function (file) {
 		return utils.ReadUTF8(file);
 	},
-	p : function (property, default_) {
-		this.set = function (value) {
-			this.value = value;
-			window.SetProperty(this.property, this.value);
-		}
+	p : function (name, default_) {
+		Object.defineProperty(this, _.isBoolean(default_) ? 'enabled' : 'value', {
+			get : function () {
+				return this.val;
+			},
+			set : function (value) {
+				this.val = value;
+				window.SetProperty(this.name, this.val);
+			}
+		});
 		
 		this.toggle = function () {
-			this.enabled = !this.enabled;
-			window.SetProperty(this.property, this.enabled);
+			this.val = !this.val;
+			window.SetProperty(this.name, this.val);
 		}
 		
-		this.property = property;
+		this.name = name;
 		this.default_ = default_;
-		if (_.isBoolean(this.default_)) {
-			this.enabled = window.GetProperty(this.property, this.default_);
-		} else {
-			this.value = window.GetProperty(this.property, this.default_);
-		}
+		this.val = window.GetProperty(name, default_);
 	},
 	q : function (value) {
 		return '"' + value + '"';
 	},
 	recycleFile : function (file) {
-		if (_.isFile(file)) {
+		if (utils.IsFile(file)) {
 			app.Namespace(10).MoveHere(file);
 		}
 	},
@@ -579,19 +535,12 @@ var IDC_HAND = 32649;
 var TPM_RIGHTALIGN = 0x0008;
 var TPM_BOTTOMALIGN = 0x0020;
 
-var DLGC_WANTALLKEYS = 0x0004;
-
 var ONE_DAY = 86400000;
-var ONE_WEEK = 604800000;
 
 var DEFAULT_ARTIST = '$meta(artist,0)';
 var N = window.Name + ':';
 
-try {
-	var DPI = WshShell.RegRead('HKCU\\Control Panel\\Desktop\\WindowMetrics\\AppliedDPI');
-} catch (e) {
-	var DPI = 96;
-}
+var DPI = WshShell.RegRead('HKCU\\Control Panel\\Desktop\\WindowMetrics\\AppliedDPI');
 
 var LM = _.scale(5);
 var TM = _.scale(20);
@@ -648,11 +597,11 @@ var image = {
 };
 
 var ha_links = [
-	['Title Formatting Reference', 'http://wiki.hydrogenaud.io/index.php?title=Foobar2000:Title_Formatting_Reference'],
-	['Query Syntax', 'http://wiki.hydrogenaud.io/index.php?title=Foobar2000:Query_syntax'],
+	['Title Formatting Reference', 'https://wiki.hydrogenaud.io/index.php?title=Foobar2000:Title_Formatting_Reference'],
+	['Query Syntax', 'https://wiki.hydrogenaud.io/index.php?title=Foobar2000:Query_syntax'],
 	['Homepage', 'https://www.foobar2000.org/'],
 	['Components', 'https://www.foobar2000.org/components'],
-	['Wiki', 'http://wiki.hydrogenaud.io/index.php?title=Foobar2000:Foobar2000'],
+	['Wiki', 'https://wiki.hydrogenaud.io/index.php?title=Foobar2000:Foobar2000'],
 	['Forums', 'https://hydrogenaud.io/index.php/board,28.0.html']
 ];
 

@@ -35,7 +35,7 @@ _.mixin({
 					this.filename = _.artistFolder(this.artist) + 'allmusic.' + utils.ReplaceIllegalChars(this.album, false) + '.txt';
 					this.content = '';
 					this.allmusic_url = false;
-					if (_.isFile(this.filename)) {
+					if (utils.IsFile(this.filename)) {
 						this.content = _.trim(_.open(this.filename));
 						// content is static so only check for updates if no review found previously
 						if (!this.content.length && _.fileExpired(this.filename, ONE_DAY)) {
@@ -53,7 +53,7 @@ _.mixin({
 					this.artist = temp_artist;
 					this.content = '';
 					this.filename = _.artistFolder(this.artist) + 'lastfm.artist.getInfo.' + this.langs[this.properties.lang.value] + '.json';
-					if (_.isFile(this.filename)) {
+					if (utils.IsFile(this.filename)) {
 						this.content = _.stripTags(_.get(_.jsonParseFile(this.filename), 'artist.bio.content', '')).replace('Read more on Last.fm. User-contributed text is available under the Creative Commons By-SA License; additional terms may apply.', '');
 						if (_.fileExpired(this.filename, ONE_DAY)) {
 							this.get();
@@ -68,7 +68,7 @@ _.mixin({
 						return;
 					}
 					this.filename = temp_filename;
-					if (_.isFolder(this.filename)) { // if folder, use first txt/log file
+					if (utils.IsFolder(this.filename)) { // if folder, use first txt/log file
 						var tmp = _.first(_.getFiles(this.filename, this.exts));
 						this.content = utils.ReadTextFile(tmp);
 					} else {
@@ -162,7 +162,7 @@ _.mixin({
 				panel.m.AppendMenuSeparator();
 				break;
 			}
-			panel.m.AppendMenuItem(_.isFile(this.filename) || _.isFolder(this.filename) ? MF_STRING : MF_GRAYED, 1999, 'Open containing folder');
+			panel.m.AppendMenuItem(utils.IsFile(this.filename) || utils.IsFolder(this.filename) ? MF_STRING : MF_GRAYED, 1999, 'Open containing folder');
 			panel.m.AppendMenuSeparator();
 		}
 		
@@ -188,7 +188,7 @@ _.mixin({
 			case 1119:
 			case 1120:
 			case 1121:
-				this.properties.lang.set(idx - 1110);
+				this.properties.lang.value = idx - 1110;
 				this.artist = '';
 				panel.item_focus_change();
 				break;
@@ -197,11 +197,11 @@ _.mixin({
 				panel.item_focus_change();
 				break;
 			case 1210:
-				this.properties.title_tf.set(utils.InputBox(window.ID, 'You can use full title formatting here.', window.Name, this.properties.title_tf.value));
+				this.properties.title_tf.value = utils.InputBox(window.ID, 'You can use full title formatting here.', window.Name, this.properties.title_tf.value);
 				window.Repaint();
 				break;
 			case 1220:
-				this.properties.filename_tf.set(utils.InputBox(window.ID, 'Use title formatting to specify a path to a text file. eg: $directory_path(%path%)\\info.txt\n\nIf you prefer, you can specify just the path to a folder and the first txt or log file will be used.', window.Name, this.properties.filename_tf.value));
+				this.properties.filename_tf.value = utils.InputBox(window.ID, 'Use title formatting to specify a path to a text file. eg: $directory_path(%path%)\\info.txt\n\nIf you prefer, you can specify just the path to a folder and the first txt or log file will be used.', window.Name, this.properties.filename_tf.value);
 				panel.item_focus_change();
 				break;
 			case 1230:
@@ -210,7 +210,7 @@ _.mixin({
 				window.RepaintRect(this.x, this.y, this.w, this.h);
 				break;
 			case 1999:
-				if (_.isFile(this.filename)) {
+				if (utils.IsFile(this.filename)) {
 					_.explorer(this.filename);
 				} else {
 					_.run(this.filename);
@@ -291,7 +291,6 @@ _.mixin({
 					var content = _(_.getElementsByTagName(this.xmlhttp.responseText, 'div'))
 						.filter({itemprop : 'reviewBody'})
 						.map('innerText')
-						.stripTags()
 						.value();
 					console.log(N, content.length ? 'A review was found and saved.' : 'No review was found on the page for this album.');
 					if (_.save(f, content)) {

@@ -71,15 +71,15 @@ _.mixin({
 		this.rbtn_up_done = function (idx) {
 			switch (true) {
 			case idx <= 1003:
-				this.properties.mode.set(idx - 1000);
+				this.properties.mode.value = idx - 1000;
 				break;
 			case idx == 1004:
 				var tmp = utils.InputBox(window.ID, 'Enter a custom tag name. Do not use %%. Defaults to "rating" if left blank.', window.Name, this.properties.tag.value);
-				this.properties.tag.set(tmp || this.properties.tag.default_);
+				this.properties.tag.value = tmp || this.properties.tag.default_;
 				break;
 			case idx == 1005:
 				var tmp = utils.InputBox(window.ID, 'Enter a maximum value. Defaults to "5" if left blank.', window.Name, this.properties.max.value);
-				this.properties.max.set(tmp || this.properties.max.default_);
+				this.properties.max.value = tmp || this.properties.max.default_;
 				break;
 			}
 			this.w = this.h * this.get_max();
@@ -145,7 +145,7 @@ _.mixin({
 		this.foo_playcount = _.cc('foo_playcount');
 		window.SetTimeout(_.bind(function () {
 			if (this.properties.mode.value == 1 && !this.foo_playcount) { // if mode is set to 1 (foo_playcount) but component is missing, reset to 0.
-				this.properties.mode.set(0);
+				this.properties.mode.value = 0;
 			}
 			if (this.properties.mode.value == 0) {
 				fb.ShowPopupMessage('This script has now been updated and supports 3 different modes.\n\nAs before, you can use foo_playcount which is limited to 5 stars.\n\nThe 2nd option is writing to your file tags. You can choose the tag name and a max value via the right click menu.\n\nLastly, a new "Playback Stats" database has been built into JScript Panel. It is bound to just "%artist% - %title%". This uses %jsp_rating% which can be accessed via title formatting in all other components/search dialogs. This also supports a custom max value.\n\nAll options are available on the right click menu. If you do not see the new options when right clicking, make sure you have the latest "rating.txt" imported from the "samples\\complete" folder.', window.Name);
