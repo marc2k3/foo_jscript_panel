@@ -22,8 +22,7 @@ STDMETHODIMP GdiFont::get_Height(UINT* out)
 {
 	if (!m_font || !out) return E_POINTER;
 
-	auto dpi = static_cast<float>(QueryScreenDPI(nullptr));
-	*out = to_uint(m_font->GetHeight(dpi));
+	*out = to_uint(m_font->GetHeight(static_cast<Gdiplus::REAL>(QueryScreenDPI())));
 	return S_OK;
 }
 

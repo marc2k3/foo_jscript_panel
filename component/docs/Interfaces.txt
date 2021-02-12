@@ -1341,9 +1341,7 @@ interface IUtils {
 interface IWindow {
 	Properties:
 		window.ID (uint) (read)
-		/*
-		Required in utils.ColourPicker, utils.GetAlbumArtAsync, utils.InputBox, utils.LoadImageAsync, etc.
-		*/
+		// Required in utils.ColourPicker, utils.GetAlbumArtAsync, utils.InputBox, gdi.LoadImageAsync, etc.
 
 		window.InstanceType (uint) (read)
 		/*

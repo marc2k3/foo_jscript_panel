@@ -15,7 +15,6 @@ public:
 	void get_data_raw(stream_writer* writer, abort_callback& abort) override;
 	void init_data();
 	void load(jstring content);
-	void load_preset(int idx);
 	void merge_data(const SimpleMap& data);
 	void set_data_raw(stream_reader* reader, size_t sizehint, abort_callback& abort) override;
 

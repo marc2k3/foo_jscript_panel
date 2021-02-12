@@ -63,11 +63,6 @@ void Config::load(jstring content)
 	merge_data(data);
 }
 
-void Config::load_preset(int idx)
-{
-	load(Component::get_resource_text(idx));
-}
-
 void Config::merge_data(const SimpleMap& data)
 {
 	for (auto& [key, value] : m_data)

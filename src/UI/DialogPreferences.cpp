@@ -83,7 +83,7 @@ namespace
 			const int idx = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD, rect.left, rect.bottom, m_hWnd, nullptr);
 			if (idx > 0)
 			{
-				g_config.load_preset(idx);
+				g_config.load(Component::get_resource_text(idx));
 				m_list.ReloadData();
 			}
 		}

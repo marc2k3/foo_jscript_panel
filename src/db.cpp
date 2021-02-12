@@ -74,29 +74,29 @@ namespace db
 		{
 			metadb_index_hash hash;
 			if (!hashHandle(handle, hash)) return false;
-			const Fields tmp = get(hash);
+			const Fields f = get(hash);
 
 			switch (index)
 			{
 			case 0:
-				if (tmp.playcount == 0) return false;
-				out->write_int(titleformat_inputtypes::meta, tmp.playcount);
+				if (f.playcount == 0) return false;
+				out->write_int(titleformat_inputtypes::meta, f.playcount);
 				return true;
 			case 1:
-				if (tmp.loved == 0) return false;
-				out->write_int(titleformat_inputtypes::meta, tmp.loved);
+				if (f.loved == 0) return false;
+				out->write_int(titleformat_inputtypes::meta, f.loved);
 				return true;
 			case 2:
-				if (tmp.first_played.is_empty()) return false;
-				out->write(titleformat_inputtypes::meta, tmp.first_played);
+				if (f.first_played.is_empty()) return false;
+				out->write(titleformat_inputtypes::meta, f.first_played);
 				return true;
 			case 3:
-				if (tmp.last_played.is_empty()) return false;
-				out->write(titleformat_inputtypes::meta, tmp.last_played);
+				if (f.last_played.is_empty()) return false;
+				out->write(titleformat_inputtypes::meta, f.last_played);
 				return true;
 			case 4:
-				if (tmp.rating == 0) return false;
-				out->write_int(titleformat_inputtypes::meta, tmp.rating);
+				if (f.rating == 0) return false;
+				out->write_int(titleformat_inputtypes::meta, f.rating);
 				return true;
 			}
 			return false;
@@ -121,28 +121,28 @@ namespace db
 			return false;
 		}
 
-		void enumerate_properties_helper(metadb_handle_list_cref items, track_property_provider_v3_info_source& info, track_property_callback_v2& callback, abort_callback& abort)
+		void enumerate_properties_helper(metadb_handle_list_cref handles, track_property_provider_v3_info_source& info, track_property_callback_v2& callback, abort_callback& abort)
 		{
 			if (callback.is_group_wanted(jsp::component_name))
 			{
-				const size_t count = items.get_count();
+				const size_t count = handles.get_count();
 				if (count == 1)
 				{
 					metadb_index_hash hash;
-					if (hashHandle(items[0], hash))
+					if (hashHandle(handles[0], hash))
 					{
-						const Fields tmp = get(hash);
-						callback.set_property(jsp::component_name, 0, "Playcount", std::to_string(tmp.playcount).c_str());
-						callback.set_property(jsp::component_name, 1, "Loved", std::to_string(tmp.loved).c_str());
-						callback.set_property(jsp::component_name, 2, "First Played", tmp.first_played);
-						callback.set_property(jsp::component_name, 3, "Last Played", tmp.last_played);
-						callback.set_property(jsp::component_name, 4, "Rating", std::to_string(tmp.rating).c_str());
+						const Fields f = get(hash);
+						callback.set_property(jsp::component_name, 0, "Playcount", std::to_string(f.playcount).c_str());
+						callback.set_property(jsp::component_name, 1, "Loved", std::to_string(f.loved).c_str());
+						callback.set_property(jsp::component_name, 2, "First Played", f.first_played);
+						callback.set_property(jsp::component_name, 3, "Last Played", f.last_played);
+						callback.set_property(jsp::component_name, 4, "Rating", std::to_string(f.rating).c_str());
 					}
 				}
 				else
 				{
 					hash_set hashes;
-					get_hashes(items, hashes);
+					get_hashes(handles, hashes);
 
 					size_t total = std::accumulate(hashes.begin(), hashes.end(), 0U, [](size_t t, const metadb_index_hash hash)
 						{
@@ -157,9 +157,9 @@ namespace db
 			}
 		}
 
-		void enumerate_properties_v4(metadb_handle_list_cref items, track_property_provider_v3_info_source& info, track_property_callback_v2& callback, abort_callback& abort) override
+		void enumerate_properties_v4(metadb_handle_list_cref handles, track_property_provider_v3_info_source& info, track_property_callback_v2& callback, abort_callback& abort) override
 		{
-			enumerate_properties_helper(items, info, callback, abort);
+			enumerate_properties_helper(handles, info, callback, abort);
 		}
 	};
 
@@ -177,13 +177,13 @@ namespace db
 			try
 			{
 				stream_reader_formatter_simple_ref<false> reader(temp.get_ptr(), temp.get_size());
-				Fields ret;
-				reader >> ret.playcount;
-				reader >> ret.loved;
-				reader >> ret.first_played;
-				reader >> ret.last_played;
-				reader >> ret.rating;
-				return ret;
+				Fields f;
+				reader >> f.playcount;
+				reader >> f.loved;
+				reader >> f.first_played;
+				reader >> f.last_played;
+				reader >> f.rating;
+				return f;
 			}
 			catch (exception_io_data) {}
 		}

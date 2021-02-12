@@ -1,7 +1,11 @@
 #pragma once
-
 #define SDK_STRING_(x) #x
 #define SDK_STRING(x) SDK_STRING_(x)
+#define CRLF "\r\n"
+#define LF "\n"
+#define GET_PTR(X, Y) \
+	X->get__ptr(reinterpret_cast<void**>(&Y)); \
+	if (!Y) return E_INVALIDARG;
 
 namespace jsp
 {
@@ -19,13 +23,6 @@ namespace jsp
 	static constexpr size_t uwm_unload = WM_USER + 3;
 	static constexpr size_t version = 2530;
 }
-
-#define CRLF "\r\n"
-#define LF "\n"
-
-#define GET_PTR(X, Y) \
-	X->get__ptr(reinterpret_cast<void**>(&Y)); \
-	if (!Y) return E_INVALIDARG;
 
 class jstring {
 public:

@@ -80,12 +80,12 @@ STDMETHODIMP MetadbHandle::SetFirstPlayed(BSTR first_played)
 	metadb_index_hash hash;
 	if (db::hashHandle(m_handle, hash))
 	{
-		db::Fields tmp = db::get(hash);
+		db::Fields f = db::get(hash);
 		const string8 fp = from_wide(first_played);
-		if (!tmp.first_played.equals(fp))
+		if (!f.first_played.equals(fp))
 		{
-			tmp.first_played = fp;
-			db::set(hash, tmp);
+			f.first_played = fp;
+			db::set(hash, f);
 		}
 	}
 	return S_OK;
@@ -98,12 +98,12 @@ STDMETHODIMP MetadbHandle::SetLastPlayed(BSTR last_played)
 	metadb_index_hash hash;
 	if (db::hashHandle(m_handle, hash))
 	{
-		db::Fields tmp = db::get(hash);
+		db::Fields f = db::get(hash);
 		const string8 lp = from_wide(last_played);
-		if (!tmp.last_played.equals(lp))
+		if (!f.last_played.equals(lp))
 		{
-			tmp.last_played = lp;
-			db::set(hash, tmp);
+			f.last_played = lp;
+			db::set(hash, f);
 		}
 	}
 	return S_OK;
@@ -116,11 +116,11 @@ STDMETHODIMP MetadbHandle::SetLoved(UINT loved)
 	metadb_index_hash hash;
 	if (db::hashHandle(m_handle, hash))
 	{
-		db::Fields tmp = db::get(hash);
-		if (tmp.loved != loved)
+		db::Fields f = db::get(hash);
+		if (f.loved != loved)
 		{
-			tmp.loved = loved;
-			db::set(hash, tmp);
+			f.loved = loved;
+			db::set(hash, f);
 		}
 	}
 	return S_OK;
@@ -133,11 +133,11 @@ STDMETHODIMP MetadbHandle::SetPlaycount(UINT playcount)
 	metadb_index_hash hash;
 	if (db::hashHandle(m_handle, hash))
 	{
-		db::Fields tmp = db::get(hash);
-		if (tmp.playcount != playcount)
+		db::Fields f = db::get(hash);
+		if (f.playcount != playcount)
 		{
-			tmp.playcount = playcount;
-			db::set(hash, tmp);
+			f.playcount = playcount;
+			db::set(hash, f);
 		}
 	}
 	return S_OK;
@@ -150,11 +150,11 @@ STDMETHODIMP MetadbHandle::SetRating(UINT rating)
 	metadb_index_hash hash;
 	if (db::hashHandle(m_handle, hash))
 	{
-		db::Fields tmp = db::get(hash);
-		if (tmp.rating != rating)
+		db::Fields f = db::get(hash);
+		if (f.rating != rating)
 		{
-			tmp.rating = rating;
-			db::set(hash, tmp);
+			f.rating = rating;
+			db::set(hash, f);
 		}
 	}
 	return S_OK;
