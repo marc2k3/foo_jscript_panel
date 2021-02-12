@@ -22,12 +22,14 @@ public:
 
 	bool is_file()
 	{
-		return std::filesystem::is_regular_file(m_path);
+		std::error_code ec;
+		return std::filesystem::is_regular_file(m_path, ec);
 	}
 
 	bool is_folder()
 	{
-		return std::filesystem::is_directory(m_path);
+		std::error_code ec;
+		return std::filesystem::is_directory(m_path, ec);
 	}
 
 	bool write(jstring content)
