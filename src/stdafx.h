@@ -33,13 +33,14 @@ namespace Gdiplus
 #include <libPPUI/gdiplus_helpers.h>
 #include <json.hpp>
 
-using pfc::string8;
 using Strings = std::vector<std::string>;
 using WStrings = std::vector<std::wstring>;
 using json = nlohmann::json;
+using pfc::string8;
 
 #include "foo_jscript_panel.h"
 #include "guids.h"
+#include "Misc.h"
 #include "ThreadPool.h"
 #include "Timer.h"
 #include "ScriptInterface.h"

@@ -1,4 +1,8 @@
 #pragma once
+#define GET_PTR(X, Y) \
+	X->get__ptr(reinterpret_cast<void**>(&Y)); \
+	if (!Y) return E_INVALIDARG;
+
 #include <ActivScp.h>
 #include <ComDef.h>
 
