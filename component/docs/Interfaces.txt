@@ -114,9 +114,9 @@ interface IFb {
 		fb.VolumeMute() (void)
 		fb.VolumeUp() (void)
 
-		fb.AcquireUiSelectionHolder() (IUiSelectionHolder)
+		fb.AcquireUiSelectionHolder() (ISelectionHolder)
 
-			interface IUiSelectionHolder {
+			interface ISelectionHolder {
 				Methods:
 					Dispose() (void)
 
