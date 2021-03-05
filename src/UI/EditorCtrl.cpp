@@ -733,6 +733,8 @@ void CEditorCtrl::FillFunctionDefinition(Position pos)
 void CEditorCtrl::Init()
 {
 	SetFnPtr();
+	SetTechnology(SC_TECHNOLOGY_DIRECTWRITE);
+	SetBufferedDraw(false);
 
 	SetCodePage(SC_CP_UTF8);
 	SetEOLMode(SC_EOL_CRLF);

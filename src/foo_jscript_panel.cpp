@@ -17,16 +17,27 @@ namespace jsp
 		{
 			std::array<wchar_t, MAX_PATH> path;
 			GetModuleFileName(ins, path.data(), path.size());
-			LoadTypeLibEx(path.data(), REGKIND_NONE, &g_typelib);
-
-			Scintilla_RegisterClasses(ins);
-			app.Init(nullptr, ins);
-		}
-		else if (reason == DLL_PROCESS_DETACH)
-		{
-			app.Term();
-			Scintilla_ReleaseResources();
+			return SUCCEEDED(LoadTypeLibEx(path.data(), REGKIND_NONE, &g_typelib));
 		}
 		return TRUE;
 	}
+
+	class Innit : public initquit
+	{
+	public:
+		void on_init() override
+		{
+			HINSTANCE ins = core_api::get_my_instance();
+			app.Init(nullptr, ins);
+			Scintilla_RegisterClasses(ins);
+		}
+
+		void on_quit() override
+		{
+			Scintilla_ReleaseResources();
+			app.Term();
+		}
+	};
+
+	FB2K_SERVICE_FACTORY(Innit)
 }
