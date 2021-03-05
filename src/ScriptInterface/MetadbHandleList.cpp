@@ -10,7 +10,6 @@
 #include <foobar2000/helpers/metadb_handle_set.h>
 
 MetadbHandleList::MetadbHandleList(metadb_handle_list_cref handles) : m_handles(handles) {}
-MetadbHandleList::~MetadbHandleList() {}
 
 STDMETHODIMP MetadbHandleList::get__ptr(void** out)
 {
@@ -113,9 +112,7 @@ STDMETHODIMP MetadbHandleList::Convert(VARIANT* out)
 
 	for (size_t i = 0; i < count; ++i)
 	{
-		_variant_t var;
-		var.vt = VT_DISPATCH;
-		var.pdispVal = new ComObjectImpl<MetadbHandle>(m_handles[i]);
+		_variant_t var = new ComObjectImpl<MetadbHandle>(m_handles[i]);
 		if (!writer.put_item(i, var)) return E_OUTOFMEMORY;
 	}
 	out->vt = VT_ARRAY | VT_VARIANT;

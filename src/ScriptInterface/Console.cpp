@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Console.h"
 
-Console::Console() {}
-Console::~Console() {}
-
 STDMETHODIMP Console::Log(SAFEARRAY* sa)
 {
 	string8 str;

@@ -241,6 +241,14 @@ library foo_jscript_panel
 		[propget] HRESULT Time([out, retval] __int64* out);
 	};
 
+	[object,dual,pointer_default(unique),custom(8AFCDA7F-33B7-3120-86A8-754D2C0C0578,"library_block"),uuid(1f40f9e1-c0fb-4021-80de-37c4d0a26f45)]
+	interface ISelectionHolder : IDisposable
+	{
+		HRESULT SetPlaylistSelectionTracking();
+		HRESULT SetPlaylistTracking();
+		HRESULT SetSelection(IMetadbHandleList* handles, [defaultvalue(0)] UINT type);
+	};
+
 	[object,dual,pointer_default(unique),custom(8AFCDA7F-33B7-3120-86A8-754D2C0C0578,"library_block"),uuid(8a14d6a2-4582-4398-a6af-2206f2dabbbe)]
 	interface IThemeManager : IDisposable
 	{
@@ -272,14 +280,6 @@ library foo_jscript_panel
 		[propput] HRESULT TrackActivate(VARIANT_BOOL activate);
 	};
 
-	[object,dual,pointer_default(unique),custom(8AFCDA7F-33B7-3120-86A8-754D2C0C0578,"library_block"),uuid(1f40f9e1-c0fb-4021-80de-37c4d0a26f45)]
-	interface IUiSelectionHolder : IDisposable
-	{
-		HRESULT SetPlaylistSelectionTracking();
-		HRESULT SetPlaylistTracking();
-		HRESULT SetSelection(IMetadbHandleList* handles, [defaultvalue(0)] UINT type);
-	};
-
 	[object,dual,pointer_default(unique),custom(8AFCDA7F-33B7-3120-86A8-754D2C0C0578,"library_block"),uuid(690a35f6-ba53-46f9-91f8-4327204c6c62)]
 	interface IConsole : IDispatch
 	{
@@ -289,7 +289,7 @@ library foo_jscript_panel
 	[object,dual,pointer_default(unique),custom(8AFCDA7F-33B7-3120-86A8-754D2C0C0578,"library_block"),uuid(bae2e084-6545-4a17-9795-1496a4ee2741)]
 	interface IFb : IDispatch
 	{
-		HRESULT AcquireUiSelectionHolder([out, retval] IUiSelectionHolder** out);
+		HRESULT AcquireUiSelectionHolder([out, retval] ISelectionHolder** out);
 		HRESULT AddDirectory();
 		HRESULT AddFiles();
 		HRESULT CheckClipboardContents([defaultvalue(0)] UINT window_id, [out, retval] VARIANT_BOOL* out);

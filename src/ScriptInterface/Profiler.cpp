@@ -2,7 +2,6 @@
 #include "Profiler.h"
 
 Profiler::Profiler(const std::wstring& name) : m_name(from_wide(name)) {}
-Profiler::~Profiler() {}
 
 STDMETHODIMP Profiler::Print()
 {

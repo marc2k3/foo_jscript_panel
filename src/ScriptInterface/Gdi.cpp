@@ -2,9 +2,6 @@
 #include "Gdi.h"
 #include "AsyncImageTask.h"
 
-Gdi::Gdi() {}
-Gdi::~Gdi() {}
-
 STDMETHODIMP Gdi::CreateImage(int w, int h, IGdiBitmap** out)
 {
 	if (!out) return E_POINTER;

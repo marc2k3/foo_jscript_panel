@@ -170,10 +170,10 @@ copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%"</Command>
     <ClInclude Include="ScriptInterface\Plman.h" />
     <ClInclude Include="ScriptInterface\Profiler.h" />
     <ClInclude Include="ScriptInterface\ScriptInterface.h" />
+    <ClInclude Include="ScriptInterface\SelectionHolder.h" />
     <ClInclude Include="ScriptInterface\ThemeManager.h" />
     <ClInclude Include="ScriptInterface\TitleFormat.h" />
     <ClInclude Include="ScriptInterface\Tooltip.h" />
-    <ClInclude Include="ScriptInterface\UiSelectionHolder.h" />
     <ClInclude Include="ScriptInterface\Utils.h" />
     <ClInclude Include="ScriptInterface\Window.h" />
     <ClInclude Include="UI\Config.h" />
@@ -219,10 +219,10 @@ copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%"</Command>
     <ClCompile Include="ScriptInterface\PlayingItemLocation.cpp" />
     <ClCompile Include="ScriptInterface\Plman.cpp" />
     <ClCompile Include="ScriptInterface\Profiler.cpp" />
+    <ClCompile Include="ScriptInterface\SelectionHolder.cpp" />
     <ClCompile Include="ScriptInterface\ThemeManager.cpp" />
     <ClCompile Include="ScriptInterface\TitleFormat.cpp" />
     <ClCompile Include="ScriptInterface\Tooltip.cpp" />
-    <ClCompile Include="ScriptInterface\UiSelectionHolder.cpp" />
     <ClCompile Include="ScriptInterface\Utils.cpp" />
     <ClCompile Include="ScriptInterface\Window.cpp" />
     <ClCompile Include="UI\Config.cpp" />

@@ -4,7 +4,6 @@
 #include "StackBlur.h"
 
 GdiBitmap::GdiBitmap(std::unique_ptr<Gdiplus::Bitmap> bitmap) : m_bitmap(std::move(bitmap)) {}
-GdiBitmap::~GdiBitmap() {}
 
 STDMETHODIMP GdiBitmap::get__ptr(void** out)
 {
@@ -125,9 +124,9 @@ STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* out)
 	bitmap->UnlockBits(&bmpdata);
 
 	KPoints points;
-	for (size_t id = 0; const auto& [values, count] : colour_counters)
+	for (size_t id = 0; const auto& [values, pixel_count] : colour_counters)
 	{
-		points.emplace_back(KPoint(id++, values, count));
+		points.emplace_back(KPoint(id++, values, pixel_count));
 	}
 
 	KMeans kmeans(points, count);

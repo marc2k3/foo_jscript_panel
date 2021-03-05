@@ -4,11 +4,9 @@ class PanelWindow;
 
 class Window : public JSDispatchImpl<IWindow>
 {
-protected:
-	Window(PanelWindow* panel);
-	~Window();
-
 public:
+	Window(PanelWindow* panel);
+
 	STDMETHODIMP ClearInterval(UINT id) override;
 	STDMETHODIMP ClearTimeout(UINT id) override;
 	STDMETHODIMP CreatePopupMenu(IMenuObj** out) override;

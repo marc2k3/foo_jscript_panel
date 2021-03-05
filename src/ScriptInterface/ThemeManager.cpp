@@ -2,7 +2,6 @@
 #include "ThemeManager.h"
 
 ThemeManager::ThemeManager(HTHEME theme) : m_theme(theme) {}
-ThemeManager::~ThemeManager() {}
 
 STDMETHODIMP ThemeManager::DrawThemeBackground(IGdiGraphics* gr, int x, int y, int w, int h, int clip_x, int clip_y, int clip_w, int clip_h)
 {

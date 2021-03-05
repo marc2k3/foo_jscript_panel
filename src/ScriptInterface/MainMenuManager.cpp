@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "MainMenuManager.h"
 
-MainMenuManager::MainMenuManager() {}
-MainMenuManager::~MainMenuManager() {}
-
 STDMETHODIMP MainMenuManager::BuildMenu(IMenuObj* obj, UINT base_id)
 {
 	if (m_mm.is_empty()) return E_POINTER;

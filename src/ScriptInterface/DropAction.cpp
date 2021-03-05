@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "DropAction.h"
 
-DropAction::DropAction() {}
-DropAction::~DropAction() {}
-
 STDMETHODIMP DropAction::get_Effect(UINT* out)
 {
 	if (!out) return E_POINTER;

@@ -26,10 +26,10 @@ using VariantArgs = std::vector<_variant_t>;
 #include "PlaybackQueueItem.h"
 #include "PlayingItemLocation.h"
 #include "Profiler.h"
+#include "SelectionHolder.h"
 #include "ThemeManager.h"
 #include "TitleFormat.h"
 #include "Tooltip.h"
-#include "UiSelectionHolder.h"
 
 #include "Console.h"
 #include "Fb.h"

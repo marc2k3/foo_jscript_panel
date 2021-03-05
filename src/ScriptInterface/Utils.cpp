@@ -5,9 +5,6 @@
 
 #include <foobar2000/helpers/filetimetools.h>
 
-Utils::Utils() {}
-Utils::~Utils() {}
-
 STDMETHODIMP Utils::Chardet(BSTR filename, UINT* out)
 {
 	if (!out) return E_POINTER;

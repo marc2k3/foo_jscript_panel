@@ -5,7 +5,6 @@
 #include "PanelWindow.h"
 
 Window::Window(PanelWindow* panel) : m_panel(panel) {}
-Window::~Window() {}
 
 STDMETHODIMP Window::ClearInterval(UINT id)
 {

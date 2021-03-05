@@ -2,7 +2,6 @@
 #include "MeasureStringInfo.h"
 
 MeasureStringInfo::MeasureStringInfo(const Gdiplus::RectF& rect, int chars, int lines) : m_rect(rect), m_chars(chars), m_lines(lines) {}
-MeasureStringInfo::~MeasureStringInfo() {}
 
 STDMETHODIMP MeasureStringInfo::get_chars(int* out)
 {

@@ -2,11 +2,9 @@
 
 class Profiler : public JSDispatchImpl<IProfiler>
 {
-protected:
-	Profiler(const std::wstring& name);
-	~Profiler();
-
 public:
+	Profiler(const std::wstring& name);
+
 	STDMETHODIMP Print() override;
 	STDMETHODIMP Reset() override;
 	STDMETHODIMP get_Time(__int64* out) override;

@@ -2,7 +2,6 @@
 #include "FileInfo.h"
 
 FileInfo::FileInfo(const metadb_info_container::ptr& info) : m_info(info) {}
-FileInfo::~FileInfo() {}
 
 STDMETHODIMP FileInfo::get__ptr(void** out)
 {

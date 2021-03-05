@@ -2,10 +2,6 @@
 
 class Plman : public JSDispatchImpl<IPlman>
 {
-protected:
-	Plman();
-	~Plman();
-
 public:
 	STDMETHODIMP AddItemToPlaybackQueue(IMetadbHandle* handle) override;
 	STDMETHODIMP AddLocations(UINT playlistIndex, VARIANT locations, VARIANT_BOOL select) override;

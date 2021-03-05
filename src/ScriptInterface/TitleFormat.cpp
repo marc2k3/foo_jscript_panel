@@ -6,8 +6,6 @@ TitleFormat::TitleFormat(const std::wstring& pattern)
 	titleformat_compiler::get()->compile_safe(m_obj, from_wide(pattern));
 }
 
-TitleFormat::~TitleFormat() {}
-
 STDMETHODIMP TitleFormat::get__ptr(void** out)
 {
 	if (!out) return E_POINTER;

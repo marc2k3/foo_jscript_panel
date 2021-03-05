@@ -2,13 +2,9 @@
 
 class MetadbHandleList : public JSDisposableImpl<IMetadbHandleList>
 {
-protected:
-	MetadbHandleList(metadb_handle_list_cref handles);
-	~MetadbHandleList();
-
-	void FinalRelease() override;
-
 public:
+	MetadbHandleList(metadb_handle_list_cref handles);
+
 	STDMETHODIMP get__ptr(void** out) override;
 	STDMETHODIMP Add(IMetadbHandle* handle) override;
 	STDMETHODIMP AddRange(IMetadbHandleList* handles) override;
@@ -43,6 +39,9 @@ public:
 	STDMETHODIMP get_Count(UINT* out) override;
 	STDMETHODIMP get_Item(UINT index, IMetadbHandle** out) override;
 	STDMETHODIMP put_Item(UINT index, IMetadbHandle* handle) override;
+
+protected:
+	void FinalRelease() override;
 
 private:
 	static constexpr size_t flags = threaded_process::flag_show_progress | threaded_process::flag_show_delayed | threaded_process::flag_show_item;

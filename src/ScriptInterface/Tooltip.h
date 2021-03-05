@@ -2,11 +2,9 @@
 
 class Tooltip : public JSDispatchImpl<ITooltip>
 {
-protected:
-	Tooltip(CWindow tooltip, CWindow parent);
-	~Tooltip();
-
 public:
+	Tooltip(CWindow tooltip, CWindow parent);
+
 	STDMETHODIMP Activate() override;
 	STDMETHODIMP Deactivate() override;
 	STDMETHODIMP GetDelayTime(int type, int* out) override;

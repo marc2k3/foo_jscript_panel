@@ -2,10 +2,6 @@
 
 class Utils : public JSDispatchImpl<IUtils>
 {
-protected:
-	Utils();
-	~Utils();
-
 public:
 	STDMETHODIMP Chardet(BSTR filename, UINT* out) override;
 	STDMETHODIMP CheckComponent(BSTR name, VARIANT_BOOL* out) override;

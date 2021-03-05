@@ -2,7 +2,6 @@
 #include "PlayingItemLocation.h"
 
 PlayingItemLocation::PlayingItemLocation(bool isValid, size_t playlistIndex, size_t playlistItemIndex) : m_isValid(isValid), m_playlistIndex(playlistIndex), m_playlistItemIndex(playlistItemIndex) {}
-PlayingItemLocation::~PlayingItemLocation() {}
 
 STDMETHODIMP PlayingItemLocation::get_IsValid(VARIANT_BOOL* out)
 {

@@ -2,10 +2,6 @@
 
 class GdiGraphics : public JSDispatchImpl<IGdiGraphics>
 {
-protected:
-	GdiGraphics();
-	~GdiGraphics();
-
 public:
 	STDMETHODIMP get__ptr(void** out) override;
 	STDMETHODIMP put__ptr(void* g) override;

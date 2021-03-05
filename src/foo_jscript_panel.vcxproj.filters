@@ -210,6 +210,9 @@
     <ClInclude Include="ScriptInterface\ScriptInterface.h">
       <Filter>Header Files\ScriptInterface</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptInterface\SelectionHolder.h">
+      <Filter>Header Files\ScriptInterface</Filter>
+    </ClInclude>
     <ClInclude Include="ScriptInterface\ThemeManager.h">
       <Filter>Header Files\ScriptInterface</Filter>
     </ClInclude>
@@ -217,9 +220,6 @@
       <Filter>Header Files\ScriptInterface</Filter>
     </ClInclude>
     <ClInclude Include="ScriptInterface\Tooltip.h">
-      <Filter>Header Files\ScriptInterface</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptInterface\UiSelectionHolder.h">
       <Filter>Header Files\ScriptInterface</Filter>
     </ClInclude>
     <ClInclude Include="ScriptInterface\Utils.h">
@@ -353,6 +353,9 @@
     <ClCompile Include="ScriptInterface\Profiler.cpp">
       <Filter>Source Files\ScriptInterface</Filter>
     </ClCompile>
+    <ClCompile Include="ScriptInterface\SelectionHolder.cpp">
+      <Filter>Source Files\ScriptInterface</Filter>
+    </ClCompile>
     <ClCompile Include="ScriptInterface\ThemeManager.cpp">
       <Filter>Source Files\ScriptInterface</Filter>
     </ClCompile>
@@ -360,9 +363,6 @@
       <Filter>Source Files\ScriptInterface</Filter>
     </ClCompile>
     <ClCompile Include="ScriptInterface\Tooltip.cpp">
-      <Filter>Source Files\ScriptInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptInterface\UiSelectionHolder.cpp">
       <Filter>Source Files\ScriptInterface</Filter>
     </ClCompile>
     <ClCompile Include="ScriptInterface\Utils.cpp">

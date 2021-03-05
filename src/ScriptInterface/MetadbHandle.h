@@ -2,13 +2,9 @@
 
 class MetadbHandle : public JSDisposableImpl<IMetadbHandle>
 {
-protected:
-	MetadbHandle(const metadb_handle_ptr& handle);
-	~MetadbHandle();
-
-	void FinalRelease() override;
-
 public:
+	MetadbHandle(const metadb_handle_ptr& handle);
+
 	STDMETHODIMP get__ptr(void** out) override;
 	STDMETHODIMP ClearStats() override;
 	STDMETHODIMP Compare(IMetadbHandle* handle, VARIANT_BOOL* out) override;
@@ -26,6 +22,9 @@ public:
 	STDMETHODIMP get_Path(BSTR* out) override;
 	STDMETHODIMP get_RawPath(BSTR* out) override;
 	STDMETHODIMP get_SubSong(UINT* out) override;
+
+protected:
+	void FinalRelease() override;
 
 private:
 	metadb_handle_ptr m_handle;

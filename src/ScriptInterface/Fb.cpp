@@ -3,14 +3,11 @@
 #include "DropSourceImpl.h"
 #include "Menu.h"
 
-Fb::Fb() {}
-Fb::~Fb() {}
-
-STDMETHODIMP Fb::AcquireUiSelectionHolder(IUiSelectionHolder** out)
+STDMETHODIMP Fb::AcquireUiSelectionHolder(ISelectionHolder** out)
 {
 	if (!out) return E_POINTER;
 
-	*out = new ComObjectImpl<UiSelectionHolder>();
+	*out = new ComObjectImpl<SelectionHolder>();
 	return S_OK;
 }
 

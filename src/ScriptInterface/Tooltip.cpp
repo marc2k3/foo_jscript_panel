@@ -16,8 +16,6 @@ Tooltip::Tooltip(CWindow tooltip, CWindow parent) : m_tooltip(tooltip), m_parent
 	m_tooltip.SendMessage(TTM_ACTIVATE);
 }
 
-Tooltip::~Tooltip() {}
-
 STDMETHODIMP Tooltip::Activate()
 {
 	m_tooltip.SendMessage(TTM_ACTIVATE, TRUE);

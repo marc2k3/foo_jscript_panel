@@ -3,9 +3,6 @@
 #include "CustomSort.h"
 #include "ProcessLocationsNotify.h"
 
-Plman::Plman() {}
-Plman::~Plman() {}
-
 STDMETHODIMP Plman::AddItemToPlaybackQueue(IMetadbHandle* handle)
 {
 	metadb_handle* ptr = nullptr;
@@ -197,10 +194,7 @@ STDMETHODIMP Plman::GetPlaybackQueueContents(VARIANT* out)
 
 	for (size_t i = 0; i < count; ++i)
 	{
-		_variant_t var;
-		var.vt = VT_DISPATCH;
-		var.pdispVal = new ComObjectImpl<PlaybackQueueItem>(contents[i]);
-
+		_variant_t var = new ComObjectImpl<PlaybackQueueItem>(contents[i]);
 		if (!writer.put_item(i, var)) return E_OUTOFMEMORY;
 	}
 

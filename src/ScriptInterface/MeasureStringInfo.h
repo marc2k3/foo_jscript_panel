@@ -2,11 +2,9 @@
 
 class MeasureStringInfo : public JSDispatchImpl<IMeasureStringInfo>
 {
-protected:
-	MeasureStringInfo(const Gdiplus::RectF& rect, int chars, int lines);
-	~MeasureStringInfo();
-
 public:
+	MeasureStringInfo(const Gdiplus::RectF& rect, int chars, int lines);
+
 	STDMETHODIMP get_chars(int* out) override;
 	STDMETHODIMP get_height(float* out) override;
 	STDMETHODIMP get_lines(int* out) override;

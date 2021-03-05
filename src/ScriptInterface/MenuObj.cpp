@@ -1,12 +1,7 @@
 #include "stdafx.h"
 #include "MenuObj.h"
 
-MenuObj::MenuObj(CWindow wnd_parent) : m_wnd_parent(wnd_parent)
-{
-	m_hMenu = ::CreatePopupMenu();
-}
-
-MenuObj::~MenuObj() {}
+MenuObj::MenuObj(CWindow wnd_parent) : m_wnd_parent(wnd_parent), m_hMenu(CreatePopupMenu()) {}
 
 STDMETHODIMP MenuObj::get__HMENU(HMENU* out)
 {

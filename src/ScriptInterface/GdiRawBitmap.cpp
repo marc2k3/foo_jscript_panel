@@ -6,8 +6,6 @@ GdiRawBitmap::GdiRawBitmap(Gdiplus::Bitmap* bitmap) : m_width(bitmap->GetWidth()
 	bitmap->GetHBITMAP(Gdiplus::Color::Black, &m_hbmp);
 }
 
-GdiRawBitmap::~GdiRawBitmap() {}
-
 STDMETHODIMP GdiRawBitmap::get__HBITMAP(HBITMAP* out)
 {
 	if (!m_hbmp || !out) return E_POINTER;

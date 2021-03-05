@@ -2,10 +2,6 @@
 
 class DropAction : public JSDispatchImpl<IDropAction>
 {
-protected:
-	DropAction();
-	~DropAction();
-
 public:
 	STDMETHODIMP get_Effect(UINT* out) override;
 	STDMETHODIMP put_Base(UINT base) override;

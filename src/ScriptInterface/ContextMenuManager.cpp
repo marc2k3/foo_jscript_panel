@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "ContextMenuManager.h"
 
-ContextMenuManager::ContextMenuManager() {}
-ContextMenuManager::~ContextMenuManager() {}
-
 STDMETHODIMP ContextMenuManager::BuildMenu(IMenuObj* obj, int base_id)
 {
 	if (m_cm.is_empty()) return E_POINTER;

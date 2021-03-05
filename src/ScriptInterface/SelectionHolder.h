@@ -1,17 +1,16 @@
 #pragma once
 
-class UiSelectionHolder : public JSDisposableImpl<IUiSelectionHolder>
+class SelectionHolder : public JSDisposableImpl<ISelectionHolder>
 {
-protected:
-	UiSelectionHolder();
-	~UiSelectionHolder();
-
-	void FinalRelease() override;
-
 public:
+	SelectionHolder();
+
 	STDMETHODIMP SetPlaylistSelectionTracking() override;
 	STDMETHODIMP SetPlaylistTracking() override;
 	STDMETHODIMP SetSelection(IMetadbHandleList* handles, UINT type) override;
+
+protected:
+	void FinalRelease() override;
 
 private:
 	ui_selection_holder::ptr m_holder;

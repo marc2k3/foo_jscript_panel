@@ -2,12 +2,8 @@
 
 class Fb : public JSDispatchImpl<IFb>
 {
-protected:
-	Fb();
-	~Fb();
-
 public:
-	STDMETHODIMP AcquireUiSelectionHolder(IUiSelectionHolder** out) override;
+	STDMETHODIMP AcquireUiSelectionHolder(ISelectionHolder** out) override;
 	STDMETHODIMP AddDirectory() override;
 	STDMETHODIMP AddFiles() override;
 	STDMETHODIMP CheckClipboardContents(UINT /* FFS */, VARIANT_BOOL* out) override;

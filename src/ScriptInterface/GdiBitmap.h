@@ -2,13 +2,9 @@
 
 class GdiBitmap : public JSDisposableImpl<IGdiBitmap>
 {
-protected:
-	GdiBitmap(std::unique_ptr<Gdiplus::Bitmap> bitmap);
-	~GdiBitmap();
-
-	void FinalRelease() override;
-
 public:
+	GdiBitmap(std::unique_ptr<Gdiplus::Bitmap> bitmap);
+
 	STDMETHODIMP get__ptr(void** out) override;
 	STDMETHODIMP ApplyAlpha(UINT8 alpha, IGdiBitmap** out) override;
 	STDMETHODIMP ApplyMask(IGdiBitmap* image, VARIANT_BOOL* out) override;
@@ -24,6 +20,9 @@ public:
 	STDMETHODIMP StackBlur(UINT8 radius) override;
 	STDMETHODIMP get_Height(UINT* out) override;
 	STDMETHODIMP get_Width(UINT* out) override;
+
+protected:
+	void FinalRelease() override;
 
 private:
 	std::unique_ptr<Gdiplus::Bitmap> resize(uint32_t w, uint32_t h, Gdiplus::InterpolationMode interpolation_mode);

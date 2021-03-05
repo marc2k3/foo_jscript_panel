@@ -2,7 +2,6 @@
 #include "GdiFont.h"
 
 GdiFont::GdiFont(std::unique_ptr<Gdiplus::Font> font, HFONT hFont, bool managed) : m_font(std::move(font)), m_hFont(hFont), m_managed(managed) {}
-GdiFont::~GdiFont() {}
 
 STDMETHODIMP GdiFont::get__HFONT(HFONT* out)
 {

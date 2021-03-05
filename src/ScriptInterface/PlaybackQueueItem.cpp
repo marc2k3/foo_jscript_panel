@@ -2,7 +2,6 @@
 #include "PlaybackQueueItem.h"
 
 PlaybackQueueItem::PlaybackQueueItem(const t_playback_queue_item& playback_queue_item) : m_playback_queue_item(playback_queue_item) {}
-PlaybackQueueItem::~PlaybackQueueItem() {}
 
 STDMETHODIMP PlaybackQueueItem::get__ptr(void** out)
 {

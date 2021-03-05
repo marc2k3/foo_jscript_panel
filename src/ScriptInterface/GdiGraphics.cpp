@@ -2,9 +2,6 @@
 #include "GdiGraphics.h"
 #include "EstimateLineWrap.h"
 
-GdiGraphics::GdiGraphics() {}
-GdiGraphics::~GdiGraphics() {}
-
 STDMETHODIMP GdiGraphics::get__ptr(void** out)
 {
 	*out = m_graphics;
@@ -182,9 +179,7 @@ STDMETHODIMP GdiGraphics::EstimateLineWrap(BSTR str, IGdiFont* font, UINT width,
 
 	for (size_t i = 0; i < count; ++i)
 	{
-		_variant_t var;
-		var.vt = VT_UI4;
-		var.ulVal = result[i].width;
+		_variant_t var = result[i].width;
 		if (!writer.put_item(i * 2, result[i].text)) return E_OUTOFMEMORY;
 		if (!writer.put_item((i * 2) + 1, var)) return E_OUTOFMEMORY;
 	}
