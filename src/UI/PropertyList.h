@@ -62,12 +62,12 @@ public:
 		}
 	}
 
-	bool AllowScrollbar(bool vertical) const override
+	bool AllowScrollbar(bool) const override
 	{
 		return true;
 	}
 
-	bool CanSelectItem(size_t row) const override
+	bool CanSelectItem(size_t) const override
 	{
 		return true;
 	}
@@ -125,7 +125,7 @@ public:
 		return m_data.size();
 	}
 
-	void ExecuteDefaultAction(size_t index) override {}
+	void ExecuteDefaultAction(size_t) override {}
 
 	void OnItemsRemoved(const pfc::bit_array& mask, size_t oldCount) override
 	{
@@ -155,7 +155,7 @@ public:
 		this->OnItemsRemoved(mask, old_count);
 	}
 
-	void RequestReorder(size_t const* order, size_t count) override {}
+	void RequestReorder(size_t const*, size_t) override {}
 
 	void SetCellCheckState(size_t row, size_t column, bool value) override
 	{
