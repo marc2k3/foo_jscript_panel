@@ -21,8 +21,10 @@ public:
 	STDMETHODIMP OnScriptTerminate(const VARIANT*, const EXCEPINFO*) override;
 	STDMETHODIMP OnStateChange(SCRIPTSTATE) override;
 	bool HasError();
+	bool InvokeMouseRBtnUp(VariantArgs& args);
 	bool Ready();
-	void InvokeCallback(CallbackID id, VARIANTARG* argv = nullptr, size_t argc = 0, VARIANT* ret = nullptr);
+	void InvokeCallback(CallbackID id);
+	void InvokeCallback(CallbackID id, VariantArgs& args);
 	void Stop();
 
 	ScriptInfo m_info;

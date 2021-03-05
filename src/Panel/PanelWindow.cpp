@@ -6,6 +6,25 @@
 #include "PanelTimerDispatcher.h"
 #include "PanelWindow.h"
 
+static const std::map<size_t, CallbackID> wm_msg_map =
+{
+	{ WM_LBUTTONDOWN, CallbackID::on_mouse_lbtn_down },
+	{ WM_MBUTTONDOWN, CallbackID::on_mouse_mbtn_down },
+	{ WM_RBUTTONDOWN, CallbackID::on_mouse_rbtn_down },
+	{ WM_LBUTTONUP, CallbackID::on_mouse_lbtn_up },
+	{ WM_MBUTTONUP, CallbackID::on_mouse_mbtn_up },
+	{ WM_RBUTTONUP, CallbackID::on_mouse_rbtn_up },
+	{ WM_LBUTTONDBLCLK, CallbackID::on_mouse_lbtn_dblclk },
+	{ WM_MBUTTONDBLCLK, CallbackID::on_mouse_mbtn_dblclk },
+	{ WM_RBUTTONDBLCLK, CallbackID::on_mouse_rbtn_dblclk },
+	{ WM_MOUSEWHEEL, CallbackID::on_mouse_wheel },
+	{ WM_MOUSEHWHEEL, CallbackID::on_mouse_wheel_h },
+	{ WM_SYSKEYDOWN, CallbackID::on_key_down },
+	{ WM_KEYDOWN, CallbackID::on_key_down },
+	{ WM_KEYUP, CallbackID::on_key_up },
+	{ WM_CHAR, CallbackID::on_char },
+};
+
 PanelWindow::PanelWindow() : m_script_host(new ScriptHost(this)) {}
 PanelWindow::~PanelWindow() {}
 
@@ -25,10 +44,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case WM_DESTROY:
 		unload_script();
 		PanelManager::instance().remove_window(m_hwnd);
-		if (m_gr_wrap.is_valid())
-		{
-			m_gr_wrap.release();
-		}
+		if (m_gr_wrap.is_valid()) m_gr_wrap.release();
 		delete_context();
 		m_hwnd.ReleaseDC(m_hdc);
 		return true;
@@ -37,102 +53,47 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		update_script();
 		return true;
 	case WM_PAINT:
-		{
-			if (is_transparent() && m_refreshbk)
-			{
-				refresh_background();
-			}
-			else
-			{
-				on_paint();
-			}
-		}
+		if (is_transparent() && m_refreshbk) refresh_background();
+		else on_paint();
 		return true;
 	case WM_SIZE:
-		{
-			m_hwnd.GetClientRect(&m_rect);
-			on_size();
-		}
+		m_hwnd.GetClientRect(&m_rect);
+		on_size();
 		return true;
 	case WM_GETMINMAXINFO:
 		{
 			auto info = reinterpret_cast<LPMINMAXINFO>(lp);
 			info->ptMaxTrackSize = m_max;
 			info->ptMinTrackSize = m_min;
+			return true;
 		}
-		return true;
 	case WM_LBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 		{
-			if (m_grabfocus)
-			{
-				m_hwnd.SetFocus();
-			}
-
+			if (m_grabfocus) m_hwnd.SetFocus();
 			m_hwnd.SetCapture();
-
-			VARIANTARG args[3];
-			args[0].vt = VT_I4;
-			args[0].lVal = wp;
-			args[1].vt = VT_I4;
-			args[1].lVal = GET_Y_LPARAM(lp);
-			args[2].vt = VT_I4;
-			args[2].lVal = GET_X_LPARAM(lp);
-
-			switch (msg)
-			{
-			case WM_LBUTTONDOWN:
-				m_script_host->InvokeCallback(CallbackID::on_mouse_lbtn_down, args, _countof(args));
-				break;
-			case WM_MBUTTONDOWN:
-				m_script_host->InvokeCallback(CallbackID::on_mouse_mbtn_down, args, _countof(args));
-				break;
-			case WM_RBUTTONDOWN:
-				m_script_host->InvokeCallback(CallbackID::on_mouse_rbtn_down, args, _countof(args));
-				break;
-			}
+			VariantArgs args = { wp, GET_Y_LPARAM(lp), GET_X_LPARAM(lp) };
+			m_script_host->InvokeCallback(wm_msg_map.at(msg), args);
+			return false;
 		}
-		return false;
 	case WM_LBUTTONUP:
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
 		{
 			bool ret = false;
-
-			VARIANTARG args[3];
-			args[0].vt = VT_I4;
-			args[0].lVal = wp;
-			args[1].vt = VT_I4;
-			args[1].lVal = GET_Y_LPARAM(lp);
-			args[2].vt = VT_I4;
-			args[2].lVal = GET_X_LPARAM(lp);
+			VariantArgs args = { wp, GET_Y_LPARAM(lp), GET_X_LPARAM(lp) };
 
 			switch (msg)
 			{
-			case WM_LBUTTONUP:
-				m_script_host->InvokeCallback(CallbackID::on_mouse_lbtn_up, args, _countof(args));
-				break;
-			case WM_MBUTTONUP:
-				m_script_host->InvokeCallback(CallbackID::on_mouse_mbtn_up, args, _countof(args));
-				break;
 			case WM_RBUTTONUP:
-				{
-					if (IsKeyPressed(VK_LSHIFT) && IsKeyPressed(VK_LWIN))
-					{
-						break;
-					}
-
-					_variant_t result;
-					m_script_host->InvokeCallback(CallbackID::on_mouse_rbtn_up, args, _countof(args), &result);
-					if (SUCCEEDED(VariantChangeType(&result, &result, 0, VT_BOOL)))
-					{
-						ret = to_bool(result.boolVal);
-					}
-				}
+				if (IsKeyPressed(VK_LSHIFT) && IsKeyPressed(VK_LWIN)) break;
+				ret = m_script_host->InvokeMouseRBtnUp(args);
+				break;
+			default:
+				m_script_host->InvokeCallback(wm_msg_map.at(msg), args);
 				break;
 			}
-
 			ReleaseCapture();
 			return ret;
 		}
@@ -140,28 +101,10 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case WM_MBUTTONDBLCLK:
 	case WM_RBUTTONDBLCLK:
 		{
-			VARIANTARG args[3];
-			args[0].vt = VT_I4;
-			args[0].lVal = wp;
-			args[1].vt = VT_I4;
-			args[1].lVal = GET_Y_LPARAM(lp);
-			args[2].vt = VT_I4;
-			args[2].lVal = GET_X_LPARAM(lp);
-
-			switch (msg)
-			{
-			case WM_LBUTTONDBLCLK:
-				m_script_host->InvokeCallback(CallbackID::on_mouse_lbtn_dblclk, args, _countof(args));
-				break;
-			case WM_MBUTTONDBLCLK:
-				m_script_host->InvokeCallback(CallbackID::on_mouse_mbtn_dblclk, args, _countof(args));
-				break;
-			case WM_RBUTTONDBLCLK:
-				m_script_host->InvokeCallback(CallbackID::on_mouse_rbtn_dblclk, args, _countof(args));
-				break;
-			}
+			VariantArgs args = { wp, GET_Y_LPARAM(lp), GET_X_LPARAM(lp) };
+			m_script_host->InvokeCallback(wm_msg_map.at(msg), args);
+			return false;
 		}
-		return false;
 	case WM_MOUSEMOVE:
 		{
 			if (!m_is_mouse_tracked)
@@ -176,76 +119,47 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 				SetCursor(LoadCursor(nullptr, IDC_ARROW));
 			}
 
-			VARIANTARG args[3];
-			args[0].vt = VT_I4;
-			args[0].lVal = wp;
-			args[1].vt = VT_I4;
-			args[1].lVal = GET_Y_LPARAM(lp);
-			args[2].vt = VT_I4;
-			args[2].lVal = GET_X_LPARAM(lp);
-			m_script_host->InvokeCallback(CallbackID::on_mouse_move, args, _countof(args));
+			VariantArgs args = { wp, GET_Y_LPARAM(lp), GET_X_LPARAM(lp) };
+			m_script_host->InvokeCallback(CallbackID::on_mouse_move, args);
+			return false;
 		}
-		return false;
 	case WM_MOUSELEAVE:
 		m_is_mouse_tracked = false;
-
-		m_script_host->InvokeCallback(CallbackID::on_mouse_leave);
 		SetCursor(LoadCursor(nullptr, IDC_ARROW));
+		m_script_host->InvokeCallback(CallbackID::on_mouse_leave);
 		return false;
 	case WM_MOUSEWHEEL:
 	case WM_MOUSEHWHEEL:
 		{
-			VARIANTARG args[1];
-			args[0].vt = VT_I4;
-			args[0].lVal = GET_WHEEL_DELTA_WPARAM(wp) > 0 ? 1 : -1;
-			m_script_host->InvokeCallback(msg == WM_MOUSEWHEEL ? CallbackID::on_mouse_wheel : CallbackID::on_mouse_wheel_h, args, _countof(args));
+			VariantArgs args = { GET_WHEEL_DELTA_WPARAM(wp) > 0 ? 1 : -1 };
+			m_script_host->InvokeCallback(wm_msg_map.at(msg), args);
+			return false;
 		}
-		return false;
 	case WM_SYSKEYDOWN:
 	case WM_KEYDOWN:
-		{
-			VARIANTARG args[1];
-			args[0].vt = VT_UI4;
-			args[0].ulVal = wp;
-			m_script_host->InvokeCallback(CallbackID::on_key_down, args, _countof(args));
-		}
-		return true;
 	case WM_KEYUP:
-		{
-			VARIANTARG args[1];
-			args[0].vt = VT_UI4;
-			args[0].ulVal = wp;
-			m_script_host->InvokeCallback(CallbackID::on_key_up, args, _countof(args));
-		}
-		return true;
 	case WM_CHAR:
 		{
-			VARIANTARG args[1];
-			args[0].vt = VT_UI4;
-			args[0].ulVal = wp;
-			m_script_host->InvokeCallback(CallbackID::on_char, args, _countof(args));
+			VariantArgs args = { wp };
+			m_script_host->InvokeCallback(wm_msg_map.at(msg), args);
+			return true;
 		}
-		return true;
 	case WM_SETFOCUS:
 		{
 			m_selection_holder = ui_selection_manager::get()->acquire();
 
-			VARIANTARG args[1];
-			args[0].vt = VT_BOOL;
-			args[0].boolVal = VARIANT_TRUE;
-			m_script_host->InvokeCallback(CallbackID::on_focus, args, _countof(args));
+			VariantArgs args = { true };
+			m_script_host->InvokeCallback(CallbackID::on_focus, args);
+			return false;
 		}
-		return false;
 	case WM_KILLFOCUS:
 		{
 			m_selection_holder.release();
 
-			VARIANTARG args[1];
-			args[0].vt = VT_BOOL;
-			args[0].boolVal = VARIANT_FALSE;
-			m_script_host->InvokeCallback(CallbackID::on_focus, args, _countof(args));
+			VariantArgs args = { false };
+			m_script_host->InvokeCallback(CallbackID::on_focus, args);
+			return false;
 		}
-		return false;
 	case jsp::uwm_refreshbk:
 		redraw(true);
 		return true;
@@ -256,6 +170,8 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		unload_script();
 		return true;
 	}
+
+	if (msg < WM_USER) return false;
 
 	CallbackID id = static_cast<CallbackID>(msg);
 
@@ -277,12 +193,10 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case CallbackID::on_playback_pause:
 	case CallbackID::on_playlist_stop_after_current_changed:
 		{
-			VARIANTARG args[1];
-			args[0].vt = VT_BOOL;
-			args[0].boolVal = to_variant_bool(wp);
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { wp == 1 };
+			m_script_host->InvokeCallback(id, args);
+			return true;
 		}
-		return true;
 	case CallbackID::on_item_played:
 	case CallbackID::on_playback_edited:
 	case CallbackID::on_playback_new_track:
@@ -290,15 +204,12 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			CallbackDataScopeReleaser<CallbackData<metadb_handle_ptr>> data(wp);
 			auto handle = new ComObjectImpl<MetadbHandle>(data->m_item1);
 
-			VARIANTARG args[1];
-			args[0].vt = VT_DISPATCH;
-			args[0].pdispVal = handle;
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { handle };
+			m_script_host->InvokeCallback(id, args);
 
-			if (handle)
-				handle->Release();
+			if (handle) handle->Release();
+			return true;
 		}
-		return true;
 	case CallbackID::on_library_items_added:
 	case CallbackID::on_library_items_changed:
 	case CallbackID::on_library_items_removed:
@@ -307,15 +218,12 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			CallbackDataScopeReleaser<MetadbCallbackData> data(wp);
 			auto handles = new ComObjectImpl<MetadbHandleList>(data->m_handles);
 
-			VARIANTARG args[1];
-			args[0].vt = VT_DISPATCH;
-			args[0].pdispVal = handles;
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { handles };
+			m_script_host->InvokeCallback(id, args);
 
-			if (handles)
-				handles->Release();
+			if (handles) handles->Release();
+			return true;
 		}
-		return true;
 	case CallbackID::on_main_menu:
 	case CallbackID::on_playback_order_changed:
 	case CallbackID::on_playback_queue_changed:
@@ -324,109 +232,72 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case CallbackID::on_playlist_items_reordered:
 	case CallbackID::on_replaygain_mode_changed:
 		{
-			VARIANTARG args[1];
-			args[0].vt = VT_UI4;
-			args[0].ulVal = wp;
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { wp };
+			m_script_host->InvokeCallback(id, args);
+			return true;
 		}
-		return true;
 	case CallbackID::on_volume_change:
 		{
 			CallbackDataScopeReleaser<CallbackData<float>> data(wp);
 
-			VARIANTARG args[1];
-			args[0].vt = VT_R4;
-			args[0].fltVal = data->m_item1;
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { data->m_item1 };
+			m_script_host->InvokeCallback(id, args);
+			return true;
 		}
-		return true;
 	case CallbackID::on_playback_seek:
 	case CallbackID::on_playback_time:
 		{
 			CallbackDataScopeReleaser<CallbackData<double>> data(wp);
 
-			VARIANTARG args[1];
-			args[0].vt = VT_R8;
-			args[0].dblVal = data->m_item1;
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { data->m_item1 };
+			m_script_host->InvokeCallback(id, args);
+			return true;
 		}
-		return true;
 	case CallbackID::on_get_album_art_done:
 		{
 			auto data = reinterpret_cast<AsyncArtData*>(wp);
 
-			VARIANTARG args[4];
-			args[0].vt = VT_BSTR;
-			args[0].bstrVal = data->m_path;
-			args[1].vt = VT_DISPATCH;
-			args[1].pdispVal = data->m_bitmap;
-			args[2].vt = VT_UI4;
-			args[2].ulVal = data->m_art_id;
-			args[3].vt = VT_DISPATCH;
-			args[3].pdispVal = data->m_handle;
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { data->m_path, data->m_bitmap,  data->m_art_id, data->m_handle };
+			m_script_host->InvokeCallback(id, args);
+			return true;
 		}
-		return true;
-	case CallbackID::on_item_focus_change:
-		{
-			CallbackDataScopeReleaser<CallbackData<size_t, size_t, size_t>> data(wp);
-
-			VARIANTARG args[3];
-			args[0].vt = VT_UI4;
-			args[0].ulVal = data->m_item3;
-			args[1].vt = VT_UI4;
-			args[1].ulVal = data->m_item2;
-			args[2].vt = VT_UI4;
-			args[2].ulVal = data->m_item1;
-			m_script_host->InvokeCallback(id, args, _countof(args));
-		}
-		return true;
 	case CallbackID::on_load_image_done:
 		{
 			auto data = reinterpret_cast<AsyncImageData*>(wp);
 
-			VARIANTARG args[3];
-			args[0].vt = VT_BSTR;
-			args[0].bstrVal = data->m_path;
-			args[1].vt = VT_DISPATCH;
-			args[1].pdispVal = data->m_bitmap;
-			args[2].vt = VT_UI4;
-			args[2].ulVal = data->m_cookie;
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { data->m_path, data->m_bitmap, data->m_cookie };
+			m_script_host->InvokeCallback(id, args);
+			return true;
 		}
-		return true;
+	case CallbackID::on_item_focus_change:
+		{
+			CallbackDataScopeReleaser<CallbackData<size_t, size_t, size_t>> data(wp);
+
+			VariantArgs args = { data->m_item3, data->m_item2, data->m_item1 };
+			m_script_host->InvokeCallback(id, args);
+			return true;
+		}
 	case CallbackID::on_notify_data:
 		{
 			CallbackDataScopeReleaser<CallbackData<_bstr_t, _variant_t>> data(wp);
 
-			VARIANTARG args[2];
-			args[0] = data->m_item2;
-			args[1].vt = VT_BSTR;
-			args[1].bstrVal = data->m_item1;
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { data->m_item2, data->m_item1 };
+			m_script_host->InvokeCallback(id, args);
+			return true;
 		}
-		return true;
 	case CallbackID::on_playback_starting:
 		{
-			VARIANTARG args[2];
-			args[0].vt = VT_BOOL;
-			args[0].boolVal = to_variant_bool(lp);
-			args[1].vt = VT_UI4;
-			args[1].ulVal = wp;
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { wp == 1, lp };
+			m_script_host->InvokeCallback(id, args);
+			return true;
 		}
-		return true;
 	case CallbackID::on_playlist_item_ensure_visible:
 	case CallbackID::on_playlist_items_removed:
 		{
-			VARIANTARG args[2];
-			args[0].vt = VT_UI4;
-			args[0].ulVal = lp;
-			args[1].vt = VT_UI4;
-			args[1].ulVal = wp;
-			m_script_host->InvokeCallback(id, args, _countof(args));
+			VariantArgs args = { lp, wp };
+			m_script_host->InvokeCallback(id, args);
+			return true;
 		}
-		return true;
 	}
 	return false;
 }
@@ -594,11 +465,8 @@ void PanelWindow::on_paint()
 			gr.SetClip(rect);
 			m_gr_wrap->put__ptr(&gr);
 
-			VARIANTARG args[1];
-			args[0].vt = VT_DISPATCH;
-			args[0].pdispVal = m_gr_wrap.get_ptr();
-			m_script_host->InvokeCallback(CallbackID::on_paint, args, _countof(args));
-
+			VariantArgs args = { m_gr_wrap.get_ptr() };
+			m_script_host->InvokeCallback(CallbackID::on_paint, args);
 			m_gr_wrap->put__ptr(nullptr);
 		}
 	}

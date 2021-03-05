@@ -37,7 +37,7 @@ int PanelProperties::g_sizeof(VARTYPE vt)
 	}
 }
 
-void PanelProperties::g_get(stream_writer* writer, const PropertyData& data, abort_callback& abort) throw()
+void PanelProperties::g_get(stream_writer* writer, const PropertyData& data, abort_callback& abort)
 {
 	try
 	{
@@ -62,7 +62,7 @@ void PanelProperties::g_get(stream_writer* writer, const PropertyData& data, abo
 	catch (...) {}
 }
 
-void PanelProperties::g_set(stream_reader* reader, PropertyData& data, abort_callback& abort) throw()
+void PanelProperties::g_set(stream_reader* reader, PropertyData& data, abort_callback& abort)
 {
 	data.clear();
 
@@ -74,38 +74,34 @@ void PanelProperties::g_set(stream_reader* reader, PropertyData& data, abort_cal
 		for (size_t i = 0; i < count; ++i)
 		{
 			string8 key;
-			VARTYPE vt;
+			_variant_t value;
 			reader->read_string(key, abort);
-			reader->read_lendian_t(vt, abort);
-
-			const int cbRead = g_sizeof(vt);
-
-			_variant_t val;
-			val.vt = vt;
+			reader->read_lendian_t(value.vt, abort);
+			const int cbRead = g_sizeof(value.vt);
 
 			if (cbRead > 0)
 			{
-				reader->read(&val.bVal, cbRead, abort);
+				reader->read(&value.bVal, cbRead, abort);
 			}
 			else
 			{
 				string8 str;
 				reader->read_string(str, abort);
-				val.bstrVal = to_bstr(str);
+				value.bstrVal = to_bstr(str);
 			}
 
-			data.emplace(key, val);
+			data.emplace(key, value);
 		}
 	}
 	catch (...) {}
 }
 
-void PanelProperties::get(stream_writer* writer, abort_callback& abort) const throw()
+void PanelProperties::get(stream_writer* writer, abort_callback& abort) const
 {
 	g_get(writer, m_data, abort);
 }
 
-void PanelProperties::set(stream_reader* reader, abort_callback& abort) throw()
+void PanelProperties::set(stream_reader* reader, abort_callback& abort)
 {
 	g_set(reader, m_data, abort);
 }

@@ -85,7 +85,7 @@ namespace
 			}
 
 			if (handle_message(hwnd, msg, wp, lp)) return 0;
-			return uDefWindowProc(hwnd, msg, wp, lp);
+			return DefWindowProc(hwnd, msg, wp, lp);
 		}
 
 		bool have_config_popup() const override

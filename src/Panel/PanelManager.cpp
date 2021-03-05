@@ -24,19 +24,11 @@ void PanelManager::post_msg_to_all(CallbackID id, WPARAM wp, LPARAM lp)
 
 void PanelManager::post_msg_to_all_pointer(CallbackID id, pfc::refcounted_object_root* param, HWND except)
 {
-	size_t count = m_hwnds.size();
-	if (count > 0 && except != nullptr) count--;
-	if (count == 0) return;
-
-	for (size_t i = 0; i < count; ++i)
-	{
-		param->refcount_add_ref();
-	}
-
 	for (CWindow hwnd : m_hwnds)
 	{
 		if (hwnd != except)
 		{
+			param->refcount_add_ref();
 			hwnd.PostMessage(to_uint(id), reinterpret_cast<WPARAM>(param));
 		}
 	}

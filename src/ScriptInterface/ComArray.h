@@ -74,7 +74,7 @@ private:
 		return true;
 	}
 
-	std::vector<_variant_t> m_data;
+	VariantArgs m_data;
 };
 
 class ComArrayWriter
@@ -96,21 +96,17 @@ public:
 
 	bool put_item(LONG idx, const std::wstring& str)
 	{
-		_variant_t var;
-		var.vt = VT_BSTR;
-		var.bstrVal = SysAllocString(str.data());
+		_variant_t var = SysAllocString(str.data());
 		return put_item(idx, var);
 	}
 
 	bool put_item(LONG idx, jstring str)
 	{
-		_variant_t var;
-		var.vt = VT_BSTR;
-		var.bstrVal = to_bstr(str);
+		_variant_t var = to_bstr(str);
 		return put_item(idx, var);
 	}
 
-	bool put_item(LONG idx, VARIANT& var)
+	bool put_item(LONG idx, _variant_t& var)
 	{
 		if (!m_psa) return false;
 		if (SUCCEEDED(SafeArrayPutElement(m_psa, &idx, &var))) return true;

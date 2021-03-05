@@ -213,7 +213,7 @@ namespace
 
 		void on_playback_starting(playback_control::t_track_command cmd, bool paused) override
 		{
-			PanelManager::instance().post_msg_to_all(CallbackID::on_playback_starting, cmd, paused);
+			PanelManager::instance().post_msg_to_all(CallbackID::on_playback_starting, paused, cmd);
 		}
 
 		void on_playback_stop(playback_control::t_stop_reason reason) override
@@ -287,7 +287,7 @@ namespace
 			PanelManager::instance().post_msg_to_all(CallbackID::on_playlist_items_reordered, playlist);
 		}
 
-		void on_items_selection_change(size_t p_playlist, const pfc::bit_array& p_affected, const pfc::bit_array& p_state) override
+		void on_items_selection_change(size_t, const pfc::bit_array&, const pfc::bit_array&) override
 		{
 			PanelManager::instance().post_msg_to_all(CallbackID::on_playlist_items_selection_change);
 		}

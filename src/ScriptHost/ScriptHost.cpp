@@ -303,17 +303,43 @@ bool ScriptHost::HasError()
 	return m_has_error;
 }
 
+bool ScriptHost::InvokeMouseRBtnUp(VariantArgs& args)
+{
+	bool ret = false;
+	const CallbackID id = CallbackID::on_mouse_rbtn_up;
+	if (Ready() && m_callback_map.contains(id))
+	{
+		DISPPARAMS params = { args.data(), nullptr, args.size(), 0 };
+		_variant_t result;
+		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &result, nullptr, nullptr);
+		if (SUCCEEDED(VariantChangeType(&result, &result, 0, VT_BOOL)))
+		{
+			ret = to_bool(result.boolVal);
+		}
+	}
+	return ret;
+}
+
 bool ScriptHost::Ready()
 {
 	return m_script_root && m_engine_inited && m_script_engine;
 }
 
-void ScriptHost::InvokeCallback(CallbackID id, VARIANTARG* argv, size_t argc, VARIANT* ret)
+void ScriptHost::InvokeCallback(CallbackID id)
 {
 	if (Ready() && m_callback_map.contains(id))
 	{
-		DISPPARAMS param = { argv, nullptr, argc, 0 };
-		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &param, ret, nullptr, nullptr);
+		DISPPARAMS params{};
+		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, nullptr, nullptr, nullptr);
+	}
+}
+
+void ScriptHost::InvokeCallback(CallbackID id, VariantArgs& args)
+{
+	if (Ready() && m_callback_map.contains(id))
+	{
+		DISPPARAMS params = { args.data(), nullptr, args.size(), 0 };
+		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, nullptr, nullptr, nullptr);
 	}
 }
 

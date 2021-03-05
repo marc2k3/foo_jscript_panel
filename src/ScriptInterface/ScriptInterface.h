@@ -5,9 +5,10 @@
 
 #include <ActivScp.h>
 #include <ComDef.h>
+using VariantArgs = std::vector<_variant_t>;
 
-#include "ComTools.h"
 #include "ComArray.h"
+#include "ComTools.h"
 #include "ScriptInterface_h.h"
 
 #include "ContextMenuManager.h"

@@ -6,7 +6,7 @@ public:
 	PanelTimer(CWindow hwnd, size_t id, size_t delay, bool is_repeated);
 	~PanelTimer();
 
-	static VOID CALLBACK timerProc(PVOID lpParameter, BOOLEAN TimerOrWaitFired);
+	static VOID CALLBACK timerProc(PVOID lpParameter, BOOLEAN);
 
 	BOOL start(HANDLE timer_queue);
 	void stop();

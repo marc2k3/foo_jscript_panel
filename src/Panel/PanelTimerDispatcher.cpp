@@ -5,7 +5,7 @@ PanelTimer::PanelTimer(CWindow hwnd, size_t id, size_t delay, bool is_repeated) 
 
 PanelTimer::~PanelTimer() {}
 
-VOID CALLBACK PanelTimer::timerProc(PVOID lpParameter, BOOLEAN TimerOrWaitFired)
+VOID CALLBACK PanelTimer::timerProc(PVOID lpParameter, BOOLEAN)
 {
 	auto timer = static_cast<PanelTimer*>(lpParameter);
 
@@ -70,11 +70,9 @@ void PanelTimerTask::invoke()
 {
 	acquire();
 
-	VARIANTARG args[1];
-	args[0].vt = VT_I4;
-	args[0].lVal = m_timer_id;
-	DISPPARAMS dispParams = { args, nullptr, _countof(args), 0 };
-	m_pdisp->Invoke(DISPID_VALUE, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &dispParams, nullptr, nullptr, nullptr);
+	VariantArgs args = { m_timer_id };
+	DISPPARAMS params = { args.data(), nullptr, args.size(), 0 };
+	m_pdisp->Invoke(DISPID_VALUE, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, nullptr, nullptr, nullptr);
 
 	release();
 }

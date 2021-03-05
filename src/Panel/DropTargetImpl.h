@@ -83,16 +83,8 @@ private:
 		CPoint point(pt.x, pt.y);
 		m_panel->m_hwnd.ScreenToClient(&point);
 
-		VARIANTARG args[4];
-		args[0].vt = VT_UI4;
-		args[0].ulVal = grfKeyState;
-		args[1].vt = VT_I4;
-		args[1].lVal = point.y;
-		args[2].vt = VT_I4;
-		args[2].lVal = point.x;
-		args[3].vt = VT_DISPATCH;
-		args[3].pdispVal = m_action.get_ptr();
-		m_panel->m_script_host->InvokeCallback(id, args, _countof(args));
+		VariantArgs args = { grfKeyState , point.y, point.x, m_action.get_ptr() };
+		m_panel->m_script_host->InvokeCallback(id, args);
 	}
 
 	DWORD m_allowed_effect = DROPEFFECT_NONE;
