@@ -31,8 +31,6 @@ static constexpr const char* js_keywords = "abstract boolean break byte case cat
 
 static constexpr std::array<const int, 21> ctrlcodes = { 'Q', 'W', 'E', 'R', 'I', 'O', 'P', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'B', 'N', 'M', 186, 187, 226 };
 
-CEditorCtrl::CEditorCtrl() {}
-
 CEditorCtrl::Colour CEditorCtrl::ParseHex(const std::string& hex)
 {
 	const auto int_from_hex_digit = [](int ch)

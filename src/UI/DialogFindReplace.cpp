@@ -25,14 +25,6 @@ static constexpr std::array ids =
 	IDCANCEL
 };
 
-KeyHack::KeyHack() {}
-
-BOOL KeyHack::SubclassWindow(CWindow hwnd, int cmd)
-{
-	m_cmd = cmd;
-	return __super::SubclassWindow(hwnd);
-}
-
 LRESULT KeyHack::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&)
 {
 	switch (wParam)
@@ -76,7 +68,8 @@ BOOL CDialogFindReplace::OnInitDialog(CWindow, LPARAM)
 		const int id = ids[i];
 		CWindow hwnd = GetDlgItem(id);
 		m_window.emplace(id, hwnd);
-		m_hacks[i].SubclassWindow(hwnd, id >= IDC_EDIT_FIND && id <= IDC_BTN_NEXT ? IDC_BTN_NEXT : id);
+		m_hacks[i].SubclassWindow(hwnd);
+		m_hacks[i].m_cmd = id >= IDC_EDIT_FIND && id <= IDC_BTN_NEXT ? IDC_BTN_NEXT : id;
 	}
 	return TRUE;
 }

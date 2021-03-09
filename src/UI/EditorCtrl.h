@@ -6,8 +6,6 @@ class CDialogFindReplace;
 class CEditorCtrl : public CScintillaImpl<CEditorCtrl>
 {
 public:
-	CEditorCtrl();
-
 	BEGIN_MSG_MAP_EX(CEditorCtrl)
 		MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
 		REFLECTED_NOTIFY_CODE_HANDLER_EX(SCN_UPDATEUI, OnUpdateUI)

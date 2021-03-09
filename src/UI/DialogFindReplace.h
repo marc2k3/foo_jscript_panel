@@ -4,18 +4,14 @@
 class KeyHack : public CWindowImpl<KeyHack, CWindow>
 {
 public:
-	KeyHack();
-
 	BEGIN_MSG_MAP_EX(KeyHack)
 		MESSAGE_HANDLER(WM_CHAR, OnChar)
 		MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
 	END_MSG_MAP()
 
-	BOOL SubclassWindow(CWindow hwnd, int cmd);
 	LRESULT OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnKeyDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-private:
 	int m_cmd = 0;
 };
 

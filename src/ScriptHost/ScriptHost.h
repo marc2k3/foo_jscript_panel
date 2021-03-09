@@ -7,7 +7,6 @@ class ScriptHost : public ImplementCOMRefCounter<IActiveScriptSite>
 {
 public:
 	ScriptHost(PanelWindow* panel);
-	~ScriptHost();
 
 	QI_HELPER(IActiveScriptSite)
 

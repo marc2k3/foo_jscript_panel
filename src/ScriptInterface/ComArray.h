@@ -3,9 +3,6 @@
 class ComArrayReader
 {
 public:
-	ComArrayReader() {}
-	~ComArrayReader() {}
-
 	bool convert(const VARIANT& v, pfc::bit_array_bittable& out)
 	{
 		if (!init(v, VT_UI4)) return false;
@@ -80,9 +77,6 @@ private:
 class ComArrayWriter
 {
 public:
-	ComArrayWriter() {}
-	~ComArrayWriter() {}
-
 	SAFEARRAY* get_ptr()
 	{
 		return m_psa;

@@ -11,8 +11,6 @@ ScriptHost::ScriptHost(PanelWindow* panel)
 	, m_utils(ComObjectSingleton<Utils>::instance())
 	, m_window(new ImplementCOMRefCounter<Window>(panel)) {}
 
-ScriptHost::~ScriptHost() {}
-
 DWORD ScriptHost::GenerateSourceContext(const std::wstring& path)
 {
 	m_context_to_path_map.emplace(++m_last_source_context, path);

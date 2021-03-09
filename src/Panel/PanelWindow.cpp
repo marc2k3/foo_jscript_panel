@@ -81,21 +81,17 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
 		{
-			bool ret = false;
+			pfc::onLeaving scope([] { ReleaseCapture(); });
 			VariantArgs args = { wp, GET_Y_LPARAM(lp), GET_X_LPARAM(lp) };
 
-			switch (msg)
+			if (msg == WM_RBUTTONUP)
 			{
-			case WM_RBUTTONUP:
-				if (IsKeyPressed(VK_LSHIFT) && IsKeyPressed(VK_LWIN)) break;
-				ret = m_script_host->InvokeMouseRBtnUp(args);
-				break;
-			default:
-				m_script_host->InvokeCallback(wm_msg_map.at(msg), args);
-				break;
+				if (IsKeyPressed(VK_LSHIFT) && IsKeyPressed(VK_LWIN)) return false;
+				return m_script_host->InvokeMouseRBtnUp(args);
 			}
-			ReleaseCapture();
-			return ret;
+			
+			m_script_host->InvokeCallback(wm_msg_map.at(msg), args);
+			return false;
 		}
 	case WM_LBUTTONDBLCLK:
 	case WM_MBUTTONDBLCLK:
@@ -109,11 +105,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		{
 			if (!m_is_mouse_tracked)
 			{
-				TRACKMOUSEEVENT tme;
-
-				tme.cbSize = sizeof(tme);
-				tme.hwndTrack = m_hwnd;
-				tme.dwFlags = TME_LEAVE;
+				TRACKMOUSEEVENT tme = { sizeof(TRACKMOUSEEVENT), TME_LEAVE, m_hwnd, HOVER_DEFAULT };
 				TrackMouseEvent(&tme);
 				m_is_mouse_tracked = true;
 				SetCursor(LoadCursor(nullptr, IDC_ARROW));
