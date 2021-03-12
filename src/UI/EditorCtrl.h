@@ -22,19 +22,6 @@ public:
 	void SetContent(jstring text);
 
 private:
-	enum
-	{
-		ESF_NONE = 0,
-		ESF_FONT = 1 << 0,
-		ESF_SIZE = 1 << 1,
-		ESF_FORE = 1 << 2,
-		ESF_BACK = 1 << 3,
-		ESF_BOLD = 1 << 4,
-		ESF_ITALICS = 1 << 5,
-		ESF_UNDERLINED = 1 << 6,
-		ESF_CASEFORCE = 1 << 7,
-	};
-
 	enum class IndentationStatus
 	{
 		isNone,
@@ -51,10 +38,9 @@ private:
 
 	struct EditorStyle
 	{
-		Colour back = 0, fore = 0;
-		bool bold = false, italics = false, underlined = false;
-		int case_force = 0, size = 0;
-		size_t flags = 0;
+		Colour back = INT_MAX, fore = INT_MAX;
+		bool bold = false, italic = false;
+		int size = 0;
 		std::string font;
 	};
 
@@ -68,9 +54,9 @@ private:
 	{
 		StringComparePartial(size_t len) : m_len(len) {}
 
-		int operator()(jstring s1, jstring s2) const
+		bool operator()(jstring s1, jstring s2) const
 		{
-			return pfc::stricmp_ascii_ex(s1, std::min(s1.length(), m_len), s2, std::min(s2.length(), m_len));
+			return _strnicmp(s1, s2, m_len) == 0;
 		}
 
 		size_t m_len;
@@ -78,8 +64,6 @@ private:
 
 	struct StyleAndWords
 	{
-		bool IsSingleChar() const { return words.length() == 1; }
-
 		int styleNumber = 0;
 		std::string words;
 	};
@@ -99,8 +83,9 @@ private:
 	Range GetSelection();
 	Strings GetLinePartsInStyle(Line line, const StyleAndWords& saw);
 	bool Contains(const std::string& str, char ch);
-	bool Includes(const StyleAndWords& symbols, const std::string& value);
 	bool FindBraceMatchPos(Position& braceAtCaret, Position& braceOpposite);
+	bool Includes(const StyleAndWords& symbols, const std::string& value);
+	bool IsNumeric(const std::string& str);
 	bool RangeIsAllWhitespace(Position start, Position end);
 	int IndentOfBlock(Line line);
 	std::string GetCurrentLine();

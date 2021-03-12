@@ -67,52 +67,12 @@ CEditorCtrl::EditorStyle CEditorCtrl::ParseStyle(const std::string& str)
 		std::string primary = tmp[0];
 		std::string secondary = tmp.size() == 2 ? tmp[1] : "";
 
-		if (primary == "bold")
-		{
-			style.flags |= ESF_BOLD;
-			style.bold = true;
-		}
-		else if (primary == "italics")
-		{
-			style.flags |= ESF_ITALICS;
-			style.italics = true;
-		}
-		else if (primary == "underlined")
-		{
-			style.flags |= ESF_UNDERLINED;
-			style.underlined = true;
-		}
-		else if (primary == "font")
-		{
-			style.flags |= ESF_FONT;
-			style.font = secondary;
-		}
-		else if (primary == "fore")
-		{
-			style.flags |= ESF_FORE;
-			style.fore = ParseHex(secondary);
-		}
-		else if (primary == "back")
-		{
-			style.flags |= ESF_BACK;
-			style.back = ParseHex(secondary);
-		}
-		else if (primary == "size" && pfc::string_is_numeric(secondary.c_str()))
-		{
-			style.flags |= ESF_SIZE;
-			style.size = std::stoi(secondary);
-		}
-		else if (primary == "case")
-		{
-			style.flags |= ESF_CASEFORCE;
-
-			if (secondary.empty())
-				style.case_force = SC_CASE_MIXED;
-			else if (secondary.at(0) == 'u')
-				style.case_force = SC_CASE_UPPER;
-			else if (secondary.at(0) == 'l')
-				style.case_force = SC_CASE_LOWER;
-		}
+		if (primary == "font") style.font = secondary;
+		else if (primary == "size" && IsNumeric(secondary)) style.size = std::stoi(secondary);
+		else if (primary == "fore") style.fore = ParseHex(secondary);
+		else if (primary == "back") style.back = ParseHex(secondary);
+		else if (primary == "bold") style.bold = true;
+		else if (primary == "italics") style.italic = true;
 	}
 	return style;
 }
@@ -315,7 +275,7 @@ Strings CEditorCtrl::GetLinePartsInStyle(Line line, const StyleAndWords& saw)
 	Strings strings;
 	const Position thisLineStart = PositionFromLine(line);
 	const Position nextLineStart = PositionFromLine(line + 1);
-	const bool separateCharacters = saw.IsSingleChar();
+	const bool separateCharacters = saw.words.length() == 1;
 	std::string string;
 
 	for (Position pos = thisLineStart; pos < nextLineStart; ++pos)
@@ -468,6 +428,12 @@ bool CEditorCtrl::Includes(const StyleAndWords& symbols, const std::string& valu
 	return Contains(value, symbols.words[0]);
 }
 
+bool CEditorCtrl::IsNumeric(const std::string& str)
+{
+	if (str.empty()) return false;
+	return std::ranges::all_of(str, [](char c) { return isdigit(c) != 0; });
+}
+
 bool CEditorCtrl::RangeIsAllWhitespace(Position start, Position end)
 {
 	if (start < 0) start = 0;
@@ -534,7 +500,7 @@ std::string CEditorCtrl::GetCurrentLine()
 
 std::string CEditorCtrl::GetNearestWord(const std::string& wordStart, size_t searchLen, int wordIndex)
 {
-	auto it = std::ranges::find_if(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text) == 0; });
+	auto it = std::ranges::find_if(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text); });
 	for (; it < apis.end(); ++it)
 	{
 		if (searchLen >= it->text.length() || !Contains(WordCharacters, it->text.at(searchLen)))
@@ -552,10 +518,10 @@ std::string CEditorCtrl::GetNearestWord(const std::string& wordStart, size_t sea
 std::string CEditorCtrl::GetNearestWords(const std::string& wordStart, size_t searchLen)
 {
 	std::string words;
-	auto it = std::ranges::find_if(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text) == 0; });
+	auto it = std::ranges::find_if(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text); });
 	for (; it < apis.end(); ++it)
 	{
-		if (StringComparePartial(searchLen)(wordStart, it->text) != 0)
+		if (!StringComparePartial(searchLen)(wordStart, it->text))
 		{
 			break;
 		}
@@ -807,48 +773,43 @@ void CEditorCtrl::Init()
 
 			for (const int id : styles.at(key))
 			{
-				if (style.flags & ESF_FONT) StyleSetFont(id, style.font.c_str());
-				if (style.flags & ESF_SIZE) StyleSetSize(id, style.size);
-				if (style.flags & ESF_FORE) StyleSetFore(id, style.fore);
-				if (style.flags & ESF_BACK) StyleSetBack(id, style.back);
-				if (style.flags & ESF_ITALICS) StyleSetItalic(id, style.italics);
-				if (style.flags & ESF_BOLD) StyleSetBold(id, style.bold);
-				if (style.flags & ESF_UNDERLINED) StyleSetUnderline(id, style.underlined);
-				if (style.flags & ESF_CASEFORCE) StyleSetCase(id, style.case_force);
+				if (style.font.length()) StyleSetFont(id, style.font.c_str());
+				if (style.size > 0) StyleSetSize(id, style.size);
+				if (style.fore != INT_MAX) StyleSetFore(id, style.fore);
+				if (style.back != INT_MAX) StyleSetBack(id, style.back);
+				if (style.bold) StyleSetBold(id, style.bold);
+				if (style.italic) StyleSetItalic(id, style.italic);
 				if (id == STYLE_DEFAULT) StyleClearAll();
 			}
 		}
 		else
 		{
-			if (key == "style.caret.width" && pfc::string_is_numeric(value.c_str()))
+			if (IsNumeric(value))
 			{
-				SetCaretWidth(std::stoi(value));
+				if (key == "style.caret.width") SetCaretWidth(std::stoi(value));
+				else if (key == "style.caret.line.back.alpha") SetCaretLineBackAlpha(std::stoi(value));
+				else if (key == "style.selection.alpha") SetSelAlpha(std::stoi(value));
 			}
-			else if (key == "style.caret.fore")
+			else if (value.starts_with('#'))
 			{
-				SetCaretFore(ParseHex(value));
-			}
-			else if (key == "style.caret.line.back")
-			{
-				SetCaretLineVisible(true);
-				SetCaretLineBack(ParseHex(value));
-			}
-			else if (key == "style.caret.line.back.alpha" && pfc::string_is_numeric(value.c_str()))
-			{
-				SetCaretLineBackAlpha(std::stoi(value));
-			}
-			else if (key == "style.selection.fore")
-			{
-				SetSelFore(true, ParseHex(value));
-				SetSelBack(true, RGB(0xc0, 0xc0, 0xc0));
-			}
-			else if (key == "style.selection.back")
-			{
-				SetSelBack(true, ParseHex(value));
-			}
-			else if (key == "style.selection.alpha" && pfc::string_is_numeric(value.c_str()))
-			{
-				SetSelAlpha(std::stoi(value));
+				if (key == "style.caret.fore")
+				{
+					SetCaretFore(ParseHex(value));
+				}
+				else if (key == "style.caret.line.back")
+				{
+					SetCaretLineVisible(true);
+					SetCaretLineBack(ParseHex(value));
+				}
+				else if (key == "style.selection.fore")
+				{
+					SetSelFore(true, ParseHex(value));
+					SetSelBack(true, RGB(0xc0, 0xc0, 0xc0));
+				}
+				else if (key == "style.selection.back")
+				{
+					SetSelBack(true, ParseHex(value));
+				}
 			}
 		}
 	}
