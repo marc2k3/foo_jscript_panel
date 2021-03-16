@@ -22,7 +22,7 @@ namespace jsp
 		return TRUE;
 	}
 
-	class Innit : public initquit
+	class InitQuitJSP : public initquit
 	{
 	public:
 		void on_init() override
@@ -39,5 +39,5 @@ namespace jsp
 		}
 	};
 
-	FB2K_SERVICE_FACTORY(Innit)
+	FB2K_SERVICE_FACTORY(InitQuitJSP)
 }

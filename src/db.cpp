@@ -58,7 +58,7 @@ namespace db
 		}
 	};
 
-	class InitQuit : public initquit
+	class InitQuitDB : public initquit
 	{
 	public:
 		void on_quit() override
@@ -164,7 +164,7 @@ namespace db
 	};
 
 	FB2K_SERVICE_FACTORY(InitStageCallback);
-	FB2K_SERVICE_FACTORY(InitQuit);
+	FB2K_SERVICE_FACTORY(InitQuitDB);
 	FB2K_SERVICE_FACTORY(MetadbDisplayFieldProvider);
 	FB2K_SERVICE_FACTORY(TrackPropertyProviderV4);
 

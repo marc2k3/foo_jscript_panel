@@ -143,7 +143,7 @@ private:
 
 namespace
 {
-	class InnitClart : public initquit
+	class InitQuitTP : public initquit
 	{
 	public:
 		void on_quit() override
@@ -152,5 +152,5 @@ namespace
 		}
 	};
 
-	FB2K_SERVICE_FACTORY(InnitClart);
+	FB2K_SERVICE_FACTORY(InitQuitTP);
 }
