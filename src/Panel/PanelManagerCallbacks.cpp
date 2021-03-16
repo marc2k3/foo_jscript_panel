@@ -188,15 +188,15 @@ namespace
 			PanelManager::instance().post_msg_to_all(CallbackID::on_playback_dynamic_info_track);
 		}
 
-		void on_playback_edited(metadb_handle_ptr track) override
+		void on_playback_edited(metadb_handle_ptr handle) override
 		{
-			auto data = new CallbackData<metadb_handle_ptr>(track);
+			auto data = new MetadbCallbackData(pfc::list_single_ref_t<metadb_handle_ptr>(handle));
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_edited, data);
 		}
 
-		void on_playback_new_track(metadb_handle_ptr track) override
+		void on_playback_new_track(metadb_handle_ptr handle) override
 		{
-			auto data = new CallbackData<metadb_handle_ptr>(track);
+			auto data = new MetadbCallbackData(pfc::list_single_ref_t<metadb_handle_ptr>(handle));
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_new_track, data);
 		}
 
@@ -207,13 +207,16 @@ namespace
 
 		void on_playback_seek(double time) override
 		{
-			auto data = new CallbackData<double>(time);
+			VariantArgs args = { time };
+			auto data = new CallbackData(args);
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_seek, data);
 		}
 
 		void on_playback_starting(playback_control::t_track_command cmd, bool paused) override
 		{
-			PanelManager::instance().post_msg_to_all(CallbackID::on_playback_starting, paused, cmd);
+			VariantArgs args = { cmd, paused };
+			auto data = new CallbackData(args);
+			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_starting, data);
 		}
 
 		void on_playback_stop(playback_control::t_stop_reason reason) override
@@ -223,13 +226,15 @@ namespace
 
 		void on_playback_time(double time) override
 		{
-			auto data = new CallbackData<double>(time);
+			VariantArgs args = { time };
+			auto data = new CallbackData(args);
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_time, data);
 		}
 
-		void on_volume_change(float newval) override
+		void on_volume_change(float new_val) override
 		{
-			auto data = new CallbackData<float>(newval);
+			VariantArgs args = { new_val };
+			auto data = new CallbackData(args);
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_volume_change, data);
 		}
 	};
@@ -239,7 +244,7 @@ namespace
 	public:
 		void on_item_played(metadb_handle_ptr handle) override
 		{
-			auto data = new CallbackData<metadb_handle_ptr>(handle);
+			auto data = new MetadbCallbackData(pfc::list_single_ref_t<metadb_handle_ptr>(handle));
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_item_played, data);
 		}
 	};
@@ -263,12 +268,15 @@ namespace
 
 		void on_item_ensure_visible(size_t playlist, size_t idx) override
 		{
-			PanelManager::instance().post_msg_to_all(CallbackID::on_playlist_item_ensure_visible, playlist, idx);
+			VariantArgs args = { playlist, idx };
+			auto data = new CallbackData(args);
+			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playlist_item_ensure_visible, data);
 		}
 
 		void on_item_focus_change(size_t playlist, size_t from, size_t to) override
 		{
-			auto data = new CallbackData<size_t, size_t, size_t>(playlist, from, to);
+			VariantArgs args = { playlist, from, to };
+			auto data = new CallbackData(args);
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_item_focus_change, data);
 		}
 
@@ -279,7 +287,9 @@ namespace
 
 		void on_items_removed(size_t playlist, const pfc::bit_array&, size_t, size_t new_count) override
 		{
-			PanelManager::instance().post_msg_to_all(CallbackID::on_playlist_items_removed, playlist, new_count);
+			VariantArgs args = { playlist, new_count };
+			auto data = new CallbackData(args);
+			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playlist_items_removed, data);
 		}
 
 		void on_items_reordered(size_t playlist, const size_t*, size_t) override

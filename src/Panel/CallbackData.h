@@ -1,15 +1,13 @@
 #pragma once
 
-template <typename T1, typename T2 = char, typename T3 = char>
 struct CallbackData : public pfc::refcounted_object_root
 {
-	CallbackData(const T1& item1) : m_item1(item1) {}
-	CallbackData(const T1& item1, const T2& item2) : m_item1(item1), m_item2(item2) {}
-	CallbackData(const T1& item1, const T2& item2, const T3& item3) : m_item1(item1), m_item2(item2), m_item3(item3) {}
+	CallbackData(const VariantArgs& args) : m_args(args)
+	{
+		std::ranges::reverse(m_args);
+	}
 
-	T1 m_item1;
-	T2 m_item2;
-	T3 m_item3;
+	VariantArgs m_args;
 };
 
 struct MetadbCallbackData : public pfc::refcounted_object_root
@@ -20,16 +18,16 @@ struct MetadbCallbackData : public pfc::refcounted_object_root
 };
 
 template <class T>
-class CallbackDataScopeReleaser
+class CallbackDataReleaser
 {
 public:
 	template <class TParam>
-	CallbackDataScopeReleaser(TParam data)
+	CallbackDataReleaser(TParam data)
 	{
 		m_data = reinterpret_cast<T*>(data);
 	}
 
-	~CallbackDataScopeReleaser()
+	~CallbackDataReleaser()
 	{
 		m_data->refcount_release();
 	}

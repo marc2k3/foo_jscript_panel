@@ -14,11 +14,11 @@ void PanelManager::add_window(CWindow hwnd)
 	m_hwnds.insert(hwnd);
 }
 
-void PanelManager::post_msg_to_all(CallbackID id, WPARAM wp, LPARAM lp)
+void PanelManager::post_msg_to_all(CallbackID id, WPARAM wp)
 {
 	for (CWindow hwnd : m_hwnds)
 	{
-		hwnd.PostMessage(to_uint(id), wp, lp);
+		hwnd.PostMessage(to_uint(id), wp);
 	}
 }
 

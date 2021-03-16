@@ -117,7 +117,8 @@ STDMETHODIMP Window::NotifyOthers(BSTR name, VARIANT info)
 {
 	if (info.vt & VT_BYREF) return E_INVALIDARG;
 
-	auto data = new CallbackData<_bstr_t, _variant_t>(name, info);
+	VariantArgs args = { name, info };
+	auto data = new CallbackData(args);
 	PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_notify_data, data, m_panel->m_hwnd);
 	return S_OK;
 }

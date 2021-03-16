@@ -179,43 +179,6 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case CallbackID::on_selection_changed:
 		m_script_host->InvokeCallback(id);
 		return true;
-	case CallbackID::on_always_on_top_changed:
-	case CallbackID::on_cursor_follow_playback_changed:
-	case CallbackID::on_playback_follow_cursor_changed:
-	case CallbackID::on_playback_pause:
-	case CallbackID::on_playlist_stop_after_current_changed:
-		{
-			VariantArgs args = { wp == 1 };
-			m_script_host->InvokeCallback(id, args);
-			return true;
-		}
-	case CallbackID::on_item_played:
-	case CallbackID::on_playback_edited:
-	case CallbackID::on_playback_new_track:
-		{
-			CallbackDataScopeReleaser<CallbackData<metadb_handle_ptr>> data(wp);
-			auto handle = new ComObjectImpl<MetadbHandle>(data->m_item1);
-
-			VariantArgs args = { handle };
-			m_script_host->InvokeCallback(id, args);
-
-			if (handle) handle->Release();
-			return true;
-		}
-	case CallbackID::on_library_items_added:
-	case CallbackID::on_library_items_changed:
-	case CallbackID::on_library_items_removed:
-	case CallbackID::on_metadb_changed:
-		{
-			CallbackDataScopeReleaser<MetadbCallbackData> data(wp);
-			auto handles = new ComObjectImpl<MetadbHandleList>(data->m_handles);
-
-			VariantArgs args = { handles };
-			m_script_host->InvokeCallback(id, args);
-
-			if (handles) handles->Release();
-			return true;
-		}
 	case CallbackID::on_main_menu:
 	case CallbackID::on_playback_order_changed:
 	case CallbackID::on_playback_queue_changed:
@@ -228,21 +191,55 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			m_script_host->InvokeCallback(id, args);
 			return true;
 		}
-	case CallbackID::on_volume_change:
+	case CallbackID::on_always_on_top_changed:
+	case CallbackID::on_cursor_follow_playback_changed:
+	case CallbackID::on_playback_follow_cursor_changed:
+	case CallbackID::on_playback_pause:
+	case CallbackID::on_playlist_stop_after_current_changed:
 		{
-			CallbackDataScopeReleaser<CallbackData<float>> data(wp);
-
-			VariantArgs args = { data->m_item1 };
+			VariantArgs args = { wp == 1 };
 			m_script_host->InvokeCallback(id, args);
 			return true;
 		}
+	case CallbackID::on_item_focus_change:
+	case CallbackID::on_notify_data:
 	case CallbackID::on_playback_seek:
+	case CallbackID::on_playback_starting:
 	case CallbackID::on_playback_time:
+	case CallbackID::on_playlist_item_ensure_visible:
+	case CallbackID::on_playlist_items_removed:
+	case CallbackID::on_volume_change:
 		{
-			CallbackDataScopeReleaser<CallbackData<double>> data(wp);
+			auto data = CallbackDataReleaser<CallbackData>(wp);
 
-			VariantArgs args = { data->m_item1 };
+			m_script_host->InvokeCallback(id, data->m_args);
+			return true;
+		}
+	case CallbackID::on_item_played:
+	case CallbackID::on_playback_edited:
+	case CallbackID::on_playback_new_track:
+		{
+			auto data = CallbackDataReleaser<MetadbCallbackData>(wp);
+			auto handle = new ComObjectImpl<MetadbHandle>(data->m_handles[0]);
+
+			VariantArgs args = { handle };
 			m_script_host->InvokeCallback(id, args);
+
+			if (handle) handle->Release();
+			return true;
+		}
+	case CallbackID::on_library_items_added:
+	case CallbackID::on_library_items_changed:
+	case CallbackID::on_library_items_removed:
+	case CallbackID::on_metadb_changed:
+		{
+			auto data = CallbackDataReleaser<MetadbCallbackData>(wp);
+			auto handles = new ComObjectImpl<MetadbHandleList>(data->m_handles);
+
+			VariantArgs args = { handles };
+			m_script_host->InvokeCallback(id, args);
+
+			if (handles) handles->Release();
 			return true;
 		}
 	case CallbackID::on_get_album_art_done:
@@ -258,35 +255,6 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			auto data = reinterpret_cast<AsyncImageData*>(wp);
 
 			VariantArgs args = { data->m_path, data->m_bitmap, data->m_cookie };
-			m_script_host->InvokeCallback(id, args);
-			return true;
-		}
-	case CallbackID::on_item_focus_change:
-		{
-			CallbackDataScopeReleaser<CallbackData<size_t, size_t, size_t>> data(wp);
-
-			VariantArgs args = { data->m_item3, data->m_item2, data->m_item1 };
-			m_script_host->InvokeCallback(id, args);
-			return true;
-		}
-	case CallbackID::on_notify_data:
-		{
-			CallbackDataScopeReleaser<CallbackData<_bstr_t, _variant_t>> data(wp);
-
-			VariantArgs args = { data->m_item2, data->m_item1 };
-			m_script_host->InvokeCallback(id, args);
-			return true;
-		}
-	case CallbackID::on_playback_starting:
-		{
-			VariantArgs args = { wp == 1, lp };
-			m_script_host->InvokeCallback(id, args);
-			return true;
-		}
-	case CallbackID::on_playlist_item_ensure_visible:
-	case CallbackID::on_playlist_items_removed:
-		{
-			VariantArgs args = { lp, wp };
 			m_script_host->InvokeCallback(id, args);
 			return true;
 		}
