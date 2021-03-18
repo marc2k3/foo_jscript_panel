@@ -8,13 +8,13 @@ Window::Window(PanelWindow* panel) : m_panel(panel) {}
 
 STDMETHODIMP Window::ClearInterval(UINT id)
 {
-	PanelTimerDispatcher::instance().kill_timer(id);
+	PanelTimerDispatcher::instance().request_stop(m_panel->m_hwnd, id);
 	return S_OK;
 }
 
 STDMETHODIMP Window::ClearTimeout(UINT id)
 {
-	PanelTimerDispatcher::instance().kill_timer(id);
+	PanelTimerDispatcher::instance().request_stop(m_panel->m_hwnd, id);
 	return S_OK;
 }
 
@@ -151,11 +151,11 @@ STDMETHODIMP Window::SetCursor(UINT id)
 	return S_OK;
 }
 
-STDMETHODIMP Window::SetInterval(IDispatch* func, int delay, UINT* out)
+STDMETHODIMP Window::SetInterval(IDispatch* func, UINT delay, UINT* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = PanelTimerDispatcher::instance().set_interval(m_panel->m_hwnd, delay, func);
+	*out = PanelTimerDispatcher::instance().create_timer(m_panel->m_hwnd, func, delay, false);
 	return S_OK;
 }
 
@@ -165,11 +165,11 @@ STDMETHODIMP Window::SetProperty(BSTR name, VARIANT val)
 	return S_OK;
 }
 
-STDMETHODIMP Window::SetTimeout(IDispatch* func, int delay, UINT* out)
+STDMETHODIMP Window::SetTimeout(IDispatch* func, UINT delay, UINT* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = PanelTimerDispatcher::instance().set_timeout(m_panel->m_hwnd, delay, func);
+	*out = PanelTimerDispatcher::instance().create_timer(m_panel->m_hwnd, func, delay, true);
 	return S_OK;
 }
 

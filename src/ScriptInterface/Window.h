@@ -22,9 +22,9 @@ public:
 	STDMETHODIMP Repaint() override;
 	STDMETHODIMP RepaintRect(int x, int y, int w, int h) override;
 	STDMETHODIMP SetCursor(UINT id) override;
-	STDMETHODIMP SetInterval(IDispatch* func, int delay, UINT* out) override;
+	STDMETHODIMP SetInterval(IDispatch* func, UINT delay, UINT* out) override;
 	STDMETHODIMP SetProperty(BSTR name, VARIANT val) override;
-	STDMETHODIMP SetTimeout(IDispatch* func, int delay, UINT* out) override;
+	STDMETHODIMP SetTimeout(IDispatch* func, UINT delay, UINT* out) override;
 	STDMETHODIMP SetTooltipFont(BSTR name, float pxSize, int style) override;
 	STDMETHODIMP ShowConfigure() override;
 	STDMETHODIMP ShowProperties() override;

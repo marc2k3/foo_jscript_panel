@@ -520,7 +520,7 @@ void PanelWindow::unload_script()
 	m_script_host->InvokeCallback(CallbackID::on_script_unload);
 	destroy_tooltip();
 
-	PanelTimerDispatcher::instance().kill_timers(m_hwnd);
+	PanelTimerDispatcher::instance().request_stop_multi(m_hwnd);
 	m_script_host->Stop();
 	m_selection_holder.release();
 

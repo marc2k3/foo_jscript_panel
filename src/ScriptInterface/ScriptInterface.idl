@@ -483,9 +483,9 @@ library foo_jscript_panel
 		HRESULT Repaint();
 		HRESULT RepaintRect(int x, int y, int w, int h);
 		HRESULT SetCursor(UINT id);
-		HRESULT SetInterval(IDispatch* func, int delay, [out, retval] UINT* out);
+		HRESULT SetInterval(IDispatch* func, UINT delay, [out, retval] UINT* out);
 		HRESULT SetProperty(BSTR name, VARIANT val);
-		HRESULT SetTimeout(IDispatch* func, int delay, [out, retval] UINT* out);
+		HRESULT SetTimeout(IDispatch* func, UINT delay, [out, retval] UINT* out);
 		HRESULT SetTooltipFont(BSTR name, float pxSize, [defaultvalue(0)] int style);
 		HRESULT ShowConfigure();
 		HRESULT ShowProperties();
