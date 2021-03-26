@@ -289,7 +289,7 @@ _.mixin({
 				if (this.allmusic_url) {
 					this.allmusic_url = false;
 					var content = _(_.getElementsByTagName(this.xmlhttp.responseText, 'div'))
-						.filter({itemprop : 'reviewBody'})
+						.filter({className : 'text'})
 						.map('innerText')
 						.value();
 					console.log(N, content.length ? 'A review was found and saved.' : 'No review was found on the page for this album.');
