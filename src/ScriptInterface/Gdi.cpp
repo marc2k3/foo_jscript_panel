@@ -41,9 +41,8 @@ STDMETHODIMP Gdi::LoadImageAsync(UINT window_id, BSTR path, UINT* out)
 {
 	if (!out) return E_POINTER;
 
-	auto task = std::make_unique<AsyncImageTask>(reinterpret_cast<HWND>(window_id), path);
-	*out = task->m_cookie;
-
+	auto task = std::make_unique<AsyncImageTask>(reinterpret_cast<HWND>(window_id), path, ++m_image_cookie);
 	SimpleThreadPool::instance().add_task(std::move(task));
+	*out = m_image_cookie;
 	return S_OK;
 }

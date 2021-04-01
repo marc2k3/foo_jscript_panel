@@ -7,4 +7,7 @@ public:
 	STDMETHODIMP Font(BSTR name, float pxSize, int style, IGdiFont** out) override;
 	STDMETHODIMP Image(BSTR path, IGdiBitmap** out) override;
 	STDMETHODIMP LoadImageAsync(UINT window_id, BSTR path, UINT* out) override;
+
+private:
+	size_t m_image_cookie = 0;
 };
