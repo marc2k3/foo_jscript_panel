@@ -1,3 +1,7 @@
+## v2.5.4
+- Fix bug where the `cookie` returned by `gdi.LoadImageAsync` wasn't always unique.
+- A recent website update broke the `Allmusic` sample. This is now fixed.
+
 ## v2.5.3
 - Add `IMetadbHandle` `ShowAlbumArtViewer` which uses the new internal viewer added in foobar2000 `v1.6.2`. You will see a popup text message if you try and use it on earlier versions. Check the docs for options.
 - The included `Album art` sample now has 3 choices available for the `double click` action. Use the right click menu to choose.
