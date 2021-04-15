@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Config.h"
 
-static const std::vector<Config::SimpleKeyVal> init_table =
+static const Config::KeyValues init_table =
 {
 	{"style.default", "font:Consolas,size:11"},
 	{"style.comment", "fore:#008000"},
@@ -51,34 +51,44 @@ void Config::init_data()
 
 void Config::load(jstring content)
 {
-	SimpleMap data;
+	StringMap map;
 	for (const std::string& line : split_string(content, CRLF))
 	{
-		const size_t pos = line.find('=');
-		if (pos == 0 || pos == std::string::npos) continue;
-		std::string key = line.substr(0, pos);
-		std::string value = line.substr(pos + 1);
-		data.emplace(key, value);
+		Strings tmp = split_string(line, "=");
+		if (tmp.size() == 2)
+		{
+			map.emplace(tmp[0], tmp[1]);
+		}
 	}
-	merge_data(data);
+	merge_map(map);
 }
 
-void Config::merge_data(const SimpleMap& data)
+void Config::merge_map(const StringMap& map)
 {
 	for (auto& [key, value] : m_data)
 	{
-		if (data.contains(key))
+		if (map.contains(key))
 		{
-			value = data.at(key);
+			value = map.at(key);
 		}
 	}
+}
+
+void Config::save(jstring filename)
+{
+	std::string content;
+	for (const auto& [key, value] : m_data)
+	{
+		content += key + "=" + value + CRLF;
+	}
+	FileHelper(filename).write(content);
 }
 
 void Config::set_data_raw(stream_reader* reader, size_t sizehint, abort_callback& abort)
 {
 	try
 	{
-		SimpleMap data;
+		StringMap map;
 		size_t count;
 		string8 key, value;
 
@@ -88,11 +98,11 @@ void Config::set_data_raw(stream_reader* reader, size_t sizehint, abort_callback
 		{
 			reader->read_string(key, abort);
 			reader->read_string(value, abort);
-			data.emplace(key.get_ptr(), value.get_ptr());
+			map.emplace(key.get_ptr(), value.get_ptr());
 		}
 
 		reader->read_object(&m_wndpl, sizeof(WINDOWPLACEMENT), abort);
-		merge_data(data);
+		merge_map(map);
 	}
 	catch (...)
 	{

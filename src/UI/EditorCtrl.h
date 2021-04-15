@@ -50,18 +50,6 @@ private:
 		Position end;
 	};
 
-	struct StringComparePartial
-	{
-		StringComparePartial(size_t len) : m_len(len) {}
-
-		bool operator()(jstring s1, jstring s2) const
-		{
-			return _strnicmp(s1, s2, m_len) == 0;
-		}
-
-		size_t m_len;
-	};
-
 	struct StyleAndWords
 	{
 		int styleNumber = 0;
@@ -87,6 +75,7 @@ private:
 	bool Includes(const StyleAndWords& symbols, const std::string& value);
 	bool IsNumeric(const std::string& str);
 	bool RangeIsAllWhitespace(Position start, Position end);
+	bool StringComparePartial(jstring s1, jstring s2, size_t len);
 	int IndentOfBlock(Line line);
 	std::string GetCurrentLine();
 	std::string GetNearestWord(const std::string& wordStart, size_t searchLen, int wordIndex);

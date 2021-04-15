@@ -447,6 +447,11 @@ bool CEditorCtrl::RangeIsAllWhitespace(Position start, Position end)
 	return true;
 }
 
+bool CEditorCtrl::StringComparePartial(jstring s1, jstring s2, size_t len)
+{
+	return _strnicmp(s1, s2, len) == 0;
+}
+
 int CEditorCtrl::IndentOfBlock(Line line)
 {
 	if (line < 0)
@@ -500,7 +505,7 @@ std::string CEditorCtrl::GetCurrentLine()
 
 std::string CEditorCtrl::GetNearestWord(const std::string& wordStart, size_t searchLen, int wordIndex)
 {
-	auto it = std::ranges::find_if(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text); });
+	auto it = std::ranges::find_if(apis, [=](const API& item) { return StringComparePartial(wordStart, item.text, searchLen); });
 	for (; it < apis.end(); ++it)
 	{
 		if (searchLen >= it->text.length() || !Contains(WordCharacters, it->text.at(searchLen)))
@@ -518,10 +523,10 @@ std::string CEditorCtrl::GetNearestWord(const std::string& wordStart, size_t sea
 std::string CEditorCtrl::GetNearestWords(const std::string& wordStart, size_t searchLen)
 {
 	std::string words;
-	auto it = std::ranges::find_if(apis, [=](const API& item) { return StringComparePartial(searchLen)(wordStart, item.text); });
+	auto it = std::ranges::find_if(apis, [=](const API& item) { return StringComparePartial(wordStart, item.text, searchLen); });
 	for (; it < apis.end(); ++it)
 	{
-		if (!StringComparePartial(searchLen)(wordStart, it->text))
+		if (!StringComparePartial(wordStart, it->text, searchLen))
 		{
 			break;
 		}

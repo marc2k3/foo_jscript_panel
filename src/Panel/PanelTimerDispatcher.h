@@ -41,7 +41,7 @@ private:
 
 	HANDLE m_timer_queue;
 	TimerMap m_timer_map;
-	uint32_t m_cur_timer_id = 1;
+	uint32_t m_cur_timer_id = 0;
 	std::mutex m_mutex;
 
 	PFC_CLASS_NOT_COPYABLE_EX(PanelTimerDispatcher)

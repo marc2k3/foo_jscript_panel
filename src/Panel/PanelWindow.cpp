@@ -343,6 +343,7 @@ void PanelWindow::load_script()
 	m_dragdrop = false;
 	m_grabfocus = false;
 
+	m_script_host->m_info.update(m_id, m_config.m_code);
 	if (FAILED(m_script_host->Initialise()))
 	{
 		return;

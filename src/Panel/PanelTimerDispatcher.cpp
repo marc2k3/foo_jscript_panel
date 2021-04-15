@@ -80,15 +80,10 @@ PanelTimerDispatcher& PanelTimerDispatcher::instance()
 
 uint32_t PanelTimerDispatcher::create_timer(CWindow hwnd, IDispatch* pdisp, uint32_t delay, bool execute_once)
 {
-	if (pdisp)
+	auto timer = std::make_unique<PanelTimer>(hwnd, pdisp, delay, execute_once, ++m_cur_timer_id);
+	if (timer->start(m_timer_queue) && m_timer_map.try_emplace(m_cur_timer_id, std::move(timer)).second)
 	{
-		uint32_t id = m_cur_timer_id++;
-		auto timer = std::make_unique<PanelTimer>(hwnd, pdisp, delay, execute_once, id);
-
-		if (timer->start(m_timer_queue) && m_timer_map.try_emplace(id, std::move(timer)).second)
-		{
-			return id;
-		}
+		return m_cur_timer_id;
 	}
 	return 0;
 }

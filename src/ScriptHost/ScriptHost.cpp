@@ -19,8 +19,6 @@ DWORD ScriptHost::GenerateSourceContext(const std::wstring& path)
 
 HRESULT ScriptHost::Initialise()
 {
-	m_info.update(m_panel->m_id, m_panel->m_config.m_code);
-
 	IActiveScriptParsePtr parser;
 	HRESULT hr = InitScriptEngine();
 	if (SUCCEEDED(hr)) hr = m_script_engine->SetScriptSite(this);
@@ -78,19 +76,16 @@ HRESULT ScriptHost::InitScriptEngine()
 {
 	static constexpr CLSID jscript9clsid = { 0x16d51579, 0xa30b, 0x4c8b,{ 0xa2, 0x76, 0x0f, 0xf4, 0xdc, 0x41, 0xe7, 0x55 } };
 	static constexpr DWORD classContext = CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER;
-	HRESULT hr = m_script_engine.CreateInstance(jscript9clsid, nullptr, classContext);
 
-	if (FAILED(hr))
+	if (FAILED(m_script_engine.CreateInstance(jscript9clsid, nullptr, classContext)))
 	{
 		FB2K_console_formatter() << jsp::component_name << ": This component requires a system with IE9 or later.";
-		return hr;
+		return E_FAIL;
 	}
 
-	VARIANT scriptLangVersion;
-	scriptLangVersion.vt = VT_I4;
-	scriptLangVersion.lVal = SCRIPTLANGUAGEVERSION_5_8 + 1;
-
 	IActiveScriptProperty* pActScriProp = nullptr;
+	_variant_t scriptLangVersion = static_cast<LONG>(SCRIPTLANGUAGEVERSION_5_8 + 1);
+
 	m_script_engine->QueryInterface(IID_IActiveScriptProperty, reinterpret_cast<void**>(&pActScriProp));
 	pActScriProp->SetProperty(SCRIPTPROP_INVOKEVERSIONING, nullptr, &scriptLangVersion);
 	pActScriProp->Release();
@@ -99,26 +94,23 @@ HRESULT ScriptHost::InitScriptEngine()
 
 HRESULT ScriptHost::ParseScripts(IActiveScriptParsePtr& parser)
 {
-	HRESULT hr = S_OK;
 	std::wstring path;
 	string8 code;
 	const size_t count = m_info.m_imports.size();
-	size_t import_errors = 0;
 
 	for (size_t i = 0; i <= count; ++i)
 	{
 		if (i < count) // import
 		{
 			path = m_info.m_imports[i];
-			code = FileHelper(path).read();
-			if (code.is_empty())
+			auto f = FileHelper(path);
+			if (f.is_file())
 			{
-				if (import_errors == 0)
-				{
-					FB2K_console_formatter() << m_info.m_build_string;
-					import_errors++;
-				}
-				FB2K_console_formatter() << "Error: Failed to load " << path.data();
+				code = f.read();
+			}
+			else
+			{
+				FB2K_console_formatter() << m_info.m_build_string << ": Failed to load " << path.data();
 			}
 		}
 		else // main
@@ -128,10 +120,12 @@ HRESULT ScriptHost::ParseScripts(IActiveScriptParsePtr& parser)
 		}
 
 		const DWORD source_context = GenerateSourceContext(path);
-		hr = parser->ParseScriptText(to_wide(code).data(), nullptr, nullptr, nullptr, source_context, 0, SCRIPTTEXT_HOSTMANAGESSOURCE | SCRIPTTEXT_ISVISIBLE, nullptr, nullptr);
-		if (FAILED(hr)) break;
+		if (FAILED(parser->ParseScriptText(to_wide(code).data(), nullptr, nullptr, nullptr, source_context, 0, SCRIPTTEXT_HOSTMANAGESSOURCE | SCRIPTTEXT_ISVISIBLE, nullptr, nullptr)))
+		{
+			return E_FAIL;
+		}
 	}
-	return hr;
+	return S_OK;
 }
 
 STDMETHODIMP ScriptHost::GetDocVersionString(BSTR*)
@@ -303,7 +297,6 @@ bool ScriptHost::HasError()
 
 bool ScriptHost::InvokeMouseRBtnUp(VariantArgs& args)
 {
-	bool ret = false;
 	const CallbackID id = CallbackID::on_mouse_rbtn_up;
 	if (Ready() && m_callback_map.contains(id))
 	{
@@ -312,10 +305,10 @@ bool ScriptHost::InvokeMouseRBtnUp(VariantArgs& args)
 		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &result, nullptr, nullptr);
 		if (SUCCEEDED(VariantChangeType(&result, &result, 0, VT_BOOL)))
 		{
-			ret = to_bool(result.boolVal);
+			return to_bool(result.boolVal);
 		}
 	}
-	return ret;
+	return false;
 }
 
 bool ScriptHost::Ready()
