@@ -1,3 +1,6 @@
+## v2.5.5
+- The included `Album art` sample now displays album art (front cover only) from radio streams. Requires `foobar2000` `v1.6.6` or above. Tested with [RadioParadise](https://radioparadise.com/listen/stream-links) as per this thread: https://hydrogenaud.io/index.php?topic=120855.0
+
 ## v2.5.4
 - Fix bug where the `cookie` returned by `gdi.LoadImageAsync` wasn't always unique.
 - A recent website update broke the `Allmusic` sample. This is now fixed.
