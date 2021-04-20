@@ -136,8 +136,8 @@ function on_playback_follow_cursor_changed(state) {}
 function on_playback_dynamic_info() {}
 // dynamic info (VBR bitrate etc) change.
 
-function on_playback_dynamic_info_track() {}
-// Per-track dynamic info (stream track titles etc) change.
+function on_playback_dynamic_info_track(type) {}
+// type: 0 stream track titles etc 1: album art
 // Happens less often than on_playback_dynamic_info().
 
 function on_playback_edited(handle) {}

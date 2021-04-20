@@ -17,9 +17,7 @@ function on_playback_new_track() {
 }
 
 function on_playback_dynamic_info_track() {
-	window.SetTimeout(function () {
-		panel.item_focus_change();
-	}, 500);
+	panel.item_focus_change();
 }
 
 function on_playback_stop(reason) {

@@ -86,20 +86,20 @@ _.mixin({
 		
 		this.lbtn_dblclk = function (x, y) {
 			if (this.trace(x, y)) {
-				if (panel.metadb && utils.IsFile(this.path)) {
+				if (panel.metadb) {
 					switch (this.properties.double_click_mode.value) {
 					case 0:
 						if (panel.metadb.Path == this.path) {
-							_.explorer(this.path);
-						} else {
-							_.run(this.path);
+							_explorer(this.path);
+						} else if (utils.IsFile(this.Path)) {
+							_run(this.path);
 						}
 						break;
 					case 1:
 						panel.metadb.ShowAlbumArtViewer(this.properties.id.value);
 						break;
 					case 2:
-						_.explorer(this.path);
+						if (utils.IsFile(this.Path)) _explorer(this.path);
 						break;
 					}
 				}

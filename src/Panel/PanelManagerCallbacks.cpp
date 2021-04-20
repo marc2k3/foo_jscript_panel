@@ -53,9 +53,18 @@ namespace
 		}
 	};
 
-	class InitQuit : public initquit, public ui_selection_callback, public replaygain_core_settings_notify, public output_config_change_callback
+	class InitQuit : public initquit, public ui_selection_callback, public replaygain_core_settings_notify, public output_config_change_callback, public now_playing_album_art_notify
 	{
 	public:
+		void on_album_art(album_art_data_ptr) override
+		{
+			metadb_handle_ptr handle;
+			if (playback_control::get()->get_now_playing(handle) && !std::string(handle->get_path()).starts_with("file://"))
+			{
+				PanelManager::instance().post_msg_to_all(CallbackID::on_playback_dynamic_info_track, 1);
+			}
+		}
+
 		void on_changed(const t_replaygain_config& cfg) override
 		{
 			PanelManager::instance().post_msg_to_all(CallbackID::on_replaygain_mode_changed, cfg.m_source_mode);
@@ -63,15 +72,17 @@ namespace
 
 		void on_init() override
 		{
-			replaygain_manager_v2::get()->add_notify(this);
+			now_playing_album_art_notify_manager::get()->add(this);
 			output_manager_v2::get()->addCallback(this);
+			replaygain_manager_v2::get()->add_notify(this);
 			ui_selection_manager_v2::get()->register_callback(this, 0);
 		}
 
 		void on_quit() override
 		{
-			replaygain_manager_v2::get()->remove_notify(this);
+			now_playing_album_art_notify_manager::get()->remove(this);
 			output_manager_v2::get()->removeCallback(this);
+			replaygain_manager_v2::get()->remove_notify(this);
 			ui_selection_manager_v2::get()->unregister_callback(this);
 			PanelManager::instance().unload_all();
 		}
@@ -185,7 +196,7 @@ namespace
 
 		void on_playback_dynamic_info_track(const file_info&) override
 		{
-			PanelManager::instance().post_msg_to_all(CallbackID::on_playback_dynamic_info_track);
+			PanelManager::instance().post_msg_to_all(CallbackID::on_playback_dynamic_info_track, 0);
 		}
 
 		void on_playback_edited(metadb_handle_ptr handle) override

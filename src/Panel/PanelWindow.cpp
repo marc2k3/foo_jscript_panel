@@ -172,7 +172,6 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case CallbackID::on_dsp_preset_changed:
 	case CallbackID::on_output_device_changed:
 	case CallbackID::on_playback_dynamic_info:
-	case CallbackID::on_playback_dynamic_info_track:
 	case CallbackID::on_playlist_items_selection_change:
 	case CallbackID::on_playlist_switch:
 	case CallbackID::on_playlists_changed:
@@ -180,6 +179,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		m_script_host->InvokeCallback(id);
 		return true;
 	case CallbackID::on_main_menu:
+	case CallbackID::on_playback_dynamic_info_track:
 	case CallbackID::on_playback_order_changed:
 	case CallbackID::on_playback_queue_changed:
 	case CallbackID::on_playback_stop:

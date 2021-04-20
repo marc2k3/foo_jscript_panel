@@ -23,6 +23,10 @@ function on_paint(gr) {
 	albumart.paint(gr);
 }
 
+function on_playback_dynamic_info_track(type) {
+	if (type == 1) panel.item_focus_change();
+}
+
 function on_metadb_changed() {
 	albumart.metadb_changed();
 }
