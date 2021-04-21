@@ -1,3 +1,6 @@
+## v2.5.5.1
+- The `on_playback_dynamic_info_track` callback now receives a `type` as the first argument. It will have a value of `0` for stream title updates and a value of `1` for stream album art updates. 
+
 ## v2.5.5
 - The included `Album art` sample now displays album art (front cover only) from radio streams. Requires `foobar2000` `v1.6.6` or above. Tested with [RadioParadise](https://radioparadise.com/listen/stream-links) as per this thread: https://hydrogenaud.io/index.php?topic=120855.0
 
