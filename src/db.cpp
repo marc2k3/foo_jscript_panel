@@ -3,7 +3,7 @@
 
 namespace db
 {
-	static constexpr std::array<const char*, 5> field_names =
+	static constexpr std::array field_names =
 	{
 		"jsp_playcount",
 		"jsp_loved",
@@ -197,8 +197,8 @@ namespace db
 
 	metadb_index_manager::ptr theAPI()
 	{
-		if (g_cachedAPI.is_empty()) g_cachedAPI = metadb_index_manager::get();
-		return g_cachedAPI;
+		if (g_cachedAPI.is_valid()) return g_cachedAPI;
+		return metadb_index_manager::get();
 	}
 
 	void get_hashes(metadb_handle_list_cref handles, hash_set& hashes)

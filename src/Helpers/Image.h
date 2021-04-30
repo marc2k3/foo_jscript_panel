@@ -140,14 +140,17 @@ namespace AlbumArt
 		}
 		catch (...)
 		{
-			if (id == 0)
+			if (what == album_art_ids::cover_front)
 			{
-				metadb_handle_ptr np;
 				const std::string path = handle->get_path();
-				if (!path.starts_with("file://") && playback_control::get()->get_now_playing(np) && path == np->get_path())
+				if (!path.starts_with("file://"))
 				{
-					data = now_playing_album_art_notify_manager::get()->current();
-					if (data.is_valid()) return data;
+					metadb_handle_ptr np;
+					if (playback_control::get()->get_now_playing(np) && path == np->get_path())
+					{
+						data = now_playing_album_art_notify_manager::get()->current();
+						if (data.is_valid()) return data;
+					}
 				}
 			}
 

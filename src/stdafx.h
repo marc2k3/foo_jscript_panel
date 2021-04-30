@@ -47,5 +47,7 @@ using pfc::string8;
 #include "CallbackID.h"
 #include "CallbackData.h"
 #include "Component.h"
+#include "CustomSort.h"
 #include "FileHelper.h"
 #include "Image.h"
+#include "ProcessLocationsNotify.h"

@@ -62,4 +62,7 @@ public:
 	STDMETHODIMP get_RecyclerCount(UINT* out) override;
 	STDMETHODIMP put_ActivePlaylist(UINT playlistIndex) override;
 	STDMETHODIMP put_PlaybackOrder(UINT order) override;
+
+private:
+	size_t CreatePlaylist(size_t playlistIndex, const std::wstring& name);
 };

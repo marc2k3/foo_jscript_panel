@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Plman.h"
-#include "CustomSort.h"
-#include "ProcessLocationsNotify.h"
 
 STDMETHODIMP Plman::AddItemToPlaybackQueue(IMetadbHandle* handle)
 {
@@ -66,8 +64,7 @@ STDMETHODIMP Plman::CreateAutoPlaylist(UINT playlistIndex, BSTR name, BSTR query
 
 	if (filter.is_valid())
 	{
-		size_t pos;
-		CreatePlaylist(playlistIndex, name, &pos);
+		size_t pos = CreatePlaylist(playlistIndex, name);
 		autoplaylist_manager::get()->add_client_simple(uquery, from_wide(sort), pos, flags);
 		*out = to_int(pos);
 	}
@@ -78,17 +75,7 @@ STDMETHODIMP Plman::CreatePlaylist(UINT playlistIndex, BSTR name, UINT* out)
 {
 	if (!out) return E_POINTER;
 
-	auto api = playlist_manager::get();
-	const string8 uname = from_wide(name);
-
-	if (uname.get_length())
-	{
-		*out = api->create_playlist(uname, uname.get_length(), playlistIndex);
-	}
-	else
-	{
-		*out = api->create_playlist_autoname(playlistIndex);
-	}
+	*out = CreatePlaylist(playlistIndex, name);
 	return S_OK;
 }
 
@@ -672,4 +659,16 @@ STDMETHODIMP Plman::put_PlaybackOrder(UINT order)
 		return S_OK;
 	}
 	return E_INVALIDARG;
+}
+
+size_t Plman::CreatePlaylist(size_t playlistIndex, const std::wstring& name)
+{
+	auto api = playlist_manager::get();
+	const string8 uname = from_wide(name);
+
+	if (uname.is_empty())
+	{
+		return api->create_playlist_autoname(playlistIndex);
+	}
+	return api->create_playlist(uname, uname.get_length(), playlistIndex);
 }

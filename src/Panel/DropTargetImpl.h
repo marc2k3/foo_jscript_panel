@@ -1,12 +1,9 @@
 #pragma once
-#include "ProcessLocationsNotify.h"
 
 class DropTargetImpl : public ImplementCOMRefCounter<IDropTarget>
 {
 public:
 	DropTargetImpl(PanelWindow* panel) : m_panel(panel), m_action(new ImplementCOMRefCounter<DropAction>()) {}
-
-	~DropTargetImpl() {}
 
 	QI_HELPER(IDropTarget)
 

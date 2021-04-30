@@ -2,7 +2,6 @@
 #include "MetadbHandleList.h"
 #include "db.h"
 
-#include "CustomSort.h"
 #include "Embed.h"
 #include "FileInfoFilter.h"
 #include "OptimiseLayout.h"
