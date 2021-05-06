@@ -1,3 +1,6 @@
+## v2.5.5.2
+- Fix double click action in `Album Art` sample.
+
 ## v2.5.5.1
 - The `on_playback_dynamic_info_track` callback now receives a `type` as the first argument. It will have a value of `0` for stream title updates and a value of `1` for stream album art updates. 
 
