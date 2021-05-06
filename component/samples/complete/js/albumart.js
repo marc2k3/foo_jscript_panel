@@ -90,16 +90,16 @@ _.mixin({
 					switch (this.properties.double_click_mode.value) {
 					case 0:
 						if (panel.metadb.Path == this.path) {
-							_explorer(this.path);
-						} else if (utils.IsFile(this.Path)) {
-							_run(this.path);
+							_.explorer(this.path);
+						} else if (utils.IsFile(this.path)) {
+							_.run(this.path);
 						}
 						break;
 					case 1:
 						panel.metadb.ShowAlbumArtViewer(this.properties.id.value);
 						break;
 					case 2:
-						if (utils.IsFile(this.Path)) _explorer(this.path);
+						if (utils.IsFile(this.path)) _.explorer(this.path);
 						break;
 					}
 				}
