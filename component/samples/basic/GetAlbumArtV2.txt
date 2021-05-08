@@ -5,10 +5,9 @@
 // @import "%fb2k_component_path%docs\Helpers.txt"
 // ==/PREPROCESSOR==
 
-// Nothing will show until you start playing a new track
-
 var g_img = null;
 var ww = 0, wh = 0;
+on_playback_new_track(fb.GetNowPlaying());
 
 function on_paint(gr) {
 	gr.FillSolidRect(0, 0, ww, wh, RGB(255, 255, 255));
@@ -38,4 +37,8 @@ function on_playback_new_track(metadb) {
 		g_img.Dispose();
 	g_img = utils.GetAlbumArtV2(metadb, AlbumArtId.front);
 	window.Repaint();
+}
+
+function on_playback_dynamic_info_track(type) {
+	if (type == 1) on_playback_new_track(fb.GetNowPlaying());
 }

@@ -45,6 +45,18 @@ buttons.update = function () {
 	this.buttons.preferences = new _.button(panel.w - LM - bs, y, bs, bs, {normal : _.chrToImg(chars.preferences, colours.buttons)}, function () { fb.ShowPreferences(); }, 'Preferences');
 }
 
+function update_album_art(metadb) {
+	_.dispose(img);
+	if (metadb) {
+		img = utils.GetAlbumArtV2(metadb);
+		if (img && img.Width > 200) {
+			var r = 200 / img.Width;
+			img = img.Resize(200, img.Height * r, 2);
+		}
+	}
+	window.Repaint();
+}
+
 function on_size() {
 	panel.size();
 	seekbar.x = Math.round(panel.w * 0.22);
@@ -76,17 +88,13 @@ function on_paint(gr) {
 	gr.DrawRect(seekbar.x, seekbar.y, seekbar.w + _.scale(6), seekbar.h, 1, colours.seekbar_progress);
 }
 
+function on_playback_dynamic_info_track(type) {
+	if (type == 0) window.Repaint();
+	else update_album_art(fb.GetNowPlaying());
+}
+
 function on_playback_new_track(metadb) {
-	if (!metadb) {
-		return;
-	}
-	_.dispose(img);
-	img = utils.GetAlbumArtV2(metadb);
-	if (img && img.Width > 200) {
-		var r = 200 / img.Width;
-		img = img.Resize(200, img.Height * r, 2);
-	}
-	window.Repaint();
+	update_album_art(metadb);
 }
 
 function on_playback_edited() {

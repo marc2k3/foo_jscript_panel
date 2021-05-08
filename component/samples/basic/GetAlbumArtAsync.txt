@@ -5,11 +5,10 @@
 // @import "%fb2k_component_path%docs\Helpers.txt"
 // ==/PREPROCESSOR==
 
-// Nothing will show until you start playing a new track
-
 var g_img = null;
-var path = "";
+var g_path = "";
 var ww = 0, wh = 0;
+on_playback_new_track(fb.GetNowPlaying())
 
 function on_paint(gr) {
 	gr.FillSolidRect(0, 0, ww, wh, RGB(255, 255, 255));
@@ -39,17 +38,17 @@ function on_playback_new_track(metadb) {
 		g_img.Dispose();
 	utils.GetAlbumArtAsync(window.ID, metadb, AlbumArtId.front);
 	g_img = null;
-	path = null;
+	g_path = null;
 }
 
 function on_get_album_art_done(metadb, art_id, image, image_path) {
-	path = image_path;
+	g_path = image_path;
 	g_img = image;
 	window.Repaint();
 }
 
 function on_mouse_lbtn_dblclk(x, y) {
 	//double click panel to show path in popup window
-	if (path)
-		fb.ShowPopupMessage(path);
+	if (g_path)
+		fb.ShowPopupMessage(g_path);
 }
