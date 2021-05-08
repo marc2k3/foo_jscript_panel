@@ -1,6 +1,6 @@
 ## v2.5.6
 - Fix crash with `utils.GetAlbumArtAsync` when it's asked to query art from radio streams. Update docs to clarify only `IMetadbHandle` `GetAlbumArt` and `utils.GetAlbumArtV2` can retrieve that type of art.
-- Fix `track info + seekbar + buttons` sample to properly update on stream title/art changes. Note this requires replacing the existing text in any existing panel by using the `Samples` menu.
+- Fix `track info + seekbar + buttons` sample to properly update on stream title/art changes. Note this requires replacing the text in any existing panel by using the `Samples` menu.
 
 ## v2.5.5.2
 - Fix double click action in `Album Art` sample.
