@@ -1140,6 +1140,7 @@ interface IUtils {
 		See samples\basic\GetAlbumArtAsync.txt
 
 		As of v2.5.3, the previously optional no_load parameter is ignored.
+		Unlike utils.GetAlbumArtV2 and IMetadbHandle GetAlbumArt, this method does not support album art from radio streams.
 		*/
 
 		utils.GetAlbumArtEmbedded(rawpath[, art_id]) (IGdiBitmap)

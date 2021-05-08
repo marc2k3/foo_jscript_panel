@@ -140,7 +140,7 @@ namespace AlbumArt
 		}
 		catch (...)
 		{
-			if (what == album_art_ids::cover_front)
+			if (core_api::is_main_thread() && what == album_art_ids::cover_front)
 			{
 				const std::string path = handle->get_path();
 				if (!path.starts_with("file://"))
