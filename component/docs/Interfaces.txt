@@ -1137,10 +1137,14 @@ interface IUtils {
 
 		need_stub: boolean, default true. Ignored if only_embed is true.
 		only_embed: boolean, default false.
+
+		Use in conjunction with on_get_album_art_done. See Callbacks.txt.
+
 		See samples\basic\GetAlbumArtAsync.txt
 
-		As of v2.5.3, the previously optional no_load parameter is ignored.
 		Unlike utils.GetAlbumArtV2 and IMetadbHandle GetAlbumArt, this method does not support album art from radio streams.
+
+		As of v2.5.3, the previously optional no_load parameter is ignored.
 		*/
 
 		utils.GetAlbumArtEmbedded(rawpath[, art_id]) (IGdiBitmap)
@@ -1169,6 +1173,9 @@ interface IUtils {
 
 		need_stub: boolean, default true.
 		See samples\basic\GetAlbumArtV2.txt
+
+		As of v2.5.6, this method supports reading album art from certain radio streams when used with foobar2000 v1.6.6 or later. 
+		Use on_playback_dynamic_info_track to get notified of changes. See Callbacks.txt.
 		*/
 
 		utils.GetFileSize(filename) (int64)
@@ -2008,6 +2015,9 @@ interface IMetadbHandle {
 			// it's a valid image
 			var image_path = arr[1];
 		}
+
+		As of v2.5.6, this method supports reading album art from certain radio streams when used with foobar2000 v1.6.6 or later. 
+		Use on_playback_dynamic_info_track to get notified of changes. See Callbacks.txt.
 		*/
 
 		GetFileInfo() (IFileInfo)
