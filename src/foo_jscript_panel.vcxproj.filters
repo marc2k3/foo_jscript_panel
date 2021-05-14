@@ -99,6 +99,9 @@
     <ClInclude Include="Helpers\OptimiseLayout.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="Helpers\PlaylistLock.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
     <ClInclude Include="Helpers\ProcessLocationsNotify.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>

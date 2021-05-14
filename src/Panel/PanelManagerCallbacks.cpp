@@ -2,6 +2,8 @@
 #include "CallbackData.h"
 #include "PanelManager.h"
 
+#include "PlaylistLock.h"
+
 namespace
 {
 	struct WatchedObject
@@ -72,6 +74,8 @@ namespace
 
 		void on_init() override
 		{
+			apply_playlist_locks();
+
 			now_playing_album_art_notify_manager::get()->add(this);
 			output_manager_v2::get()->addCallback(this);
 			replaygain_manager_v2::get()->add_notify(this);
@@ -95,6 +99,28 @@ namespace
 		void outputConfigChanged() override
 		{
 			PanelManager::instance().post_msg_to_all(CallbackID::on_output_device_changed);
+		}
+
+	private:
+		void apply_playlist_locks()
+		{
+			auto api = playlist_manager_v2::get();
+			const size_t count = api->get_playlist_count();
+
+			for (size_t i = 0; i < count; ++i)
+			{
+				uint32_t flags;
+				if (api->playlist_get_property_int(i, guids::playlist_lock_flags, flags))
+				{
+					auto lock = fb2k::service_new<PlaylistLock>(flags);
+					if (api->playlist_lock_install(i, lock))
+					{
+						uint64_t hash;
+						api->playlist_get_property_int(i, guids::playlist_lock_hash, hash);
+						PlaylistLock::s_map.emplace(hash, lock);
+					}
+				}
+			}
 		}
 	};
 

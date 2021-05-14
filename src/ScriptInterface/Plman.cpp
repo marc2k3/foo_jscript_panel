@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Plman.h"
 
+#include "PlaylistLock.h"
+
 STDMETHODIMP Plman::AddItemToPlaybackQueue(IMetadbHandle* handle)
 {
 	metadb_handle* ptr = nullptr;
@@ -33,6 +35,38 @@ STDMETHODIMP Plman::AddPlaylistItemToPlaybackQueue(UINT playlistIndex, UINT play
 {
 	playlist_manager::get()->queue_add_item_playlist(playlistIndex, playlistItemIndex);
 	return S_OK;
+}
+
+STDMETHODIMP Plman::AddPlaylistLock(UINT playlistIndex, UINT flags, VARIANT_BOOL* out)
+{
+	if (!out) return E_POINTER;
+
+	auto api = playlist_manager_v2::get();
+	const size_t count = api->get_playlist_count();
+
+	if (playlistIndex < count)
+	{
+		*out = VARIANT_FALSE;
+
+		if (!api->playlist_lock_is_present(playlistIndex))
+		{
+			auto lock = fb2k::service_new<PlaylistLock>(flags);
+
+			if (api->playlist_lock_install(playlistIndex, lock))
+			{
+				GUID g;
+				CoCreateGuid(&g);
+				uint64_t hash = hasher_md5::get()->process_single_string(pfc::print_guid(g).get_ptr()).xorHalve();
+
+				PlaylistLock::s_map.emplace(hash, lock);
+				api->playlist_set_property_int(playlistIndex, guids::playlist_lock_hash, hash);
+				api->playlist_set_property_int(playlistIndex, guids::playlist_lock_flags, flags);
+				*out = VARIANT_TRUE;
+			}
+		}
+		return S_OK;
+	}
+	return E_INVALIDARG;
 }
 
 STDMETHODIMP Plman::ClearPlaylist(UINT playlistIndex)
@@ -440,6 +474,39 @@ STDMETHODIMP Plman::RemovePlaylist(UINT playlistIndex, VARIANT_BOOL* out)
 
 	*out = to_variant_bool(playlist_manager::get()->remove_playlist(playlistIndex));
 	return S_OK;
+}
+
+STDMETHODIMP Plman::RemovePlaylistLock(UINT playlistIndex, VARIANT_BOOL* out)
+{
+	if (!out) return E_POINTER;
+	
+	auto api = playlist_manager_v2::get();
+	const size_t count = api->get_playlist_count();
+
+	if (playlistIndex < count)
+	{
+		*out = VARIANT_FALSE;
+
+		string8 name;
+		api->playlist_lock_query_name(playlistIndex, name);
+		if (name.equals(jsp::component_name))
+		{
+			uint64_t hash;
+			if (api->playlist_get_property_int(playlistIndex, guids::playlist_lock_hash, hash) && PlaylistLock::s_map.contains(hash))
+			{
+				auto lock = PlaylistLock::s_map.at(hash);
+				if (api->playlist_lock_uninstall(playlistIndex, lock))
+				{
+					PlaylistLock::s_map.erase(hash);
+					api->playlist_remove_property(playlistIndex, guids::playlist_lock_flags);
+					api->playlist_remove_property(playlistIndex, guids::playlist_lock_hash);
+					*out = VARIANT_TRUE;
+				}
+			}
+		}
+		return S_OK;
+	}
+	return E_INVALIDARG;
 }
 
 STDMETHODIMP Plman::RemovePlaylists(VARIANT playlistIndexes, VARIANT_BOOL* out)

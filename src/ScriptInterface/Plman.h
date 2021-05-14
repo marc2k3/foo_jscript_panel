@@ -6,6 +6,7 @@ public:
 	STDMETHODIMP AddItemToPlaybackQueue(IMetadbHandle* handle) override;
 	STDMETHODIMP AddLocations(UINT playlistIndex, VARIANT locations, VARIANT_BOOL select) override;
 	STDMETHODIMP AddPlaylistItemToPlaybackQueue(UINT playlistIndex, UINT playlistItemIndex) override;
+	STDMETHODIMP AddPlaylistLock(UINT playlistIndex, UINT flags, VARIANT_BOOL* out) override;
 	STDMETHODIMP ClearPlaylist(UINT playlistIndex) override;
 	STDMETHODIMP ClearPlaylistSelection(UINT playlistIndex) override;
 	STDMETHODIMP CreateAutoPlaylist(UINT playlistIndex, BSTR name, BSTR query, BSTR sort, UINT flags, int* out) override;
@@ -41,6 +42,7 @@ public:
 	STDMETHODIMP RemoveItemFromPlaybackQueue(UINT index) override;
 	STDMETHODIMP RemoveItemsFromPlaybackQueue(VARIANT affectedItems) override;
 	STDMETHODIMP RemovePlaylist(UINT playlistIndex, VARIANT_BOOL* out) override;
+	STDMETHODIMP RemovePlaylistLock(UINT playlistIndex, VARIANT_BOOL* out) override;
 	STDMETHODIMP RemovePlaylists(VARIANT playlistIndexes, VARIANT_BOOL* out) override;
 	STDMETHODIMP RemovePlaylistSelection(UINT playlistIndex, VARIANT_BOOL crop) override;
 	STDMETHODIMP RemovePlaylistSwitch(UINT playlistIndex, VARIANT_BOOL* out) override;

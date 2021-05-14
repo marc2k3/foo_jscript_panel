@@ -372,6 +372,7 @@ library foo_jscript_panel
 		HRESULT AddItemToPlaybackQueue(IMetadbHandle* handle);
 		HRESULT AddLocations(UINT playlistIndex, VARIANT locations, [defaultvalue(0)] VARIANT_BOOL select);
 		HRESULT AddPlaylistItemToPlaybackQueue(UINT playlistIndex, UINT playlistItemIndex);
+		HRESULT AddPlaylistLock(UINT playlistIndex, UINT flags, [out, retval] VARIANT_BOOL* out);
 		HRESULT ClearPlaylist(UINT playlistIndex);
 		HRESULT ClearPlaylistSelection(UINT playlistIndex);
 		HRESULT CreateAutoPlaylist(UINT playlistIndex, BSTR name, BSTR query, [defaultvalue("")] BSTR sort, [defaultvalue(0)] UINT flags, [out, retval] int* out);
@@ -407,6 +408,7 @@ library foo_jscript_panel
 		HRESULT RemoveItemFromPlaybackQueue(UINT index);
 		HRESULT RemoveItemsFromPlaybackQueue(VARIANT affectedItems);
 		HRESULT RemovePlaylist(UINT playlistIndex, [out, retval] VARIANT_BOOL* out);
+		HRESULT RemovePlaylistLock(UINT playlistIndex, [out, retval] VARIANT_BOOL* out);
 		HRESULT RemovePlaylists(VARIANT playlistIndexes, [out, retval] VARIANT_BOOL* out);
 		HRESULT RemovePlaylistSelection(UINT playlistIndex, [defaultvalue(0)] VARIANT_BOOL crop);
 		HRESULT RemovePlaylistSwitch(UINT playlistIndex, [out, retval] VARIANT_BOOL* out);

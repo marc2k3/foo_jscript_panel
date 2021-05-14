@@ -678,6 +678,59 @@ interface IPlman {
 		be selected and focus will be set to the first new item.
 		*/
 
+		plman.AddPlaylistLock(playlistIndex, flags) (boolean)
+		/*
+		Returns true on success, false if playlist already locked and throws an error if playlistIndex is out of bounds.
+
+		Before you can add a playlist lock, you must check there is no lock present already. If
+		another component owns the lock, you have to use that component to remove it. If the lock
+		is owned by JScript Panel then you must remove it first. Locks cannot be edited so must be
+		removed and then added again with the changes to the flags that you require.
+
+		Example:
+
+		function add_playlist_lock(playlistIndex, flags) {
+			// check if playlistIndex is valid
+			if (playlistIndex >= 0 && playlistIndex < plman.PlaylistCount) {
+				if (plman.IsPlaylistLocked(playlistIndex)) {
+					if (plman.GetPlaylistLockName(playlistIndex) == 'JScript Panel') {
+						// We own this lock so we can remove it.
+						plman.RemovePlaylistLock(playlistIndex);
+					} else {
+						// Locked but not ours. Nothing we can do.
+						return false;
+					}
+				}
+
+				return plman.AddPlaylistLock(playlistIndex, flags);
+			}
+			return false;
+		}
+
+		Flags can be combination of one or more values:
+
+		var PlaylistLockFilterMask = {
+			filter_add : 1,
+			filter_remove: 2,
+			filter_reorder: 4,
+			filter_replace: 8,
+			filter_rename: 16,
+			filter_remove_playlist: 32
+		};
+
+		var flags = PlaylistLockFilterMask.filter_add;
+
+		To initialise multiple values at once, use | like this:
+
+		var flags = PlaylistLockFilterMask.filter_add | PlaylistLockFilterMask.filter_remove;
+
+		You may add a value to existing flags using a bitwise operator like this:
+		flags |= PlaylistLockFilterMask.filter_replace;
+
+		To remove a value, use &= and ~ like this:
+		flags &= ~PlaylistLockFilterMask.filter_replace;
+		*/
+
 		plman.ClearPlaylist(playlistIndex) (void)
 		/*
 		Example:
@@ -880,6 +933,12 @@ interface IPlman {
 		Removes the specified playlist.
 		NOTE: If removing the active playlist, no playlist will be active after using this. You'll
 		need to set it manually or use plman.RemovePlaylistSwitch instead.
+		*/
+
+		plman.RemovePlaylistLock(playlistIndex) (boolean)
+		/*
+		You can only remove a playlist lock if it's owned by JScript Panel. You can check this with plman.GetPlaylistLockName.
+		See plman.AddPlaylistLock for an example.
 		*/
 
 		plman.RemovePlaylists(playlistIndexes) (boolean)
