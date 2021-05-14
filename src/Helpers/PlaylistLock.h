@@ -10,7 +10,7 @@ public:
 		return false;
 	}
 
-	bool query_items_add(t_size, const pfc::list_base_const_t<metadb_handle_ptr>&, const bit_array&) override
+	bool query_items_add(size_t, const pfc::list_base_const_t<metadb_handle_ptr>&, const bit_array&) override
 	{
 		return !(m_flags & filter_add);
 	}

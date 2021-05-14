@@ -12,6 +12,7 @@ struct CallbackData : public pfc::refcounted_object_root
 
 struct MetadbCallbackData : public pfc::refcounted_object_root
 {
+	MetadbCallbackData(const metadb_handle_ptr& handle) : m_handles(pfc::list_single_ref_t<metadb_handle_ptr>(handle)) {}
 	MetadbCallbackData(metadb_handle_list_cref handles) : m_handles(handles) {}
 
 	metadb_handle_list m_handles;

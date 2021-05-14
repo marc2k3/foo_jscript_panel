@@ -227,13 +227,13 @@ namespace
 
 		void on_playback_edited(metadb_handle_ptr handle) override
 		{
-			auto data = new MetadbCallbackData(pfc::list_single_ref_t<metadb_handle_ptr>(handle));
+			auto data = new MetadbCallbackData(handle);
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_edited, data);
 		}
 
 		void on_playback_new_track(metadb_handle_ptr handle) override
 		{
-			auto data = new MetadbCallbackData(pfc::list_single_ref_t<metadb_handle_ptr>(handle));
+			auto data = new MetadbCallbackData(handle);
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_new_track, data);
 		}
 
@@ -281,7 +281,7 @@ namespace
 	public:
 		void on_item_played(metadb_handle_ptr handle) override
 		{
-			auto data = new MetadbCallbackData(pfc::list_single_ref_t<metadb_handle_ptr>(handle));
+			auto data = new MetadbCallbackData(handle);
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_item_played, data);
 		}
 	};
