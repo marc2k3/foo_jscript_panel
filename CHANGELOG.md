@@ -1,3 +1,7 @@
+## v2.6.0-Beta.1
+- Add `fb.AddLocationsAsync`. Similar to `plman.AddLocations` except rather than specifiying a target playlist, you get the processed handles to a new `on_locations_added` callback.
+- Add `plman.AddPlaylistLock` / `plman.RemovePlaylistLock`. Use in conjunction with the existing `plman.IsPlaylistLocked`, `plman.GetPlaylistLockFilterMask` and `plman.GetPlaylistLockName` methods. The `on_playlists_changed` callback will be triggered when locks are added/removed. See docs for full details.
+
 ## v2.5.6
 - Fix crash with `utils.GetAlbumArtAsync` when it's asked to query art from radio streams. Update docs to clarify only `IMetadbHandle` `GetAlbumArt` and `utils.GetAlbumArtV2` can retrieve that type of art.
 - Fix `track info + seekbar + buttons` sample to properly update on stream title/art changes. Note this requires replacing the text in any existing panel by using the `Samples` menu.
