@@ -67,6 +67,13 @@ image: IGdiBitmap object or null on failure (invalid path/not an image).
 image_path: the path that was originally supplied to gdi.LoadImageAsync.
 */
 
+function on_locations_added(cookie, handles) {}
+/*
+Called when thread created by fb.AddLocationsAsync is done.
+cookie: the return value from the fb.AddLocationsAsync call.
+handles: handle list created from the supplied paths/playlists/urls
+*/
+
 function on_main_menu(index) {}
 /*
 On the main menu>File>JScript Panel, there are 10 menu items and whichever number

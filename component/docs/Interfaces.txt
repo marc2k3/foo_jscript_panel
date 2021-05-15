@@ -189,6 +189,16 @@ interface IFb {
 			}
 			*/
 
+		fb.AddLocationsAsync(window_id, locations) (int)
+		/*
+		Similar to plman.AddLocations except rather than specifiying a target playlist, you get a handle list generated
+		from the supplied paths/urls which are sent to a new on_locations_added callback.
+
+		window_id: window.ID
+		locations: An array of files/URLs/playlists
+		Returns a unique id which is the first argument in the on_locations_added callback. See Callbacks.txt.
+		*/
+
 		fb.CheckClipboardContents() (boolean)
 		/*
 		Checks Clipboard contents are handles or a file selection from Windows Explorer. Use in conjunction
@@ -662,9 +672,9 @@ interface IPlman {
 	Methods:
 		// In all these methods, playlistIndex is the target playlist
 
-		plman.AddLocations(playlistIndex, paths[, select]) (void)
+		plman.AddLocations(playlistIndex, locations[, select]) (void)
 		/*
-		paths: An array of files/URLs.
+		locations: An array of files/URLs/playlists
 		select: boolean, default false.
 
 		Example:

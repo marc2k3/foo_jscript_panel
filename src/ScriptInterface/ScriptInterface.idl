@@ -292,6 +292,7 @@ library foo_jscript_panel
 		HRESULT AcquireUiSelectionHolder([out, retval] ISelectionHolder** out);
 		HRESULT AddDirectory();
 		HRESULT AddFiles();
+		HRESULT AddLocationsAsync(UINT window_id, VARIANT locations, [out, retval] UINT* out);
 		HRESULT CheckClipboardContents([defaultvalue(0)] UINT window_id, [out, retval] VARIANT_BOOL* out);
 		HRESULT ClearPlaylist();
 		HRESULT CopyHandleListToClipboard(IMetadbHandleList* handles, [out, retval] VARIANT_BOOL* out);

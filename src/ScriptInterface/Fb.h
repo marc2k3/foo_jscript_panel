@@ -6,6 +6,7 @@ public:
 	STDMETHODIMP AcquireUiSelectionHolder(ISelectionHolder** out) override;
 	STDMETHODIMP AddDirectory() override;
 	STDMETHODIMP AddFiles() override;
+	STDMETHODIMP AddLocationsAsync(UINT window_id, VARIANT locations, UINT* out) override;
 	STDMETHODIMP CheckClipboardContents(UINT /* FFS */, VARIANT_BOOL* out) override;
 	STDMETHODIMP ClearPlaylist() override;
 	STDMETHODIMP CopyHandleListToClipboard(IMetadbHandleList* handles, VARIANT_BOOL* out) override;
@@ -69,4 +70,7 @@ public:
 	STDMETHODIMP put_ReplaygainMode(UINT mode) override;
 	STDMETHODIMP put_StopAfterCurrent(VARIANT_BOOL b) override;
 	STDMETHODIMP put_Volume(float value) override;
+
+private:
+	int m_cookie = 0;
 };

@@ -231,12 +231,14 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case CallbackID::on_library_items_added:
 	case CallbackID::on_library_items_changed:
 	case CallbackID::on_library_items_removed:
+	case CallbackID::on_locations_added:
 	case CallbackID::on_metadb_changed:
 		{
 			auto data = CallbackDataReleaser<MetadbCallbackData>(wp);
 			auto handles = new ComObjectImpl<MetadbHandleList>(data->m_handles);
 
 			VariantArgs args = { handles };
+			if (id == CallbackID::on_locations_added) args.emplace_back(lp);
 			m_script_host->InvokeCallback(id, args);
 
 			if (handles) handles->Release();

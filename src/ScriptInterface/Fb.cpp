@@ -23,6 +23,21 @@ STDMETHODIMP Fb::AddFiles()
 	return S_OK;
 }
 
+STDMETHODIMP Fb::AddLocationsAsync(UINT window_id, VARIANT locations, UINT* out)
+{
+	if (!out) return E_POINTER;
+
+	pfc::string_list_impl list;
+	ComArrayReader reader;
+	if (!reader.convert(locations, list)) return E_INVALIDARG;
+
+	constexpr auto flags = playlist_incoming_item_filter_v2::op_flag_no_filter | playlist_incoming_item_filter_v2::op_flag_delay_ui;
+	auto obj = fb2k::service_new<ProcessLocationsNotify>(reinterpret_cast<HWND>(window_id), ++m_cookie);
+	playlist_incoming_item_filter_v2::get()->process_locations_async(list, flags, nullptr, nullptr, nullptr, obj);
+	*out = m_cookie;
+	return S_OK;
+}
+
 STDMETHODIMP Fb::CheckClipboardContents(UINT /* FFS */, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
