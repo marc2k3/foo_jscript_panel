@@ -238,7 +238,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			auto handles = new ComObjectImpl<MetadbHandleList>(data->m_handles);
 
 			VariantArgs args = { handles };
-			if (id == CallbackID::on_locations_added) args.emplace_back(lp);
+			if (id == CallbackID::on_locations_added) args.emplace_back(lp); // cookie
 			m_script_host->InvokeCallback(id, args);
 
 			if (handles) handles->Release();
