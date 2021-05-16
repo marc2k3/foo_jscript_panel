@@ -189,14 +189,27 @@ interface IFb {
 			}
 			*/
 
-		fb.AddLocationsAsync(window_id, locations) (int)
+		fb.AddLocationsAsync(window_id, paths) (int)
 		/*
 		Similar to plman.AddLocations except rather than specifiying a target playlist, you get a handle list generated
 		from the supplied paths/urls which are sent to a new on_locations_added callback.
 
 		window_id: window.ID
-		locations: An array of files/URLs/playlists
+		paths: An array of files/URLs/playlists
 		Returns a unique id which is the first argument in the on_locations_added callback. See Callbacks.txt.
+
+		Example:
+		var files = ["z:\\1.mp3", "z:\\2.flac"];
+
+		function on_mouse_lbtn_dblclk() {
+			var cookie = fb.AddLocationsAsync(window.ID, files);
+			console.log("got cookie", cookie);
+		}
+
+		function on_locations_added(cookie, handle_list) {
+			console.log("callback cookie", cookie);
+			console.log(handle_list.Count);
+		}
 		*/
 
 		fb.CheckClipboardContents() (boolean)
@@ -672,9 +685,9 @@ interface IPlman {
 	Methods:
 		// In all these methods, playlistIndex is the target playlist
 
-		plman.AddLocations(playlistIndex, locations[, select]) (void)
+		plman.AddLocations(playlistIndex, paths[, select]) (void)
 		/*
-		locations: An array of files/URLs/playlists
+		paths: An array of files/URLs/playlists
 		select: boolean, default false.
 
 		Example:
