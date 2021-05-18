@@ -420,6 +420,7 @@ library foo_jscript_panel
 		HRESULT SetPlaylistSelection(UINT playlistIndex, VARIANT affectedItems, VARIANT_BOOL state);
 		HRESULT SetPlaylistSelectionSingle(UINT playlistIndex, UINT playlistItemIndex, VARIANT_BOOL state);
 		HRESULT ShowAutoPlaylistUI(UINT playlistIndex, [out, retval] VARIANT_BOOL* out);
+		HRESULT ShowPlaylistLockUI(UINT playlistIndex, [out, retval] VARIANT_BOOL* out);
 		HRESULT SortByFormat(UINT playlistIndex, BSTR pattern, [defaultvalue(0)] VARIANT_BOOL selOnly, [out, retval] VARIANT_BOOL* out);
 		HRESULT SortByFormatV2(UINT playlistIndex, BSTR pattern, [defaultvalue(1)] int direction, [out, retval] VARIANT_BOOL* out);
 		HRESULT SortPlaylistsByName([defaultvalue(1)] int direction);

@@ -1062,6 +1062,13 @@ interface IPlman {
 		Before using, check if your playlist is an Autoplaylist by using plman.IsAutoPlaylist(...);
 		*/
 
+		plman.ShowPlaylistLockUI(playlistIndex) (boolean)
+		/*
+		Shows popup window letting you toggle the various lock options on/off. Returns false if the playlist
+		is an autoplaylist or the lock is owned by another component. Throws an error if the playlistIndex is
+		out of bounds.
+		*/
+
 		plman.SortByFormat(playlistIndex, pattern[, selected_items_only]) (boolean)
 		/*
 		playlistIndex: index of playlist to alter.

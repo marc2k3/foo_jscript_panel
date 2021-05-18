@@ -2,6 +2,7 @@
 #include "Plman.h"
 
 #include "PlaylistLock.h"
+#include "DialogPlaylistLock.h"
 
 STDMETHODIMP Plman::AddItemToPlaybackQueue(IMetadbHandle* handle)
 {
@@ -46,24 +47,7 @@ STDMETHODIMP Plman::AddPlaylistLock(UINT playlistIndex, UINT flags, VARIANT_BOOL
 
 	if (playlistIndex < count)
 	{
-		*out = VARIANT_FALSE;
-
-		if (!api->playlist_lock_is_present(playlistIndex))
-		{
-			auto lock = fb2k::service_new<PlaylistLock>(flags);
-
-			if (api->playlist_lock_install(playlistIndex, lock))
-			{
-				GUID g;
-				CoCreateGuid(&g);
-				uint64_t hash = hasher_md5::get()->process_single_string(pfc::print_guid(g).get_ptr()).xorHalve();
-
-				PlaylistLock::s_map.emplace(hash, lock);
-				api->playlist_set_property_int(playlistIndex, guids::playlist_lock_hash, hash);
-				api->playlist_set_property_int(playlistIndex, guids::playlist_lock_flags, flags);
-				*out = VARIANT_TRUE;
-			}
-		}
+		*out = to_variant_bool(PlaylistLock::add(playlistIndex, flags));
 		return S_OK;
 	}
 	return E_INVALIDARG;
@@ -480,30 +464,11 @@ STDMETHODIMP Plman::RemovePlaylistLock(UINT playlistIndex, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
 	
-	auto api = playlist_manager_v2::get();
-	const size_t count = api->get_playlist_count();
+	const size_t count = playlist_manager::get()->get_playlist_count();
 
 	if (playlistIndex < count)
 	{
-		*out = VARIANT_FALSE;
-
-		string8 name;
-		api->playlist_lock_query_name(playlistIndex, name);
-		if (name.equals(jsp::component_name))
-		{
-			uint64_t hash;
-			if (api->playlist_get_property_int(playlistIndex, guids::playlist_lock_hash, hash) && PlaylistLock::s_map.contains(hash))
-			{
-				auto lock = PlaylistLock::s_map.at(hash);
-				if (api->playlist_lock_uninstall(playlistIndex, lock))
-				{
-					PlaylistLock::s_map.erase(hash);
-					api->playlist_remove_property(playlistIndex, guids::playlist_lock_flags);
-					api->playlist_remove_property(playlistIndex, guids::playlist_lock_hash);
-					*out = VARIANT_TRUE;
-				}
-			}
-		}
+		*out = to_variant_bool(PlaylistLock::remove(playlistIndex));
 		return S_OK;
 	}
 	return E_INVALIDARG;
@@ -603,6 +568,36 @@ STDMETHODIMP Plman::ShowAutoPlaylistUI(UINT playlistIndex, VARIANT_BOOL* out)
 		{
 			api->query_client(playlistIndex)->show_ui(playlistIndex);
 			*out = VARIANT_TRUE;
+		}
+		return S_OK;
+	}
+	return E_INVALIDARG;
+}
+
+STDMETHODIMP Plman::ShowPlaylistLockUI(UINT playlistIndex, VARIANT_BOOL* out)
+{
+	if (!out) return E_POINTER;
+
+	auto api = playlist_manager::get();
+
+	if (playlistIndex < api->get_playlist_count())
+	{
+		*out = VARIANT_FALSE;
+
+		string8 name;
+		api->playlist_lock_query_name(playlistIndex, name);
+
+		if (name.equals(jsp::component_name) || !api->playlist_lock_is_present(playlistIndex))
+		{
+			modal_dialog_scope scope;
+			if (scope.can_create())
+			{
+				uint32_t flags = api->playlist_lock_get_filter_mask(playlistIndex);
+
+				CDialogPlaylistLock dlg(playlistIndex, flags);
+				dlg.DoModal(core_api::get_main_window());
+				*out = VARIANT_TRUE;
+			}
 		}
 		return S_OK;
 	}

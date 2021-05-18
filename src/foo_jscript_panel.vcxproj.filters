@@ -246,6 +246,9 @@
     <ClInclude Include="UI\DialogInputBox.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
+    <ClInclude Include="UI\DialogPlaylistLock.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
     <ClInclude Include="UI\DialogProperties.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>

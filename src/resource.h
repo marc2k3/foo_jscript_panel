@@ -25,6 +25,7 @@
 #define IDD_DIALOG_GOTO                 113
 #define IDD_DIALOG_INPUT                114
 #define IDD_DIALOG_PROPERTIES           115
+#define IDD_DIALOG_PLAYLIST_LOCK        116
 
 // preferences
 #define IDC_LIST_PREFERENCES            120
@@ -68,14 +69,22 @@
 #define IDC_BTN_REPLACE_ALL             189
 #define IDC_LABEL_REPLACE               190
 
+// ui_playlist_lock
+#define IDC_CHECK_FILTER_ADD            200
+#define IDC_CHECK_FILTER_REMOVE         201
+#define IDC_CHECK_FILTER_REORDER        202
+#define IDC_CHECK_FILTER_REPLACE        203
+#define IDC_CHECK_FILTER_RENAME         204
+#define IDC_CHECK_FILTER_REMOVE_PLAYLIST 205
+
 // menu
-#define IDR_MENU                        200
+#define IDR_MENU                        300
 
-#define ID_FILE_IMPORT                  201
-#define ID_FILE_EXPORT                  202
+#define ID_FILE_IMPORT                  401
+#define ID_FILE_EXPORT                  402
 
-#define ID_SAMPLES_BEGIN                300
-#define ID_SAMPLES_END                  399
+#define ID_SAMPLES_BEGIN                500
+#define ID_SAMPLES_END                  599
 
-#define ID_DOCS_BEGIN                   400
-#define ID_DOCS_END                     499
+#define ID_DOCS_BEGIN                   600
+#define ID_DOCS_END                     699

@@ -1,6 +1,7 @@
-## v2.6.0-Beta.1
+## v2.6.0-Beta.2
 - Add `fb.AddLocationsAsync`. Similar to `plman.AddLocations` except rather than specifiying a target playlist, you get the processed handles to a new `on_locations_added` callback.
 - Add `plman.AddPlaylistLock` / `plman.RemovePlaylistLock`. Use in conjunction with the existing `plman.IsPlaylistLocked`, `plman.GetPlaylistLockFilterMask` and `plman.GetPlaylistLockName` methods. The `on_playlists_changed` callback will be triggered when locks are added/removed. See docs for full details.
+- (Beta.2) Add `plman.ShowPlaylistLockUI`. This only works if the playlist is unlocked or the lock is owned by `JScript Panel`. Provides a popup dialog with checkboxes for toggling the various options on/off.
 
 ## v2.5.6
 - Fix crash with `utils.GetAlbumArtAsync` when it's asked to query art from radio streams. Update docs to clarify only `IMetadbHandle` `GetAlbumArt` and `utils.GetAlbumArtV2` can retrieve that type of art.

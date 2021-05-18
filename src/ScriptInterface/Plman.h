@@ -53,6 +53,7 @@ public:
 	STDMETHODIMP SetPlaylistSelection(UINT playlistIndex, VARIANT affectedItems, VARIANT_BOOL state) override;
 	STDMETHODIMP SetPlaylistSelectionSingle(UINT playlistIndex, UINT playlistItemIndex, VARIANT_BOOL state) override;
 	STDMETHODIMP ShowAutoPlaylistUI(UINT playlistIndex, VARIANT_BOOL* out) override;
+	STDMETHODIMP ShowPlaylistLockUI(UINT playlistIndex, VARIANT_BOOL* out) override;
 	STDMETHODIMP SortByFormat(UINT playlistIndex, BSTR pattern, VARIANT_BOOL selOnly, VARIANT_BOOL* out) override;
 	STDMETHODIMP SortByFormatV2(UINT playlistIndex, BSTR pattern, int direction, VARIANT_BOOL* out) override;
 	STDMETHODIMP SortPlaylistsByName(int direction) override;
