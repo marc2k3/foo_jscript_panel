@@ -5,7 +5,7 @@
 namespace jsp
 {
 	static constexpr const char* component_name = "JScript Panel";
-	static constexpr const char* component_version = "2.6.0-Beta.1";
+	static constexpr const char* component_version = "2.6.0-Beta.2";
 	static constexpr const char* component_dll_name = "foo_jscript_panel.dll";
 	static constexpr const char* component_info = "Copyright (C) 2015-2021 marc2003\n"
 		"Based on WSH Panel Mod by T.P. Wang\n"
