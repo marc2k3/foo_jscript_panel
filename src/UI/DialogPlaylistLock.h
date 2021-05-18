@@ -36,24 +36,27 @@ public:
 	{
 		if (nID == IDOK)
 		{
-			m_flags = 0;
-			if (m_check_filter_add.IsChecked()) m_flags |= playlist_lock::filter_add;
-			if (m_check_filter_remove.IsChecked()) m_flags |= playlist_lock::filter_remove;
-			if (m_check_filter_reorder.IsChecked()) m_flags |= playlist_lock::filter_reorder;
-			if (m_check_filter_replace.IsChecked()) m_flags |= playlist_lock::filter_replace;
-			if (m_check_filter_rename.IsChecked()) m_flags |= playlist_lock::filter_rename;
-			if (m_check_filter_remove_playlist.IsChecked()) m_flags |= playlist_lock::filter_remove_playlist;
+			uint32_t flags = 0;
+			if (m_check_filter_add.IsChecked()) flags |= playlist_lock::filter_add;
+			if (m_check_filter_remove.IsChecked()) flags |= playlist_lock::filter_remove;
+			if (m_check_filter_reorder.IsChecked()) flags |= playlist_lock::filter_reorder;
+			if (m_check_filter_replace.IsChecked()) flags |= playlist_lock::filter_replace;
+			if (m_check_filter_rename.IsChecked()) flags |= playlist_lock::filter_rename;
+			if (m_check_filter_remove_playlist.IsChecked()) flags |= playlist_lock::filter_remove_playlist;
 
-			PlaylistLock::remove(m_playlistIndex);
-			PlaylistLock::add(m_playlistIndex, m_flags);
+			if (flags != m_flags)
+			{
+				PlaylistLock::remove(m_playlistIndex);
+				PlaylistLock::add(m_playlistIndex, flags);
+			}
 		}
 
 		EndDialog(nID);
 	}
 
-	uint32_t m_flags = 0;
 
 private:
 	CCheckBox m_check_filter_add, m_check_filter_remove, m_check_filter_reorder, m_check_filter_replace, m_check_filter_rename, m_check_filter_remove_playlist;
 	size_t m_playlistIndex = 0;
+	uint32_t m_flags = 0;
 };

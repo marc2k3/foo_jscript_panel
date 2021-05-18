@@ -70,9 +70,9 @@ public:
 					CoCreateGuid(&g);
 					uint64_t hash = hasher_md5::get()->process_single_string(pfc::print_guid(g).get_ptr()).xorHalve();
 
-					PlaylistLock::s_map.emplace(hash, lock);
-					api->playlist_set_property_int(playlistIndex, guids::playlist_lock_hash, hash);
+					s_map.emplace(hash, lock);
 					api->playlist_set_property_int(playlistIndex, guids::playlist_lock_flags, flags);
+					api->playlist_set_property_int(playlistIndex, guids::playlist_lock_hash, hash);
 					return true;
 				}
 			}
@@ -93,6 +93,7 @@ public:
 			if (api->playlist_get_property_int(playlistIndex, guids::playlist_lock_hash, hash) && s_map.contains(hash))
 			{
 				auto lock = s_map.at(hash);
+
 				if (api->playlist_lock_uninstall(playlistIndex, lock))
 				{
 					s_map.erase(hash);

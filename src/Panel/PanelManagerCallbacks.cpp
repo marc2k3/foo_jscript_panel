@@ -112,13 +112,7 @@ namespace
 				uint32_t flags;
 				if (api->playlist_get_property_int(i, guids::playlist_lock_flags, flags))
 				{
-					auto lock = fb2k::service_new<PlaylistLock>(flags);
-					if (api->playlist_lock_install(i, lock))
-					{
-						uint64_t hash;
-						api->playlist_get_property_int(i, guids::playlist_lock_hash, hash);
-						PlaylistLock::s_map.emplace(hash, lock);
-					}
+					PlaylistLock::add(i, flags);
 				}
 			}
 		}

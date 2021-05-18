@@ -42,8 +42,7 @@ STDMETHODIMP Plman::AddPlaylistLock(UINT playlistIndex, UINT flags, VARIANT_BOOL
 {
 	if (!out) return E_POINTER;
 
-	auto api = playlist_manager_v2::get();
-	const size_t count = api->get_playlist_count();
+	const size_t count = playlist_manager::get()->get_playlist_count();
 
 	if (playlistIndex < count)
 	{
