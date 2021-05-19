@@ -738,121 +738,61 @@ oPlaylistManager = function (obj_name) {
 		var _menu = window.CreatePopupMenu();
 		var _newplaylist = window.CreatePopupMenu();
 		var _autoplaylist = window.CreatePopupMenu();
-		var _filters = window.CreatePopupMenu();
-		var idx;
-		var total_area,
-		visible_area;
-		var bout,
-		z;
-		var add_mode = (id == null);
-
-		if (!add_mode) {
-			_newplaylist.AppendTo(_menu, MF_STRING, "Insert ...");
-		} else {
-			id = plman.PlaylistCount;
-			_newplaylist.AppendTo(_menu, MF_STRING, "Add ...");
-		}
+		var _restore = window.CreatePopupMenu();
+		
 		_newplaylist.AppendMenuItem(MF_STRING, 100, "New Playlist");
 		_newplaylist.AppendMenuItem(MF_STRING, 101, "New Autoplaylist");
-		_autoplaylist.AppendTo(_newplaylist, MF_STRING, "Pre-defined AutoPlaylist");
-		_autoplaylist.AppendMenuItem(MF_STRING, 200, "Tracks never played");
-		_autoplaylist.AppendMenuItem(MF_STRING, 201, "Tracks played in the last 5 days");
-		_autoplaylist.AppendMenuSeparator();
-		_autoplaylist.AppendMenuItem(MF_STRING, 210, "Tracks unrated");
-		_autoplaylist.AppendMenuItem(MF_STRING, 211, "Tracks rated 3 to 5");
-		_autoplaylist.AppendMenuItem(MF_STRING, 212, "Tracks rated 4");
-		_autoplaylist.AppendMenuItem(MF_STRING, 213, "Tracks rated 5");
-		_autoplaylist.AppendMenuItem(MF_STRING, 214, "Loved Tracks");
-		_menu.AppendMenuSeparator();
-		_menu.AppendMenuItem(MF_STRING, 2, "Load a Playlist");
-		if (!add_mode) {
+
+		if (id == null) {
+			id = plman.PlaylistCount
+			_newplaylist.AppendTo(_menu, MF_STRING, "Add...");
+		} else {
+			var lock_name = plman.GetPlaylistLockName(id);
+
 			_menu.AppendMenuItem(MF_STRING, 5, "Duplicate this playlist");
-			if (id > 0 || !cPlaylistManager.mediaLibraryPlaylist) {
-				_menu.AppendMenuItem(playlist_can_rename(id) ? MF_STRING : MF_GRAYED, 3, "Rename this playlist");
-				_menu.AppendMenuItem(playlist_can_remove(id) ? MF_STRING : MF_GRAYED, 8, "Remove this playlist");
+			_menu.AppendMenuItem(playlist_can_rename(id) ? MF_STRING : MF_GRAYED, 3, "Rename this playlist");
+			_menu.AppendMenuItem(playlist_can_remove(id) ? MF_STRING : MF_GRAYED, 8, "Remove this playlist");
+			_menu.AppendMenuSeparator();
+			if (plman.IsAutoPlaylist(id)) {
+				_menu.AppendMenuItem(MF_STRING, 6, lock_name + " properties");
+				_menu.AppendMenuItem(MF_STRING, 7, "Convert to a normal playlist");
+			} else {
+				var is_locked = plman.IsPlaylistLocked(id);
+				var is_mine = lock_name == "JScript Panel";
+				
+				_menu.AppendMenuItem(is_mine || !is_locked ? MF_STRING : MF_GRAYED, 10, "Edit playlist lock...");
+				_menu.AppendMenuItem(is_mine ? MF_STRING : MF_GRAYED, 11, "Remove playlist lock");
 			}
-			if (id > 0 || !cPlaylistManager.mediaLibraryPlaylist) {
-				if (plman.IsAutoPlaylist(id)) {
-					_menu.AppendMenuSeparator();
-					_menu.AppendMenuItem(MF_STRING, 6, plman.GetPlaylistLockName(id) + " properties");
-					_menu.AppendMenuItem(MF_STRING, 7, "Convert to a normal playlist");
-				}
-			}
-		}
-		if (!add_mode) {
-			if (properties.enablePlaylistFilter) {
-				_menu.AppendMenuSeparator();
-				if (this.playlists[id].filter_type == 1) {
-					_filters.AppendTo(_menu, MF_STRING, "Change Group Playlist Filter");
-					_filters.AppendMenuItem(MF_STRING, 799, "Remove Playlist Filter");
-					_filters.AppendMenuSeparator();
-				} else {
-					_filters.AppendTo(_menu, MF_STRING, "Set Group Playlist Filter");
-				}
-				var groupByMenuIdx = 800;
-				var totalGroupBy = p.list.groupby.length;
-				for (var i = 0; i < totalGroupBy; i++) {
-					_filters.AppendMenuItem(MF_STRING, groupByMenuIdx + i, p.list.groupby[i].label);
-				}
-				if (this.playlists[id].filter_type == 1) {
-					_filters.CheckMenuRadioItem(groupByMenuIdx, groupByMenuIdx + totalGroupBy - 1, this.playlists[id].filter_idx + groupByMenuIdx);
-				}
-			}
+
+			_menu.AppendMenuSeparator();
+			_newplaylist.AppendTo(_menu, MF_STRING, "Insert...");
 		}
 
-		idx = _menu.TrackPopupMenu(x, y);
+		var count = plman.RecyclerCount;
+		if (count > 0) {
+			var history = [];
+			for (var i = 0; i < count; i++) {
+				history.push(i);
+				_restore.AppendMenuItem(MF_STRING, 200 + i, plman.GetRecyclerName(i));
+			}
+			_restore.AppendMenuSeparator();
+			_restore.AppendMenuItem(MF_STRING, 199, "Clear history");
+			_restore.AppendTo(_menu, MF_STRING, "Restore...");
+		}
+		_menu.AppendMenuSeparator();
+		_menu.AppendMenuItem(MF_STRING, 2, "Load playlist...");
+
+		var idx = _menu.TrackPopupMenu(x, y);
 
 		switch (true) {
-		case (idx == 100):
-			var total = plman.PlaylistCount;
-			plman.CreatePlaylist(total, "");
-			if (id == 0 && cPlaylistManager.mediaLibraryPlaylist) {
-				plman.MovePlaylist(total, id + 1);
-				plman.ActivePlaylist = id + 1;
-				id++;
-			} else {
-				plman.MovePlaylist(total, id);
-				plman.ActivePlaylist = id;
-			}
-			// set rename it
-			this.inputbox = new oInputbox(this.w - this.border - this.scrollbarWidth - 40, cPlaylistManager.rowHeight - 10, plman.GetPlaylistName(id), "", g_color_normal_txt, g_color_normal_bg, RGB(0, 0, 0), g_color_selected_bg & 0xccffffff, "renamePlaylist()", "p.playlistManager", 0, g_fsize, 225);
-			this.inputboxID = id;
-			// activate box content + selection activated
-			if (cPlaylistManager.inputbox_timer) {
-				window.ClearTimeout(cPlaylistManager.inputbox_timer);
-				cPlaylistManager.inputbox_timer = false;
-			}
-			cPlaylistManager.inputbox_timer = window.SetTimeout(inputboxPlaylistManager_activate, 20);
+		case idx == 0:
 			break;
-		case (idx == 101):
-			var total = plman.PlaylistCount;
-			plman.CreateAutoPlaylist(total, "", "", "", 0);
-			if (id == 0 && cPlaylistManager.mediaLibraryPlaylist) {
-				plman.MovePlaylist(total, id + 1);
-				plman.ActivePlaylist = id + 1;
-				plman.ShowAutoPlaylistUI(id + 1);
-				id++;
-			} else {
-				plman.MovePlaylist(total, id);
-				plman.ActivePlaylist = id;
-				plman.ShowAutoPlaylistUI(id);
-			}
-			// set rename it
-			this.inputbox = new oInputbox(this.w - this.border - this.scrollbarWidth - 40, cPlaylistManager.rowHeight - 10, plman.GetPlaylistName(id), "", g_color_normal_txt, g_color_normal_bg, RGB(0, 0, 0), g_color_selected_bg & 0xccffffff, "renamePlaylist()", "p.playlistManager", 0, g_fsize, 225);
-			this.inputboxID = id;
-			// activate box content + selection activated
-			if (cPlaylistManager.inputbox_timer) {
-				window.ClearTimeout(cPlaylistManager.inputbox_timer);
-				cPlaylistManager.inputbox_timer = false;
-			}
-			cPlaylistManager.inputbox_timer = window.SetTimeout(inputboxPlaylistManager_activate, 20);
-			break;
-		case (idx == 2):
+		case idx == 2:
 			fb.LoadPlaylist();
 			break;
-		case (idx == 3):
+		case idx == 3:
 			// set rename it
-			this.inputbox = new oInputbox(this.w - this.border - this.scrollbarWidth - 40, cPlaylistManager.rowHeight - 10, plman.GetPlaylistName(id), "", g_color_normal_txt, g_color_normal_bg, RGB(0, 0, 0), g_color_selected_bg & 0xccffffff, "renamePlaylist()", "p.playlistManager", 0, g_fsize, 225);
+			this.inputbox = new oInputbox(this.w - this.border - this.scrollbarWidth - 40, cPlaylistManager.rowHeight - 10, plman.GetPlaylistName(id), "", g_color_normal_txt, g_color_normal_bg, RGB(0, 0, 0), g_color_selected_bg & 0xccffffff, "renamePlaylist()", "p.playlistManager", 0, 12, 225);
 			this.inputboxID = id;
 			// activate box content + selection activated
 			if (cPlaylistManager.inputbox_timer) {
@@ -861,188 +801,73 @@ oPlaylistManager = function (obj_name) {
 			}
 			cPlaylistManager.inputbox_timer = window.SetTimeout(inputboxPlaylistManager_activate, 20);
 			break;
-		case (idx == 5):
+		case idx == 5:
 			plman.DuplicatePlaylist(id, "Copy of " + plman.GetPlaylistName(id));
 			plman.ActivePlaylist = id + 1;
 			break;
-		case (idx == 6):
+		case idx == 6:
 			plman.ShowAutoPlaylistUI(id);
 			break;
-		case (idx == 7):
+		case idx == 7:
 			plman.DuplicatePlaylist(id, plman.GetPlaylistName(id));
 			plman.RemovePlaylist(id);
 			plman.ActivePlaylist = id;
 			break;
-		case (idx == 8):
+		case idx == 8:
 			plman.RemovePlaylistSwitch(id);
 			if (this.offset > 0 && this.offset >= this.playlists.length - Math.floor((this.h - (cPlaylistManager.showStatusBar ? cPlaylistManager.statusBarHeight : 0)) / cPlaylistManager.rowHeight)) {
 				this.offset--;
 				this.refresh("", false, false, false);
 			}
 			break;
-		case (idx == 200):
+		case idx == 10:
+			plman.ShowPlaylistLockUI(id);
+			break;
+		case idx == 11:
+			plman.RemovePlaylistLock(id);
+			break;
+		case idx == 100:
 			var total = plman.PlaylistCount;
-			p.playlistManager.inputboxID = -1;
-			plman.CreateAutoPlaylist(total, "Tracks never played", "%play_counter% MISSING", "%album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", 0);
-			if (id == 0 && cPlaylistManager.mediaLibraryPlaylist) {
-				plman.MovePlaylist(total, id + 1);
-				plman.ActivePlaylist = id + 1;
-			} else {
-				plman.MovePlaylist(total, id);
-				plman.ActivePlaylist = id;
+			plman.CreatePlaylist(total, "");
+			plman.MovePlaylist(total, id);
+			plman.ActivePlaylist = id;
+			// set rename it
+			this.inputbox = new oInputbox(this.w - this.border - this.scrollbarWidth - 40, cPlaylistManager.rowHeight - 10, plman.GetPlaylistName(id), "", g_color_normal_txt, g_color_normal_bg, RGB(0, 0, 0), g_color_selected_bg & 0xccffffff, "renamePlaylist()", "p.playlistManager", 0, 12, 225);
+			this.inputboxID = id;
+			// activate box content + selection activated
+			if (cPlaylistManager.inputbox_timer) {
+				window.ClearTimeout(cPlaylistManager.inputbox_timer);
+				cPlaylistManager.inputbox_timer = false;
 			}
+			cPlaylistManager.inputbox_timer = window.SetTimeout(inputboxPlaylistManager_activate, 20);
 			break;
-		case (idx == 201):
+		case idx == 101:
 			var total = plman.PlaylistCount;
-			p.playlistManager.inputboxID = -1;
-			plman.CreateAutoPlaylist(total, "Tracks played in the last 5 days", "%last_played% DURING LAST 5 DAYS", "%last_played%", 0);
-			if (id == 0 && cPlaylistManager.mediaLibraryPlaylist) {
-				plman.MovePlaylist(total, id + 1);
-				plman.ActivePlaylist = id + 1;
-			} else {
-				plman.MovePlaylist(total, id);
-				plman.ActivePlaylist = id;
+			plman.CreateAutoPlaylist(total, "", "", "", 0);
+			plman.MovePlaylist(total, id);
+			plman.ActivePlaylist = id;
+			plman.ShowAutoPlaylistUI(id);
+			// set rename it
+			this.inputbox = new oInputbox(this.w - this.border - this.scrollbarWidth - 40, cPlaylistManager.rowHeight - 10, plman.GetPlaylistName(id), "", g_color_normal_txt, g_color_normal_bg, RGB(0, 0, 0), g_color_selected_bg & 0xccffffff, "renamePlaylist()", "p.playlistManager", 0, 12, 225);
+			this.inputboxID = id;
+			// activate box content + selection activated
+			if (cPlaylistManager.inputbox_timer) {
+				window.ClearTimeout(cPlaylistManager.inputbox_timer);
+				cPlaylistManager.inputbox_timer = false;
 			}
+			cPlaylistManager.inputbox_timer = window.SetTimeout(inputboxPlaylistManager_activate, 20);
 			break;
-		case (idx == 210):
-			var total = plman.PlaylistCount;
-			p.playlistManager.inputboxID = -1;
-			plman.CreateAutoPlaylist(total, "Tracks unrated", "%rating% MISSING", "%album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", 0);
-			if (id == 0 && cPlaylistManager.mediaLibraryPlaylist) {
-				plman.MovePlaylist(total, id + 1);
-				plman.ActivePlaylist = id + 1;
-			} else {
-				plman.MovePlaylist(total, id);
-				plman.ActivePlaylist = id;
-			}
+		case idx == 199:
+			plman.RecyclerPurge(history);
 			break;
-		case (idx == 211):
-			var total = plman.PlaylistCount;
-			p.playlistManager.inputboxID = -1;
-			plman.CreateAutoPlaylist(total, "Tracks rated 3 to 5", "%rating% GREATER 2", "%album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", 0);
-			if (id == 0 && cPlaylistManager.mediaLibraryPlaylist) {
-				plman.MovePlaylist(total, id + 1);
-				plman.ActivePlaylist = id + 1;
-			} else {
-				plman.MovePlaylist(total, id);
-				plman.ActivePlaylist = id;
-			}
-			break;
-		case (idx == 212):
-			var total = plman.PlaylistCount;
-			p.playlistManager.inputboxID = -1;
-			plman.CreateAutoPlaylist(total, "Tracks rated 4", "%rating% IS 4", "%album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", 0);
-			if (id == 0 && cPlaylistManager.mediaLibraryPlaylist) {
-				plman.MovePlaylist(total, id + 1);
-				plman.ActivePlaylist = id + 1;
-			} else {
-				plman.MovePlaylist(total, id);
-				plman.ActivePlaylist = id;
-			}
-			break;
-		case (idx == 213):
-			var total = plman.PlaylistCount;
-			p.playlistManager.inputboxID = -1;
-			plman.CreateAutoPlaylist(total, "Tracks rated 5", "%rating% IS 5", "%album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", 0);
-			if (id == 0 && cPlaylistManager.mediaLibraryPlaylist) {
-				plman.MovePlaylist(total, id + 1);
-				plman.ActivePlaylist = id + 1;
-			} else {
-				plman.MovePlaylist(total, id);
-				plman.ActivePlaylist = id;
-			}
-			break;
-		case (idx == 214):
-			var total = plman.PlaylistCount;
-			p.playlistManager.inputboxID = -1;
-			plman.CreateAutoPlaylist(total, "Loved Tracks", "%mood% GREATER 0", "%album artist% | $if(%album%,%date%,'9999') | %album% | %discnumber% | %tracknumber% | %title%", 0);
-			if (id == 0 && cPlaylistManager.mediaLibraryPlaylist) {
-				plman.MovePlaylist(total, id + 1);
-				plman.ActivePlaylist = id + 1;
-			} else {
-				plman.MovePlaylist(total, id);
-				plman.ActivePlaylist = id;
-			}
-			break;
-		case (idx == 799):
-			var pl_name = plman.GetPlaylistName(id);
-
-			// Changing the affected pattern
-			var old_pl_filter = p.list.groupby[this.playlists[id].filter_idx].playlistFilter;
-			var arr = old_pl_filter.split(";");
-			if (arr.length == 1) {
-				var new_pl_filter = "null";
-			} else {
-				var new_pl_filter = "";
-				// remove the playlist from its actual Playlist Filter
-				for (var f = 0; f < arr.length; f++) {
-					if (arr[f] != pl_name) {
-						// not the playlsit to remove from the Playlist Filter, we keep it
-						if (new_pl_filter.length == 0) {
-							new_pl_filter = arr[f];
-						} else {
-							new_pl_filter = new_pl_filter + ";" + arr[f];
-						}
-					}
-				}
-			}
-			p.list.groupby[this.playlists[id].filter_idx].playlistFilter = new_pl_filter;
-
-			p.list.saveGroupBy();
-
-			// refresh playlist
-			p.list.updateHandleList(plman.ActivePlaylist, false);
-			p.list.setItems(true);
-			p.scrollbar.setCursor(p.list.totalRowVisible, p.list.totalRows, p.list.offset);
-			p.playlistManager.refresh("", false, false, false);
-			break;
-		case (idx >= 800 && idx < 830):
-			var pl_name = plman.GetPlaylistName(id);
-			var pl_filter = p.list.groupby[idx - groupByMenuIdx].playlistFilter;
-
-			if (this.playlists[id].filter_idx != idx - groupByMenuIdx) {
-				if (this.playlists[id].filter_type == 1) {
-					// Changing the affected pattern
-					var old_pl_filter = p.list.groupby[this.playlists[id].filter_idx].playlistFilter;
-					var arr = old_pl_filter.split(";");
-					if (arr.length == 1) {
-						var new_pl_filter = "null";
-					} else {
-						var new_pl_filter = "";
-						// remove the playlist from its actual Playlist Filter
-						for (var f = 0; f < arr.length; f++) {
-							if (arr[f] != pl_name) {
-								// not the playlsit to remove from the Playlist Filter, we keep it
-								if (new_pl_filter.length == 0) {
-									new_pl_filter = arr[f];
-								} else {
-									new_pl_filter = new_pl_filter + ";" + arr[f];
-								}
-							}
-						}
-					}
-					p.list.groupby[this.playlists[id].filter_idx].playlistFilter = new_pl_filter;
-				}
-
-				// setting a pattern
-				if (pl_filter.toLowerCase() == "null") {
-					p.list.groupby[idx - groupByMenuIdx].playlistFilter = pl_name;
-				} else {
-					p.list.groupby[idx - groupByMenuIdx].playlistFilter = pl_filter + ";" + pl_name;
-				}
-			}
-
-			p.list.saveGroupBy();
-
-			// refresh playlist
-			p.list.updateHandleList(plman.ActivePlaylist, false);
-			p.list.setItems(true);
-			p.scrollbar.setCursor(p.list.totalRowVisible, p.list.totalRows, p.list.offset);
-			p.playlistManager.refresh("", false, false, false);
+		case idx > 199:
+			plman.RecyclerRestore(idx - 200);
+			plman.ActivePlaylist = plman.PlaylistCount - 1;
 			break;
 		}
 		_autoplaylist.Dispose();
 		_newplaylist.Dispose();
+		_restore.Dispose();
 		_menu.Dispose();
 		cPlaylistManager.rightClickedId = null;
 		full_repaint();
