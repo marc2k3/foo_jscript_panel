@@ -14,19 +14,24 @@ public:
 
 	BOOL OnInitDialog(CWindow, LPARAM)
 	{
-		m_check_filter_add = GetDlgItem(IDC_CHECK_FILTER_ADD);
-		m_check_filter_remove = GetDlgItem(IDC_CHECK_FILTER_REMOVE);
-		m_check_filter_reorder = GetDlgItem(IDC_CHECK_FILTER_REORDER);
-		m_check_filter_replace = GetDlgItem(IDC_CHECK_FILTER_REPLACE);
-		m_check_filter_rename = GetDlgItem(IDC_CHECK_FILTER_RENAME);
-		m_check_filter_remove_playlist = GetDlgItem(IDC_CHECK_FILTER_REMOVE_PLAYLIST);
+		const std::map<int, uint32_t> id_filter_map =
+		{
+			{ IDC_CHECK_FILTER_ADD, playlist_lock::filter_add },
+			{ IDC_CHECK_FILTER_REMOVE, playlist_lock::filter_remove },
+			{ IDC_CHECK_FILTER_REORDER, playlist_lock::filter_reorder },
+			{ IDC_CHECK_FILTER_REPLACE, playlist_lock::filter_replace },
+			{ IDC_CHECK_FILTER_RENAME, playlist_lock::filter_rename },
+			{ IDC_CHECK_FILTER_REMOVE_PLAYLIST, playlist_lock::filter_remove_playlist },
+		};
 
-		m_check_filter_add.SetCheck((m_flags & playlist_lock::filter_add));
-		m_check_filter_remove.SetCheck((m_flags & playlist_lock::filter_remove));
-		m_check_filter_reorder.SetCheck((m_flags & playlist_lock::filter_reorder));
-		m_check_filter_replace.SetCheck((m_flags & playlist_lock::filter_replace));
-		m_check_filter_rename.SetCheck((m_flags & playlist_lock::filter_rename));
-		m_check_filter_remove_playlist.SetCheck((m_flags & playlist_lock::filter_remove_playlist));
+		for (const auto& [id, filter] : id_filter_map)
+		{
+			Item item;
+			item.hwnd = GetDlgItem(id);
+			item.hwnd.SetCheck((m_flags & filter));
+			item.filter = filter;
+			m_items.emplace_back(item);
+		}
 
 		CenterWindow();
 		return TRUE;
@@ -37,12 +42,11 @@ public:
 		if (nID == IDOK)
 		{
 			uint32_t flags = 0;
-			if (m_check_filter_add.IsChecked()) flags |= playlist_lock::filter_add;
-			if (m_check_filter_remove.IsChecked()) flags |= playlist_lock::filter_remove;
-			if (m_check_filter_reorder.IsChecked()) flags |= playlist_lock::filter_reorder;
-			if (m_check_filter_replace.IsChecked()) flags |= playlist_lock::filter_replace;
-			if (m_check_filter_rename.IsChecked()) flags |= playlist_lock::filter_rename;
-			if (m_check_filter_remove_playlist.IsChecked()) flags |= playlist_lock::filter_remove_playlist;
+
+			for (const auto& [hwnd, filter] : m_items)
+			{
+				if (hwnd.IsChecked()) flags |= filter;
+			}
 
 			if (flags != m_flags)
 			{
@@ -56,7 +60,13 @@ public:
 
 
 private:
-	CCheckBox m_check_filter_add, m_check_filter_remove, m_check_filter_reorder, m_check_filter_replace, m_check_filter_rename, m_check_filter_remove_playlist;
+	struct Item
+	{
+		CCheckBox hwnd;
+		uint32_t filter = 0;
+	};
+
 	size_t m_playlistIndex = 0;
+	std::vector<Item> m_items;
 	uint32_t m_flags = 0;
 };
