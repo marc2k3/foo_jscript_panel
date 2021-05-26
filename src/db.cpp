@@ -132,11 +132,11 @@ namespace db
 					if (hashHandle(handles[0], hash))
 					{
 						const Fields f = get(hash);
-						callback.set_property(jsp::component_name, 0, "Playcount", std::to_string(f.playcount).c_str());
-						callback.set_property(jsp::component_name, 1, "Loved", std::to_string(f.loved).c_str());
-						callback.set_property(jsp::component_name, 2, "First Played", f.first_played);
-						callback.set_property(jsp::component_name, 3, "Last Played", f.last_played);
-						callback.set_property(jsp::component_name, 4, "Rating", std::to_string(f.rating).c_str());
+						if (f.playcount > 0) callback.set_property(jsp::component_name, 0, "Playcount", std::to_string(f.playcount).c_str());
+						if (f.loved > 0) callback.set_property(jsp::component_name, 1, "Loved", std::to_string(f.loved).c_str());
+						if (!f.first_played.is_empty()) callback.set_property(jsp::component_name, 2, "First Played", f.first_played);
+						if (!f.last_played.is_empty()) callback.set_property(jsp::component_name, 3, "Last Played", f.last_played);
+						if (f.rating > 0) callback.set_property(jsp::component_name, 4, "Rating", std::to_string(f.rating).c_str());
 					}
 				}
 				else
