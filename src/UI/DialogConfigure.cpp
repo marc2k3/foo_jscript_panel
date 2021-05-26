@@ -86,12 +86,14 @@ BOOL CDialogConfigure::OnInitDialog(CWindow, LPARAM)
 
 LRESULT CDialogConfigure::OnNotify(int, LPNMHDR pnmh)
 {
-	switch (pnmh->code)
+	auto code = static_cast<Notification>(pnmh->code);
+
+	switch (code)
 	{
-	case SCN_SAVEPOINTLEFT:
+	case Notification::SavePointLeft:
 		pfc::setWindowText(m_hWnd, PFC_string_formatter() << "*" << m_caption);
 		break;
-	case SCN_SAVEPOINTREACHED:
+	case Notification::SavePointReached:
 		pfc::setWindowText(m_hWnd, m_caption);
 		break;
 	}

@@ -4,6 +4,12 @@
 #include "DialogGoto.h"
 #include "EditorCtrl.h"
 
+#include <ILexer.h>
+#include <Lexilla.h>
+#include <SciLexer.h>
+#include <Scintilla.h>
+#include <ScintillaStructures.h>
+
 // Large portions taken from SciTE
 // Copyright 1998-2005 by Neil Hodgson <neilh@scintilla.org>
 
@@ -30,32 +36,6 @@ static constexpr const char* js_keywords = "abstract boolean break byte case cat
 	" operator outer rest Array Math RegExp window fb gdi utils plman console";
 
 static constexpr std::array<const int, 21> ctrlcodes = { 'Q', 'W', 'E', 'R', 'I', 'O', 'P', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'B', 'N', 'M', 186, 187, 226 };
-
-CEditorCtrl::Colour CEditorCtrl::ParseHex(const std::string& hex)
-{
-	const auto int_from_hex_digit = [](int ch)
-	{
-		if (ch >= '0' && ch <= '9')
-		{
-			return ch - '0';
-		}
-		else if (ch >= 'A' && ch <= 'F')
-		{
-			return ch - 'A' + 10;
-		}
-		else if (ch >= 'a' && ch <= 'f')
-		{
-			return ch - 'a' + 10;
-		}
-		return 0;
-	};
-
-	if (hex.length() != 7) return 0;
-	const int r = int_from_hex_digit(hex.at(1)) << 4 | int_from_hex_digit(hex.at(2));
-	const int g = int_from_hex_digit(hex.at(3)) << 4 | int_from_hex_digit(hex.at(4));
-	const int b = int_from_hex_digit(hex.at(5)) << 4 | int_from_hex_digit(hex.at(6));
-	return RGB(r, g, b);;
-}
 
 CEditorCtrl::EditorStyle CEditorCtrl::ParseStyle(const std::string& str)
 {
@@ -100,7 +80,33 @@ CEditorCtrl::IndentationStatus CEditorCtrl::GetIndentState(Line line)
 	return indentState;
 }
 
-CEditorCtrl::Line CEditorCtrl::GetCurrentLineNumber()
+Colour CEditorCtrl::ParseHex(const std::string& hex)
+{
+	const auto int_from_hex_digit = [](int ch)
+	{
+		if (ch >= '0' && ch <= '9')
+		{
+			return ch - '0';
+		}
+		else if (ch >= 'A' && ch <= 'F')
+		{
+			return ch - 'A' + 10;
+		}
+		else if (ch >= 'a' && ch <= 'f')
+		{
+			return ch - 'a' + 10;
+		}
+		return 0;
+	};
+
+	if (hex.length() != 7) return 0;
+	const int r = int_from_hex_digit(hex.at(1)) << 4 | int_from_hex_digit(hex.at(2));
+	const int g = int_from_hex_digit(hex.at(3)) << 4 | int_from_hex_digit(hex.at(4));
+	const int b = int_from_hex_digit(hex.at(5)) << 4 | int_from_hex_digit(hex.at(6));
+	return RGB(r, g, b);;
+}
+
+Line CEditorCtrl::GetCurrentLineNumber()
 {
 	return LineFromPosition(GetCurrentPos());
 }
@@ -114,7 +120,7 @@ LRESULT CEditorCtrl::OnChange(UINT, int, CWindow)
 LRESULT CEditorCtrl::OnCharAdded(LPNMHDR pnmh)
 {
 	const Range range = GetSelection();
-	const SCNotification* notification = reinterpret_cast<SCNotification*>(pnmh);
+	const NotificationData* notification = reinterpret_cast<NotificationData*>(pnmh);
 	const int ch = notification->ch;
 
 	if (range.start == range.end && range.start > 0)
@@ -182,9 +188,9 @@ LRESULT CEditorCtrl::OnCharAdded(LPNMHDR pnmh)
 
 LRESULT CEditorCtrl::OnKeyDown(UINT, WPARAM wParam, LPARAM, BOOL& bHandled)
 {
-	const int modifiers = (IsKeyPressed(VK_SHIFT) ? SCMOD_SHIFT : 0) | (IsKeyPressed(VK_CONTROL) ? SCMOD_CTRL : 0) | (IsKeyPressed(VK_MENU) ? SCMOD_ALT : 0);
+	const KeyMod modifiers = (IsKeyPressed(VK_SHIFT) ? KeyMod::Shift : KeyMod::Norm) | (IsKeyPressed(VK_CONTROL) ? KeyMod::Ctrl : KeyMod::Norm) | (IsKeyPressed(VK_MENU) ? KeyMod::Alt : KeyMod::Norm);
 
-	if (modifiers == SCMOD_CTRL)
+	if (modifiers == KeyMod::Ctrl)
 	{
 		switch (wParam)
 		{
@@ -205,7 +211,7 @@ LRESULT CEditorCtrl::OnKeyDown(UINT, WPARAM wParam, LPARAM, BOOL& bHandled)
 			break;
 		}
 	}
-	else if (wParam == VK_F3 && (modifiers == 0 || modifiers == SCMOD_SHIFT))
+	else if (wParam == VK_F3 && (modifiers == KeyMod::Norm || modifiers == KeyMod::Shift))
 	{
 		if (!DlgFindReplace || DlgFindReplace->m_find_text.is_empty())
 		{
@@ -213,11 +219,11 @@ LRESULT CEditorCtrl::OnKeyDown(UINT, WPARAM wParam, LPARAM, BOOL& bHandled)
 		}
 		else
 		{
-			if (modifiers == 0) // Next
+			if (modifiers == KeyMod::Norm) // Next
 			{
 				Find(true);
 			}
-			else if (modifiers == SCMOD_SHIFT) // Previous
+			else if (modifiers == KeyMod::Shift) // Previous
 			{
 				Find(false);
 			}
@@ -257,17 +263,17 @@ LRESULT CEditorCtrl::OnZoom(LPNMHDR)
 	return 0;
 }
 
-CEditorCtrl::Position CEditorCtrl::GetCaretInLine()
-{
-	return GetCurrentPos() - PositionFromLine(GetCurrentLineNumber());
-}
-
 CEditorCtrl::Range CEditorCtrl::GetSelection()
 {
 	Range range;
 	range.start = GetSelectionStart();
 	range.end = GetSelectionEnd();
 	return range;
+}
+
+Position CEditorCtrl::GetCaretInLine()
+{
+	return GetCurrentPos() - PositionFromLine(GetCurrentLineNumber());
 }
 
 Strings CEditorCtrl::GetLinePartsInStyle(Line line, const StyleAndWords& saw)
@@ -363,7 +369,7 @@ bool CEditorCtrl::FindBraceMatchPos(Position& braceAtCaret, Position& braceOppos
 bool CEditorCtrl::Find(bool next)
 {
 	Position pos = 0;
-	const int flags = DlgFindReplace->m_flags;
+	FindOption flags = DlgFindReplace->m_flags;
 	const string8 text = DlgFindReplace->m_find_text;
 
 	if (next)
@@ -702,33 +708,33 @@ void CEditorCtrl::FillFunctionDefinition(Position pos)
 void CEditorCtrl::Init()
 {
 	SetFnPtr();
-	SetTechnology(SC_TECHNOLOGY_DIRECTWRITE);
+	SetTechnology(Technology::DirectWrite);
 	SetBufferedDraw(false);
 
-	SetCodePage(SC_CP_UTF8);
-	SetEOLMode(SC_EOL_CRLF);
-	SetModEventMask(SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_PERFORMED_UNDO | SC_PERFORMED_REDO);
-	UsePopUp(SC_POPUP_TEXT);
+	SetCodePage(CpUtf8);
+	SetEOLMode(EndOfLine::CrLf);
+	SetModEventMask(ModificationFlags::InsertText | ModificationFlags::DeleteText | ModificationFlags::Undo | ModificationFlags::Redo);
+	UsePopUp(PopUp::Text);
 
 	for (const auto& ctrlcode : ctrlcodes)
 	{
-		ClearCmdKey(MAKELONG(ctrlcode, SCMOD_CTRL));
+		ClearCmdKey(MAKELONG(ctrlcode, KeyMod::Ctrl));
 	}
 
 	for (int i = 48; i < 122; ++i)
 	{
-		ClearCmdKey(MAKELONG(i, SCMOD_CTRL | SCMOD_SHIFT));
+		ClearCmdKey(MAKELONG(i, KeyMod::Ctrl | KeyMod::Shift));
 	}
 
 	// Shortcut keys
-	AssignCmdKey(MAKELONG(SCK_NEXT, SCMOD_CTRL), SCI_PARADOWN);
-	AssignCmdKey(MAKELONG(SCK_PRIOR, SCMOD_CTRL), SCI_PARAUP);
-	AssignCmdKey(MAKELONG(SCK_NEXT, (SCMOD_CTRL | SCMOD_SHIFT)), SCI_PARADOWNEXTEND);
-	AssignCmdKey(MAKELONG(SCK_PRIOR, (SCMOD_CTRL | SCMOD_SHIFT)), SCI_PARAUPEXTEND);
-	AssignCmdKey(MAKELONG(SCK_HOME, SCMOD_NORM), SCI_VCHOMEWRAP);
-	AssignCmdKey(MAKELONG(SCK_END, SCMOD_NORM), SCI_LINEENDWRAP);
-	AssignCmdKey(MAKELONG(SCK_HOME, SCMOD_SHIFT), SCI_VCHOMEWRAPEXTEND);
-	AssignCmdKey(MAKELONG(SCK_END, SCMOD_SHIFT), SCI_LINEENDWRAPEXTEND);
+	AssignCmdKey(MAKELONG(Keys::Next, KeyMod::Ctrl), static_cast<int>(Message::ParaDown));
+	AssignCmdKey(MAKELONG(Keys::Prior, KeyMod::Ctrl), static_cast<int>(Message::ParaUp));
+	AssignCmdKey(MAKELONG(Keys::Next, (KeyMod::Ctrl | KeyMod::Shift)), static_cast<int>(Message::ParaDownExtend));
+	AssignCmdKey(MAKELONG(Keys::Prior, (KeyMod::Ctrl | KeyMod::Shift)), static_cast<int>(Message::ParaUpExtend));
+	AssignCmdKey(MAKELONG(Keys::Home, KeyMod::Norm), static_cast<int>(Message::VCHomeWrap));
+	AssignCmdKey(MAKELONG(Keys::End, KeyMod::Norm), static_cast<int>(Message::LineEndWrap));
+	AssignCmdKey(MAKELONG(Keys::Home, KeyMod::Shift), static_cast<int>(Message::VCHomeWrapExtend));
+	AssignCmdKey(MAKELONG(Keys::End, KeyMod::Shift), static_cast<int>(Message::LineEndWrapExtend));
 
 	// Tabs and indentation
 	SetUseTabs(true);
@@ -755,17 +761,17 @@ void CEditorCtrl::Init()
 	SetMarginWidthN(2, 0);
 	SetMarginWidthN(3, 0);
 	SetMarginWidthN(4, 0);
-	SetMarginTypeN(0, SC_MARGIN_NUMBER);
+	SetMarginTypeN(0, MarginType::Number);
 
 	// Clear and reset all styles
 	ClearDocumentStyle();
 	StyleResetDefault();
 
 	// Style
-	SetCaretLineBackAlpha(SC_ALPHA_NOALPHA);
+	SetCaretLineBackAlpha(Alpha::NoAlpha);
 	SetCaretLineVisible(false);
 	SetCaretWidth(1);
-	SetSelAlpha(SC_ALPHA_NOALPHA);
+	SetSelAlpha(Alpha::NoAlpha);
 	SetSelFore(false, 0);
 
 	for (const auto& [key, value] : g_config.m_data)
@@ -792,8 +798,8 @@ void CEditorCtrl::Init()
 			if (IsNumeric(value))
 			{
 				if (key == "style.caret.width") SetCaretWidth(std::stoi(value));
-				else if (key == "style.caret.line.back.alpha") SetCaretLineBackAlpha(std::stoi(value));
-				else if (key == "style.selection.alpha") SetSelAlpha(std::stoi(value));
+				else if (key == "style.caret.line.back.alpha") SetCaretLineBackAlpha(static_cast<Alpha>(std::stoi(value)));
+				else if (key == "style.selection.alpha") SetSelAlpha(static_cast<Alpha>(std::stoi(value)));
 			}
 			else if (value.starts_with('#'))
 			{
@@ -902,7 +908,7 @@ void CEditorCtrl::ReplaceAll()
 void CEditorCtrl::SetContent(jstring text)
 {
 	SetText(text);
-	ConvertEOLs(SC_EOL_CRLF);
+	ConvertEOLs(EndOfLine::CrLf);
 	GrabFocus();
 	TrackWidth();
 }

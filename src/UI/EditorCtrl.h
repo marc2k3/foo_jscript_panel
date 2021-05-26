@@ -8,10 +8,10 @@ class CEditorCtrl : public CScintillaImpl<CEditorCtrl>
 public:
 	BEGIN_MSG_MAP_EX(CEditorCtrl)
 		MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
-		REFLECTED_NOTIFY_CODE_HANDLER_EX(SCN_UPDATEUI, OnUpdateUI)
-		REFLECTED_NOTIFY_CODE_HANDLER_EX(SCN_CHARADDED, OnCharAdded)
-		REFLECTED_NOTIFY_CODE_HANDLER_EX(SCN_ZOOM, OnZoom)
-		REFLECTED_COMMAND_CODE_HANDLER_EX(SCEN_CHANGE, OnChange)
+		REFLECTED_NOTIFY_CODE_HANDLER_EX(static_cast<int>(Notification::UpdateUI), OnUpdateUI)
+		REFLECTED_NOTIFY_CODE_HANDLER_EX(static_cast<int>(Notification::CharAdded), OnCharAdded)
+		REFLECTED_NOTIFY_CODE_HANDLER_EX(static_cast<int>(Notification::Zoom), OnZoom)
+		REFLECTED_COMMAND_CODE_HANDLER_EX(static_cast<int>(FocusChange::Change), OnChange)
 	END_MSG_MAP()
 
 	bool Find(bool next);

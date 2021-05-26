@@ -45,13 +45,13 @@ public:
 	void OnFindNext(UINT, int, CWindow);
 	void OnFindPrevious(UINT, int, CWindow);
 	void OnFindTextChange(UINT, int, CWindow);
-	void OnFlagCommand(UINT, int nID, CWindow);
+	void OnFlagCommand(UINT, int, CWindow);
 	void OnReplace(UINT, int, CWindow);
 	void OnReplaceAll(UINT, int, CWindow);
 	void OnReplaceTextChange(UINT, int, CWindow);
 	void SetMode(mode m);
 
-	int m_flags = 0;
+	FindOption m_flags = FindOption::None;
 	string8 m_find_text, m_replace_text;
 
 private:

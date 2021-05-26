@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "DialogFindReplace.h"
 
-static const std::map<int, int> flags =
+static const std::map<int, FindOption> id_option_map =
 {
-	{ IDC_CHECK_MATCHCASE, SCFIND_MATCHCASE },
-	{ IDC_CHECK_WHOLEWORD, SCFIND_WHOLEWORD },
-	{ IDC_CHECK_WORDSTART, SCFIND_WORDSTART },
-	{ IDC_CHECK_REGEXP, SCFIND_REGEXP | SCFIND_CXX11REGEX }
+	{ IDC_CHECK_MATCHCASE, FindOption::MatchCase },
+	{ IDC_CHECK_WHOLEWORD, FindOption::WholeWord },
+	{ IDC_CHECK_WORDSTART, FindOption::WordStart },
+	{ IDC_CHECK_REGEXP, FindOption::RegExp | FindOption::Cxx11RegEx }
 };
 
 static constexpr std::array ids =
@@ -99,12 +99,14 @@ void CDialogFindReplace::OnFindTextChange(UINT, int, CWindow)
 	m_window.at(IDC_BTN_REPLACE_ALL).EnableWindow(enabled);
 }
 
-void CDialogFindReplace::OnFlagCommand(UINT, int nID, CWindow)
+void CDialogFindReplace::OnFlagCommand(UINT, int, CWindow)
 {
-	if (uButton_GetCheck(m_hWnd, nID))
-		m_flags |= flags.at(nID);
-	else
-		m_flags &= ~flags.at(nID);
+	m_flags = FindOption::None;
+
+	for (const auto& [id, option] : id_option_map)
+	{
+		if (CCheckBox(GetDlgItem(id)).IsChecked()) m_flags |= option;
+	}
 }
 
 void CDialogFindReplace::OnReplace(UINT, int, CWindow)
