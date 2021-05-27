@@ -1,10 +1,9 @@
-## v2.6.0-Beta.4
+## v2.6.0
 - Add `fb.AddLocationsAsync`. Similar to `plman.AddLocations` except rather than specifiying a target playlist, you get the processed handles to a new `on_locations_added` callback.
 - Add `plman.AddPlaylistLock` / `plman.RemovePlaylistLock`. Use in conjunction with the existing `plman.IsPlaylistLocked`, `plman.GetPlaylistLockFilterMask` and `plman.GetPlaylistLockName` methods. The `on_playlists_changed` callback will be triggered when locks are added/removed. See docs for full details.
-- (Beta.2) Add `plman.ShowPlaylistLockUI`. This only works if the playlist is unlocked or the lock is owned by `JScript Panel`. Provides a popup dialog with checkboxes for toggling the various options on/off.
-- (Beta.3) Minor bug fix for `plman.ShowPlaylistLockUI` removing/adding playlist locks which triggered the `on_playlists_changed` callback even when nothing had changed.
-- (Beta.3) Update the playlist manager built in to `JSPlaylist` so it can manage playlist locks from the context menu. Additionally, full support for restoring/purging deleted playlists has been added using the `plman` `recycler` methods. Although this functionality has been in the component for a very long time, it's not been exposed in any included sample before.
-- (Beta.4) The `JScript Panel` stats section on the `Properties` dialog, `Details` tab is now hidden unless there is actual data to display.
+- Add `plman.ShowPlaylistLockUI`. This only works if the playlist is unlocked or the lock is owned by `JScript Panel`. Provides a popup dialog with checkboxes for toggling the various options on/off.
+- Update the playlist manager built in to `JSPlaylist` so it can manage playlist locks from the context menu. Additionally, full support for restoring/purging deleted playlists has been added using the `plman` `recycler` methods. Although this functionality has been in the component for a very long time, it's not been exposed in any included sample before.
+- The `JScript Panel` stats section on the `Properties` dialog, `Details` tab is now hidden unless there is actual data to display.
 
 ## v2.5.6
 - Fix crash with `utils.GetAlbumArtAsync` when it's asked to query art from radio streams. Update docs to clarify only `IMetadbHandle` `GetAlbumArt` and `utils.GetAlbumArtV2` can retrieve that type of art.
