@@ -1,6 +1,17 @@
 #include "stdafx.h"
 #include "DialogFindReplace.h"
 
+FindOption operator ~(FindOption rhs)
+{
+	return static_cast<FindOption>(~static_cast<int>(rhs));
+}
+
+FindOption& operator &=(FindOption& lhs, FindOption rhs)
+{
+	lhs = static_cast<FindOption>(static_cast<int>(lhs) & static_cast<int>(rhs));
+	return lhs;
+}
+
 static const std::map<int, FindOption> id_option_map =
 {
 	{ IDC_CHECK_MATCHCASE, FindOption::MatchCase },
@@ -99,14 +110,12 @@ void CDialogFindReplace::OnFindTextChange(UINT, int, CWindow)
 	m_window.at(IDC_BTN_REPLACE_ALL).EnableWindow(enabled);
 }
 
-void CDialogFindReplace::OnFlagCommand(UINT, int, CWindow)
+void CDialogFindReplace::OnFlagCommand(UINT, int nID, CWindow)
 {
-	m_flags = FindOption::None;
-
-	for (const auto& [id, option] : id_option_map)
-	{
-		if (CCheckBox(GetDlgItem(id)).IsChecked()) m_flags |= option;
-	}
+	if (uButton_GetCheck(m_hWnd, nID))
+		m_flags |= id_option_map.at(nID);
+	else
+		m_flags &= ~id_option_map.at(nID);
 }
 
 void CDialogFindReplace::OnReplace(UINT, int, CWindow)

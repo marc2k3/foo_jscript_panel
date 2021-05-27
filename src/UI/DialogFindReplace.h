@@ -45,7 +45,7 @@ public:
 	void OnFindNext(UINT, int, CWindow);
 	void OnFindPrevious(UINT, int, CWindow);
 	void OnFindTextChange(UINT, int, CWindow);
-	void OnFlagCommand(UINT, int, CWindow);
+	void OnFlagCommand(UINT, int nID, CWindow);
 	void OnReplace(UINT, int, CWindow);
 	void OnReplaceAll(UINT, int, CWindow);
 	void OnReplaceTextChange(UINT, int, CWindow);
