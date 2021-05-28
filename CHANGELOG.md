@@ -1,3 +1,6 @@
+## v2.6.0.1
+- Fix regression in `v2.6.0` where the [Configuration Window](https://github.com/marc2k3/foo_jscript_panel/wiki/Configuration-Window) line numbers were not shown.
+
 ## v2.6.0
 - Add `fb.AddLocationsAsync`. Similar to `plman.AddLocations` except rather than specifiying a target playlist, you get the processed handles to a new `on_locations_added` callback.
 - Add `plman.AddPlaylistLock` / `plman.RemovePlaylistLock`. Use in conjunction with the existing `plman.IsPlaylistLocked`, `plman.GetPlaylistLockFilterMask` and `plman.GetPlaylistLockName` methods. The `on_playlists_changed` callback will be triggered when locks are added/removed. See docs for full details.
@@ -104,7 +107,7 @@ https://github.com/marc2k3/foo_jscript_panel/wiki/Breaking-Changes
 - Minor sample fixes.
 
 ## v2.3.4
-- The size and position of the `Properties Window` is now remembered. In addition, the size and position of the `Configuration Window` is now shared as a global setting rather than per panel instance like it was previously.
+- The size and position of the `Properties Window` is now remembered. In addition, the size and position of the [Configuration Window](https://github.com/marc2k3/foo_jscript_panel/wiki/Configuration-Window) is now shared as a global setting rather than per panel instance like it was previously.
 - `on_size` calls are now suppressed when the panel width or height is zero.
 - Improve behaviour of `Pseudo Transparent` mode to be like older versions. Some changes were made during the `2.2.x` series that made panels not configured with the `Panel Stack Splitter` `Forced layout` option glitch more than they should.
 - The project is now [MIT licensed](https://github.com/marc2k3/foo_jscript_panel/blob/v2.5.x/LICENSE.md).
