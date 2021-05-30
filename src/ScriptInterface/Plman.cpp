@@ -16,7 +16,7 @@ STDMETHODIMP Plman::AddItemToPlaybackQueue(IMetadbHandle* handle)
 STDMETHODIMP Plman::AddLocations(UINT playlistIndex, VARIANT locations, VARIANT_BOOL select)
 {
 	auto api = playlist_manager::get();
-	auto mask = api->playlist_lock_get_filter_mask(playlistIndex);
+	const uint32_t mask = api->playlist_lock_get_filter_mask(playlistIndex);
 
 	if (playlistIndex < api->get_playlist_count() && !(mask & playlist_lock::filter_add))
 	{
@@ -24,7 +24,7 @@ STDMETHODIMP Plman::AddLocations(UINT playlistIndex, VARIANT locations, VARIANT_
 		ComArrayReader reader;
 		if (!reader.convert(locations, list)) return E_INVALIDARG;
 
-		constexpr auto flags = playlist_incoming_item_filter_v2::op_flag_no_filter | playlist_incoming_item_filter_v2::op_flag_delay_ui;
+		constexpr uint32_t flags = playlist_incoming_item_filter_v2::op_flag_no_filter | playlist_incoming_item_filter_v2::op_flag_delay_ui;
 		auto obj = fb2k::service_new<ProcessLocationsNotify>(playlistIndex, api->playlist_get_item_count(playlistIndex), to_bool(select));
 		playlist_incoming_item_filter_v2::get()->process_locations_async(list, flags, nullptr, nullptr, nullptr, obj);
 		return S_OK;

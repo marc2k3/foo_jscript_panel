@@ -36,7 +36,7 @@ BOOL CDialogProperties::OnInitDialog(CWindow, LPARAM)
 	m_btn_clear = GetDlgItem(IDC_BTN_CLEAR);
 	m_btn_export = GetDlgItem(IDC_BTN_EXPORT);
 
-	m_properties.CreateInDialog(*this, IDC_LIST_PROPERTIES);
+	m_list.CreateInDialog(*this, IDC_LIST_PROPERTIES);
 	LoadProperties();
 	return FALSE;
 }
@@ -45,7 +45,7 @@ void CDialogProperties::Apply()
 {
 	m_dup_data.clear();
 
-	for (const PropertyList::ListItem& item : m_properties.m_data)
+	for (const PropertyList::ListItem& item : m_list.m_items)
 	{
 		if (item.is_bool)
 		{
@@ -74,7 +74,7 @@ void CDialogProperties::Apply()
 
 void CDialogProperties::LoadProperties(bool reload)
 {
-	m_properties.m_data.clear();
+	m_list.m_items.clear();
 
 	if (reload)
 	{
@@ -119,19 +119,19 @@ void CDialogProperties::LoadProperties(bool reload)
 			break;
 		}
 
-		m_properties.m_data.emplace_back(item);
+		m_list.m_items.emplace_back(item);
 	}
 
-	m_properties.ReloadData();
+	m_list.ReloadData();
 
-	m_btn_clear.EnableWindow(m_properties.m_data.size());
-	m_btn_export.EnableWindow(m_properties.m_data.size());
+	m_btn_clear.EnableWindow(m_list.m_items.size());
+	m_btn_export.EnableWindow(m_list.m_items.size());
 }
 
 void CDialogProperties::OnClearBnClicked(UINT, int, CWindow)
 {
-	m_properties.SelectAll();
-	m_properties.RequestRemoveSelection();
+	m_list.SelectAll();
+	m_list.RequestRemoveSelection();
 }
 
 void CDialogProperties::OnCloseCmd(UINT, int nID, CWindow)

@@ -33,9 +33,8 @@ public:
 
 	void OnContextMenu(CWindow, CPoint point)
 	{
-		if (m_data.empty()) return;
+		if (m_items.empty()) return;
 
-		point = this->GetContextMenuPoint(point);
 		CMenu menu;
 		menu.CreatePopupMenu();
 		menu.AppendMenu(MF_STRING, ID_SELECTALL, L"Select all\tCtrl+A");
@@ -44,6 +43,7 @@ public:
 		menu.AppendMenu(MF_SEPARATOR);
 		menu.AppendMenu(GetSelectedCount() ? MF_STRING : MF_GRAYED, ID_REMOVE, L"Remove\tDel");
 
+		point = this->GetContextMenuPoint(point);
 		const int idx = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, m_hWnd, nullptr);
 		switch (idx)
 		{
@@ -74,7 +74,7 @@ public:
 
 	bool GetCellCheckState(size_t row, size_t column) const override
 	{
-		if (column == 1 && m_data[row].is_bool) return m_data[row].bool_value;
+		if (column == 1 && m_items[row].is_bool) return m_items[row].bool_value;
 		return false;
 	}
 
@@ -88,14 +88,14 @@ public:
 		switch(column)
 		{
 		case 0:
-			out = m_data[row].key;
+			out = m_items[row].key;
 			return true;
 		case 1:
-			if (m_data[row].is_bool)
+			if (m_items[row].is_bool)
 			{
 				return false;
 			}
-			out = m_data[row].value;
+			out = m_items[row].value;
 			return true;
 		default:
 			out = "";
@@ -110,7 +110,7 @@ public:
 
 	cellType_t GetCellType(size_t row, size_t column) const override
 	{
-		if (column == 1 && m_data[row].is_bool)
+		if (column == 1 && m_items[row].is_bool)
 		{
 			return &PFC_SINGLETON(CListCell_Checkbox);
 		}
@@ -122,7 +122,7 @@ public:
 
 	size_t GetItemCount() const override
 	{
-		return m_data.size();
+		return m_items.size();
 	}
 
 	void ExecuteDefaultAction(size_t) override {}
@@ -130,7 +130,7 @@ public:
 	void OnItemsRemoved(const pfc::bit_array& mask, size_t oldCount) override
 	{
 		__super::OnItemsRemoved(mask, oldCount);
-		if (m_data.empty())
+		if (m_items.empty())
 		{
 			m_btn_clear.EnableWindow(false);
 			m_btn_export.EnableWindow(false);
@@ -139,7 +139,7 @@ public:
 
 	void OnSubItemClicked(size_t row, size_t column, CPoint pt) override
 	{
-		if (column == 1 && !m_data[row].is_bool)
+		if (column == 1 && !m_items[row].is_bool)
 		{
 			TableEdit_Start(row, column);
 			return;
@@ -151,7 +151,7 @@ public:
 	{
 		const pfc::bit_array_bittable mask = GetSelectionMask();
 		const size_t old_count = GetItemCount();
-		pfc::remove_mask_t(m_data, mask);
+		pfc::remove_mask_t(m_items, mask);
 		this->OnItemsRemoved(mask, old_count);
 	}
 
@@ -159,22 +159,22 @@ public:
 
 	void SetCellCheckState(size_t row, size_t column, bool value) override
 	{
-		if (column == 1 && m_data[row].is_bool)
+		if (column == 1 && m_items[row].is_bool)
 		{
-			m_data[row].bool_value = value;
+			m_items[row].bool_value = value;
 			__super::SetCellCheckState(row, column, value);
 		}
 	}
 
 	void TableEdit_SetField(size_t row, size_t column, const char* value) override
 	{
-		if (column == 1 && !m_data[row].is_bool)
+		if (column == 1 && !m_items[row].is_bool)
 		{
-			m_data[row].value = value;
+			m_items[row].value = value;
 			ReloadItem(row);
 		}
 	}
 
 	CButton m_btn_clear, m_btn_export;
-	ListItems m_data;
+	ListItems m_items;
 };

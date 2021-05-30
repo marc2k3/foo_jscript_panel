@@ -34,5 +34,5 @@ private:
 	CDialogResizeHelper m_resizer;
 	PanelProperties::PropertyData m_dup_data;
 	PanelWindow* m_panel;
-	PropertyList m_properties;
+	PropertyList m_list;
 };
