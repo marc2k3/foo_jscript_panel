@@ -300,6 +300,7 @@ bool ScriptHost::InvokeMouseRBtnUp(VariantArgs& args)
 	const CallbackID id = CallbackID::on_mouse_rbtn_up;
 	if (Ready() && m_callback_map.contains(id))
 	{
+		std::ranges::reverse(args);
 		DISPPARAMS params = { args.data(), nullptr, args.size(), 0 };
 		_variant_t result;
 		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &result, nullptr, nullptr);
@@ -329,6 +330,7 @@ void ScriptHost::InvokeCallback(CallbackID id, VariantArgs& args)
 {
 	if (Ready() && m_callback_map.contains(id))
 	{
+		std::ranges::reverse(args);
 		DISPPARAMS params = { args.data(), nullptr, args.size(), 0 };
 		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, nullptr, nullptr, nullptr);
 	}

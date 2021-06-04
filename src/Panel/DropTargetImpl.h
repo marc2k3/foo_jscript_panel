@@ -80,7 +80,7 @@ private:
 		CPoint point(pt.x, pt.y);
 		m_panel->m_hwnd.ScreenToClient(&point);
 
-		VariantArgs args = { grfKeyState , point.y, point.x, m_action.get_ptr() };
+		VariantArgs args = { m_action.get_ptr(), point.x, point.y, grfKeyState };
 		m_panel->m_script_host->InvokeCallback(id, args);
 	}
 

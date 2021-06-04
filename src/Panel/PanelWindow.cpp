@@ -73,7 +73,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		{
 			if (m_grabfocus) m_hwnd.SetFocus();
 			m_hwnd.SetCapture();
-			VariantArgs args = { wp, GET_Y_LPARAM(lp), GET_X_LPARAM(lp) };
+			VariantArgs args = { GET_X_LPARAM(lp), GET_Y_LPARAM(lp), wp };
 			m_script_host->InvokeCallback(wm_msg_map.at(msg), args);
 			return false;
 		}
@@ -82,7 +82,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case WM_RBUTTONUP:
 		{
 			pfc::onLeaving scope([] { ReleaseCapture(); });
-			VariantArgs args = { wp, GET_Y_LPARAM(lp), GET_X_LPARAM(lp) };
+			VariantArgs args = { GET_X_LPARAM(lp), GET_Y_LPARAM(lp), wp };
 
 			if (msg == WM_RBUTTONUP)
 			{
@@ -97,7 +97,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case WM_MBUTTONDBLCLK:
 	case WM_RBUTTONDBLCLK:
 		{
-			VariantArgs args = { wp, GET_Y_LPARAM(lp), GET_X_LPARAM(lp) };
+			VariantArgs args = { GET_X_LPARAM(lp), GET_Y_LPARAM(lp), wp };
 			m_script_host->InvokeCallback(wm_msg_map.at(msg), args);
 			return false;
 		}
@@ -111,7 +111,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 				SetCursor(LoadCursor(nullptr, IDC_ARROW));
 			}
 
-			VariantArgs args = { wp, GET_Y_LPARAM(lp), GET_X_LPARAM(lp) };
+			VariantArgs args = { GET_X_LPARAM(lp), GET_Y_LPARAM(lp), wp };
 			m_script_host->InvokeCallback(CallbackID::on_mouse_move, args);
 			return false;
 		}
@@ -237,8 +237,9 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			auto data = CallbackDataReleaser<MetadbCallbackData>(wp);
 			auto handles = new ComObjectImpl<MetadbHandleList>(data->m_handles);
 
-			VariantArgs args = { handles };
+			VariantArgs args;
 			if (id == CallbackID::on_locations_added) args.emplace_back(lp); // cookie
+			args.emplace_back(handles);
 			m_script_host->InvokeCallback(id, args);
 
 			if (handles) handles->Release();
@@ -248,7 +249,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		{
 			auto data = reinterpret_cast<AsyncArtData*>(wp);
 
-			VariantArgs args = { data->m_path, data->m_bitmap,  data->m_art_id, data->m_handle };
+			VariantArgs args = { data->m_handle, data->m_art_id, data->m_bitmap, data->m_path };
 			m_script_host->InvokeCallback(id, args);
 			return true;
 		}
@@ -256,7 +257,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		{
 			auto data = reinterpret_cast<AsyncImageData*>(wp);
 
-			VariantArgs args = { data->m_path, data->m_bitmap, data->m_cookie };
+			VariantArgs args = { data->m_cookie, data->m_bitmap, data->m_path };
 			m_script_host->InvokeCallback(id, args);
 			return true;
 		}

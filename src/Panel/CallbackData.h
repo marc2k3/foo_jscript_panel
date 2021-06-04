@@ -2,10 +2,7 @@
 
 struct CallbackData : public pfc::refcounted_object_root
 {
-	CallbackData(const VariantArgs& args) : m_args(args)
-	{
-		std::ranges::reverse(m_args);
-	}
+	CallbackData(const VariantArgs& args) : m_args(args) {}
 
 	VariantArgs m_args;
 };
