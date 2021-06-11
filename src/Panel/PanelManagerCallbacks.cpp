@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "CallbackData.h"
 #include "PanelManager.h"
-
 #include "PlaylistLock.h"
+
+#include <Scintilla.h>
 
 namespace
 {
@@ -76,6 +77,9 @@ namespace
 		{
 			apply_playlist_locks();
 
+			HINSTANCE ins = core_api::get_my_instance();
+			Scintilla_RegisterClasses(ins);
+
 			now_playing_album_art_notify_manager::get()->add(this);
 			output_manager_v2::get()->addCallback(this);
 			replaygain_manager_v2::get()->add_notify(this);
@@ -84,6 +88,8 @@ namespace
 
 		void on_quit() override
 		{
+			Scintilla_ReleaseResources();
+
 			now_playing_album_art_notify_manager::get()->remove(this);
 			output_manager_v2::get()->removeCallback(this);
 			replaygain_manager_v2::get()->remove_notify(this);
