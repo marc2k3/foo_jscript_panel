@@ -237,7 +237,7 @@ STDMETHODIMP GdiBitmap::StackBlur(UINT8 radius)
 		uint8_t* src = static_cast<uint8_t*>(bmpdata.Scan0);
 		const uint32_t cores = std::max(1U, std::thread::hardware_concurrency());
 		const uint32_t div = (radius * 2) + 1;
-		std::vector<uint8_t> stack(div * 4 * cores);
+		ImageBuffer stack(div * 4 * cores);
 
 		std::vector<std::thread> workers(cores);
 

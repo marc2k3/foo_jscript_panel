@@ -33,6 +33,7 @@ namespace Gdiplus
 #include <libPPUI/gdiplus_helpers.h>
 #include <json.hpp>
 
+using ImageBuffer = std::vector<uint8_t>;
 using Strings = std::vector<std::string>;
 using WStrings = std::vector<std::wstring>;
 using json = nlohmann::json;

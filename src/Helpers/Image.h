@@ -11,14 +11,10 @@ class ImageHelper
 public:
 	ImageHelper(const std::wstring& path) : m_path(path) {}
 
-	static bool is_webp(const void* data, size_t bytes)
-	{
-		if (bytes < 12) return false;
-		return memcmp(data, "RIFF", 4) == 0 && memcmp((const char*)data + 8, "WEBP", 4) == 0;
-	}
-
 	static IGdiBitmap* webp_to_bitmap(const uint8_t* data, size_t bytes)
 	{
+		if (bytes < 12 || memcmp(data, "RIFF", 4) != 0 || memcmp((const char*)data + 8, "WEBP", 4) != 0) return nullptr;
+	
 		WebPBitstreamFeatures bs;
 		if (WebPGetFeatures(data, bytes, &bs) == VP8_STATUS_OK)
 		{
@@ -55,6 +51,20 @@ public:
 		return nullptr;
 	}
 
+	static bool istream_to_buffer(IStream* stream, ImageBuffer& buffer)
+	{
+		STATSTG sts;
+		if (SUCCEEDED(stream->Stat(&sts, STATFLAG_DEFAULT)))
+		{
+			const DWORD bytes = sts.cbSize.LowPart;
+			buffer.resize(bytes);
+			ULONG bytes_read = 0;
+			stream->Read(buffer.data(), bytes, &bytes_read);
+			return bytes == bytes_read;
+		}
+		return false;
+	}
+
 	IGdiBitmap* load()
 	{
 		pfc::com_ptr_t<IStream> stream;
@@ -67,17 +77,10 @@ public:
 			}
 			else
 			{
-				STATSTG sts;
-				if (SUCCEEDED(stream->Stat(&sts, STATFLAG_DEFAULT)))
+				ImageBuffer buffer;
+				if (istream_to_buffer(stream.get_ptr(), buffer))
 				{
-					const DWORD bytes = sts.cbSize.LowPart;
-					std::vector<uint8_t> ptr(bytes);
-					ULONG bytes_read = 0;
-
-					if (SUCCEEDED(stream->Read(ptr.data(), bytes, &bytes_read)) && is_webp(ptr.data(), bytes))
-					{
-						return webp_to_bitmap(ptr.data(), bytes);
-					}
+					return webp_to_bitmap(buffer.data(), buffer.size());
 				}
 			}
 		}
@@ -115,7 +118,7 @@ namespace AlbumArt
 				{
 					return new ComObjectImpl<GdiBitmap>(std::move(bitmap));
 				}
-				else if (ImageHelper::is_webp(ptr, bytes))
+				else
 				{
 					return ImageHelper::webp_to_bitmap(ptr, bytes);
 				}

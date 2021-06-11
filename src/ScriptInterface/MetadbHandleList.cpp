@@ -43,22 +43,15 @@ STDMETHODIMP MetadbHandleList::AttachImage(BSTR path, UINT art_id)
 	pfc::com_ptr_t<IStream> stream;
 	if (SUCCEEDED(SHCreateStreamOnFileEx(path, STGM_READ | STGM_SHARE_DENY_WRITE, GENERIC_READ, FALSE, nullptr, stream.receive_ptr())))
 	{
-		STATSTG sts;
-		if (SUCCEEDED(stream->Stat(&sts, STATFLAG_DEFAULT)))
+		ImageBuffer buffer;
+		if (ImageHelper::istream_to_buffer(stream.get_ptr(), buffer))
 		{
-			const DWORD bytes = sts.cbSize.LowPart;
-			std::vector<uint8_t> ptr(bytes);
-			ULONG bytes_read = 0;
+			album_art_data_ptr data = album_art_data_impl::g_create(buffer.data(), buffer.size());
 
-			if (SUCCEEDED(stream->Read(ptr.data(), bytes, &bytes_read)))
+			if (data.is_valid())
 			{
-				album_art_data_ptr data = album_art_data_impl::g_create(ptr.data(), bytes);
-
-				if (data.is_valid())
-				{
-					auto cb = fb2k::service_new<Embed>(m_handles, art_id, data);
-					threaded_process::get()->run_modeless(cb, flags, core_api::get_main_window(), "Embedding image...");
-				}
+				auto cb = fb2k::service_new<Embed>(m_handles, art_id, data);
+				threaded_process::get()->run_modeless(cb, flags, core_api::get_main_window(), "Embedding image...");
 			}
 		}
 	}
