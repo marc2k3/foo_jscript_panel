@@ -768,12 +768,6 @@ void CEditorCtrl::Init()
 	StyleResetDefault();
 
 	// Style
-	SetCaretLineBackAlpha(Alpha::NoAlpha);
-	SetCaretLineVisible(false);
-	SetCaretWidth(1);
-	SetSelAlpha(Alpha::NoAlpha);
-	SetSelFore(false, 0);
-
 	for (const auto& [key, value] : g_config.m_data)
 	{
 		if (value.empty()) continue;
@@ -793,34 +787,20 @@ void CEditorCtrl::Init()
 				if (id == STYLE_DEFAULT) StyleClearAll();
 			}
 		}
-		else
+		else if (value.starts_with('#'))
 		{
-			if (IsNumeric(value))
+			ColourAlpha colour = 0xff000000 | ParseHex(value);
+			if (key == "style.caret.fore")
 			{
-				if (key == "style.caret.width") SetCaretWidth(std::stoi(value));
-				else if (key == "style.caret.line.back.alpha") SetCaretLineBackAlpha(static_cast<Alpha>(std::stoi(value)));
-				else if (key == "style.selection.alpha") SetSelAlpha(static_cast<Alpha>(std::stoi(value)));
+				SetElementColour(Element::Caret, colour);
 			}
-			else if (value.starts_with('#'))
+			else if (key == "style.selection.back")
 			{
-				if (key == "style.caret.fore")
-				{
-					SetCaretFore(ParseHex(value));
-				}
-				else if (key == "style.caret.line.back")
-				{
-					SetCaretLineVisible(true);
-					SetCaretLineBack(ParseHex(value));
-				}
-				else if (key == "style.selection.fore")
-				{
-					SetSelFore(true, ParseHex(value));
-					SetSelBack(true, RGB(0xc0, 0xc0, 0xc0));
-				}
-				else if (key == "style.selection.back")
-				{
-					SetSelBack(true, ParseHex(value));
-				}
+				SetSelectionLayer(Layer::UnderText);
+				SetElementColour(Element::SelectionBack, colour);
+				SetElementColour(Element::SelectionAdditionalBack, colour);
+				SetElementColour(Element::SelectionInactiveBack, colour);
+				SetElementColour(Element::SelectionSecondaryBack, colour);
 			}
 		}
 	}

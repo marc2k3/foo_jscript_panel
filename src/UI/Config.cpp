@@ -13,13 +13,8 @@ static const Config::KeyValues init_table =
 	{"style.linenumber", "font:Consolas,size:9,fore:#2B91AF"},
 	{"style.bracelight", "bold,fore:#000000,back:#FFEE62"},
 	{"style.bracebad", "bold,fore:#FF0000"},
-	{"style.selection.fore", ""},
-	{"style.selection.back", ""},
-	{"style.selection.alpha", "256"},
 	{"style.caret.fore", ""},
-	{"style.caret.width", "1"},
-	{"style.caret.line.back", ""},
-	{"style.caret.line.back.alpha", "256"}
+	{"style.selection.back", "#C0C0C0"},
 };
 
 Config g_config(guids::config);
