@@ -295,7 +295,7 @@ std::unique_ptr<Gdiplus::Bitmap> GdiBitmap::resize(uint32_t w, uint32_t h, Gdipl
 	Gdiplus::Graphics g(bitmap.get());
 	g.SetInterpolationMode(interpolation_mode);
 	g.DrawImage(m_bitmap.get(), 0, 0, w, h);
-	return std::move(bitmap);
+	return bitmap;
 }
 
 void GdiBitmap::FinalRelease()

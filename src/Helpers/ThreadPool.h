@@ -47,7 +47,7 @@ public:
 			task_queue_empty = true;
 			ResetEvent(have_task);
 		}
-		return std::move(task);
+		return task;
 	}
 
 	void add_task(Task task)
