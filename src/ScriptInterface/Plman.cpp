@@ -462,7 +462,7 @@ STDMETHODIMP Plman::RemovePlaylist(UINT playlistIndex, VARIANT_BOOL* out)
 STDMETHODIMP Plman::RemovePlaylistLock(UINT playlistIndex, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
-	
+
 	const size_t count = playlist_manager::get()->get_playlist_count();
 
 	if (playlistIndex < count)

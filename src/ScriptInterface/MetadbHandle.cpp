@@ -42,7 +42,7 @@ STDMETHODIMP MetadbHandle::GetAlbumArt(UINT art_id, VARIANT_BOOL need_stub, VARI
 	string8 image_path;
 	album_art_data_ptr data = AlbumArt::get(m_handle, art_id, to_bool(need_stub), image_path);
 	_variant_t var = AlbumArt::data_to_bitmap(data);
-	
+
 	ComArrayWriter writer;
 	if (!writer.create(2)) return E_OUTOFMEMORY;
 	if (!writer.put_item(0, var)) return E_OUTOFMEMORY;

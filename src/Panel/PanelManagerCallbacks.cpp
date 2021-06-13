@@ -94,6 +94,7 @@ namespace
 			output_manager_v2::get()->removeCallback(this);
 			replaygain_manager_v2::get()->remove_notify(this);
 			ui_selection_manager_v2::get()->unregister_callback(this);
+
 			PanelManager::instance().unload_all();
 		}
 

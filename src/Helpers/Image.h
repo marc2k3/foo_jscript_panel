@@ -14,7 +14,7 @@ public:
 	static IGdiBitmap* webp_to_bitmap(const uint8_t* data, size_t bytes)
 	{
 		if (bytes < 12 || memcmp(data, "RIFF", 4) != 0 || memcmp((const char*)data + 8, "WEBP", 4) != 0) return nullptr;
-	
+
 		WebPBitstreamFeatures bs;
 		if (WebPGetFeatures(data, bytes, &bs) == VP8_STATUS_OK)
 		{

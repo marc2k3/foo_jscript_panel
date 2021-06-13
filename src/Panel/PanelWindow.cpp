@@ -89,7 +89,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 				if (IsKeyPressed(VK_LSHIFT) && IsKeyPressed(VK_LWIN)) return false;
 				return m_script_host->InvokeMouseRBtnUp(args);
 			}
-			
+
 			m_script_host->InvokeCallback(wm_msg_map.at(msg), args);
 			return false;
 		}
