@@ -27,64 +27,63 @@
 #define IDD_DIALOG_PROPERTIES           115
 #define IDD_DIALOG_PLAYLIST_LOCK        116
 
-// preferences
+// DialogPreferences
 #define IDC_LIST_PREFERENCES            120
 #define IDC_BTN_PRESETS                 121
 #define IDC_HEADER                      122
 
-// property_ctrl
-#define ID_SELECTALL                    130
-#define ID_SELECTNONE                   131
-#define ID_INVERTSEL                    132
-#define ID_REMOVE                       133
+// DialogConfigure
+#define IDC_SCINTILLA                   130
+#define IDC_BTN_RESET                   131
+#define IDC_LABEL_EDGE                  132
+#define IDC_COMBO_EDGE                  133
+#define IDC_CHECK_PSEUDO_TRANSPARENT    134
 
-// ui_configure
-#define IDC_SCINTILLA                   140
-#define IDC_BTN_RESET                   141
-#define IDC_LABEL_EDGE                  142
-#define IDC_COMBO_EDGE                  143
-#define IDC_CHECK_PSEUDO_TRANSPARENT    144
+// DialogGoto
+#define IDC_EDIT_LINE_NUMBER            140
 
-// ui_goto
-#define IDC_EDIT_LINE_NUMBER            150
+// DialogInputBox
+#define IDC_LABEL_PROMPT                150
+#define IDC_EDIT_VALUE                  151
 
-// ui_input_box
-#define IDC_LABEL_PROMPT                160
-#define IDC_EDIT_VALUE                  161
+// DialogProperties
+#define IDC_LIST_PROPERTIES             160
+#define IDC_BTN_CLEAR                   161
 
-// ui_properties
-#define IDC_LIST_PROPERTIES             170
-#define IDC_BTN_CLEAR                   171
+// DialogFindReplace
+#define IDC_EDIT_FIND                   170
+#define IDC_EDIT_REPLACE                171
+#define IDC_CHECK_MATCHCASE             172
+#define IDC_CHECK_WHOLEWORD             173
+#define IDC_CHECK_WORDSTART             174
+#define IDC_CHECK_REGEXP                175
+#define IDC_BTN_NEXT                    176
+#define IDC_BTN_PREVIOUS                177
+#define IDC_BTN_REPLACE                 178
+#define IDC_BTN_REPLACE_ALL             179
+#define IDC_LABEL_REPLACE               180
 
-// ui_find_replace
-#define IDC_EDIT_FIND                   180
-#define IDC_EDIT_REPLACE                181
-#define IDC_CHECK_MATCHCASE             182
-#define IDC_CHECK_WHOLEWORD             183
-#define IDC_CHECK_WORDSTART             184
-#define IDC_CHECK_REGEXP                185
-#define IDC_BTN_NEXT                    186
-#define IDC_BTN_PREVIOUS                187
-#define IDC_BTN_REPLACE                 188
-#define IDC_BTN_REPLACE_ALL             189
-#define IDC_LABEL_REPLACE               190
+// DialogPlaylistLock
+#define IDC_CHECK_FILTER_ADD            190
+#define IDC_CHECK_FILTER_REMOVE         191
+#define IDC_CHECK_FILTER_REORDER        192
+#define IDC_CHECK_FILTER_REPLACE        193
+#define IDC_CHECK_FILTER_RENAME         194
+#define IDC_CHECK_FILTER_REMOVE_PLAYLIST 195
 
-// ui_playlist_lock
-#define IDC_CHECK_FILTER_ADD            200
-#define IDC_CHECK_FILTER_REMOVE         201
-#define IDC_CHECK_FILTER_REORDER        202
-#define IDC_CHECK_FILTER_REPLACE        203
-#define IDC_CHECK_FILTER_RENAME         204
-#define IDC_CHECK_FILTER_REMOVE_PLAYLIST 205
+// PropertyList
+#define ID_SELECTALL                    200
+#define ID_SELECTNONE                   201
+#define ID_INVERTSEL                    202
+#define ID_REMOVE                       203
 
-// menu
-#define IDR_MENU                        300
+// Menu
+#define IDR_MENU                        204
+#define ID_FILE_IMPORT                  205
+#define ID_FILE_EXPORT                  206
 
-#define ID_FILE_IMPORT                  401
-#define ID_FILE_EXPORT                  402
+#define ID_SAMPLES_BEGIN                300
+#define ID_SAMPLES_END                  399
 
-#define ID_SAMPLES_BEGIN                500
-#define ID_SAMPLES_END                  599
-
-#define ID_DOCS_BEGIN                   600
-#define ID_DOCS_END                     699
+#define ID_DOCS_BEGIN                   400
+#define ID_DOCS_END                     499
