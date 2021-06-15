@@ -26,8 +26,8 @@ private:
 
 	HANDLE m_timer_queue;
 	TimerMap m_timer_map;
-	std::set<CWindow> m_hwnds;
 	std::mutex m_mutex;
+	std::set<CWindow> m_hwnds;
 	uint32_t m_cur_timer_id = 0;
 
 	PFC_CLASS_NOT_COPYABLE_EX(PanelManager)

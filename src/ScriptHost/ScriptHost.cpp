@@ -19,11 +19,10 @@ DWORD ScriptHost::GenerateSourceContext(const std::wstring& path)
 
 HRESULT ScriptHost::Initialise()
 {
-	IActiveScriptParsePtr parser;
 	HRESULT hr = InitScriptEngine();
 	if (SUCCEEDED(hr)) hr = m_script_engine->SetScriptSite(this);
-	if (SUCCEEDED(hr)) hr = m_script_engine->QueryInterface(&parser);
-	if (SUCCEEDED(hr)) hr = parser->InitNew();
+	if (SUCCEEDED(hr)) hr = m_script_engine->QueryInterface(m_parser.receive_ptr());
+	if (SUCCEEDED(hr)) hr = m_parser->InitNew();
 	if (SUCCEEDED(hr)) hr = m_script_engine->AddNamedItem(L"console", SCRIPTITEM_ISVISIBLE);
 	if (SUCCEEDED(hr)) hr = m_script_engine->AddNamedItem(L"fb", SCRIPTITEM_ISVISIBLE);
 	if (SUCCEEDED(hr)) hr = m_script_engine->AddNamedItem(L"gdi", SCRIPTITEM_ISVISIBLE);
@@ -31,8 +30,8 @@ HRESULT ScriptHost::Initialise()
 	if (SUCCEEDED(hr)) hr = m_script_engine->AddNamedItem(L"utils", SCRIPTITEM_ISVISIBLE);
 	if (SUCCEEDED(hr)) hr = m_script_engine->AddNamedItem(L"window", SCRIPTITEM_ISVISIBLE);
 	if (SUCCEEDED(hr)) hr = m_script_engine->SetScriptState(SCRIPTSTATE_CONNECTED);
-	if (SUCCEEDED(hr)) hr = m_script_engine->GetScriptDispatch(nullptr, &m_script_root);
-	if (SUCCEEDED(hr)) hr = ParseScripts(parser);
+	if (SUCCEEDED(hr)) hr = m_script_engine->GetScriptDispatch(nullptr, m_script_root.receive_ptr());
+	if (SUCCEEDED(hr)) hr = ParseScripts();
 	if (SUCCEEDED(hr)) hr = InitCallbackMap();
 
 	m_engine_inited = SUCCEEDED(hr);
@@ -43,7 +42,7 @@ HRESULT ScriptHost::Initialise()
 HRESULT ScriptHost::InitCallbackMap()
 {
 	m_callback_map.clear();
-	if (!m_script_root) return E_POINTER;
+	if (m_script_root.is_empty()) return E_POINTER;
 	for (const auto& [id, name] : CallbackIDNames)
 	{
 		auto cname = const_cast<LPOLESTR>(name.data());
@@ -76,23 +75,21 @@ HRESULT ScriptHost::InitScriptEngine()
 {
 	static constexpr CLSID jscript9clsid = { 0x16d51579, 0xa30b, 0x4c8b,{ 0xa2, 0x76, 0x0f, 0xf4, 0xdc, 0x41, 0xe7, 0x55 } };
 	static constexpr DWORD classContext = CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER;
+	_variant_t version = static_cast<LONG>(SCRIPTLANGUAGEVERSION_5_8 + 1);
 
-	if (FAILED(m_script_engine.CreateInstance(jscript9clsid, nullptr, classContext)))
+	if (FAILED(CoCreateInstance(jscript9clsid, nullptr, classContext, IID_PPV_ARGS(m_script_engine.receive_ptr()))))
 	{
 		FB2K_console_formatter() << jsp::component_name << ": This component requires a system with IE9 or later.";
 		return E_FAIL;
 	}
 
-	IActiveScriptProperty* pActScriProp = nullptr;
-	_variant_t scriptLangVersion = static_cast<LONG>(SCRIPTLANGUAGEVERSION_5_8 + 1);
-
-	m_script_engine->QueryInterface(IID_IActiveScriptProperty, reinterpret_cast<void**>(&pActScriProp));
-	pActScriProp->SetProperty(SCRIPTPROP_INVOKEVERSIONING, nullptr, &scriptLangVersion);
-	pActScriProp->Release();
+	pfc::com_ptr_t<IActiveScriptProperty> script_property;
+	m_script_engine->QueryInterface(script_property.receive_ptr());
+	script_property->SetProperty(SCRIPTPROP_INVOKEVERSIONING, nullptr, &version);
 	return S_OK;
 }
 
-HRESULT ScriptHost::ParseScripts(IActiveScriptParsePtr& parser)
+HRESULT ScriptHost::ParseScripts()
 {
 	std::wstring path;
 	string8 code;
@@ -120,7 +117,7 @@ HRESULT ScriptHost::ParseScripts(IActiveScriptParsePtr& parser)
 		}
 
 		const DWORD source_context = GenerateSourceContext(path);
-		if (FAILED(parser->ParseScriptText(to_wide(code).data(), nullptr, nullptr, nullptr, source_context, 0, SCRIPTTEXT_HOSTMANAGESSOURCE | SCRIPTTEXT_ISVISIBLE, nullptr, nullptr)))
+		if (FAILED(m_parser->ParseScriptText(to_wide(code).data(), nullptr, nullptr, nullptr, source_context, 0, SCRIPTTEXT_HOSTMANAGESSOURCE | SCRIPTTEXT_ISVISIBLE, nullptr, nullptr)))
 		{
 			return E_FAIL;
 		}
@@ -271,7 +268,7 @@ STDMETHODIMP ScriptHost::OnScriptError(IActiveScriptError* err)
 			popup_message::g_show(formatter, PFC_string_formatter() << jsp::component_name << " v" << jsp::component_version);
 		});
 
-	if (m_script_engine) m_script_engine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
+	m_script_engine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
 
 	MessageBeep(MB_ICONASTERISK);
 
@@ -314,7 +311,7 @@ bool ScriptHost::InvokeMouseRBtnUp(VariantArgs& args)
 
 bool ScriptHost::Ready()
 {
-	return m_script_root && m_engine_inited && m_script_engine;
+	return m_script_engine.is_valid() && m_script_root.is_valid() && m_engine_inited;
 }
 
 void ScriptHost::InvokeCallback(CallbackID id)
@@ -340,11 +337,10 @@ void ScriptHost::Stop()
 {
 	if (Ready())
 	{
-		IActiveScriptGarbageCollector* gc = nullptr;
-		if (SUCCEEDED(m_script_engine->QueryInterface(IID_IActiveScriptGarbageCollector, reinterpret_cast<void**>(&gc))))
+		pfc::com_ptr_t<IActiveScriptGarbageCollector> gc;
+		if (SUCCEEDED(m_script_engine->QueryInterface(gc.receive_ptr())))
 		{
 			gc->CollectGarbage(SCRIPTGCTYPE_EXHAUSTIVE);
-			gc->Release();
 		}
 
 		m_script_engine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
@@ -356,13 +352,13 @@ void ScriptHost::Stop()
 	m_context_to_path_map.clear();
 	m_callback_map.clear();
 
-	if (m_script_engine)
+	if (m_script_engine.is_valid())
 	{
-		m_script_engine.Release();
+		m_script_engine.release();
 	}
 
-	if (m_script_root)
+	if (m_script_root.is_valid())
 	{
-		m_script_root.Release();
+		m_script_root.release();
 	}
 }

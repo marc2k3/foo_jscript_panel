@@ -1,8 +1,6 @@
 #pragma once
 #include "ScriptInfo.h"
 
-_COM_SMARTPTR_TYPEDEF(IActiveScriptParse, IID_IActiveScriptParse);
-
 class ScriptHost : public ImplementCOMRefCounter<IActiveScriptSite>
 {
 public:
@@ -29,23 +27,27 @@ public:
 	ScriptInfo m_info;
 
 private:
+	using CallbackMap = std::unordered_map<CallbackID, DISPID>;
+	using ContextPathMap = std::unordered_map<DWORD, std::wstring>;
+
 	DWORD GenerateSourceContext(const std::wstring& path);
 	HRESULT InitCallbackMap();
 	HRESULT InitScriptEngine();
-	HRESULT ParseScripts(IActiveScriptParsePtr& parser);
+	HRESULT ParseScripts();
 
+	CallbackMap m_callback_map;
+	ContextPathMap m_context_to_path_map;
 	DWORD m_last_source_context = 0;
-	IActiveScriptPtr m_script_engine;
-	IDispatchPtr m_script_root;
+	PanelWindow* m_panel;
 	bool m_engine_inited = false;
 	bool m_has_error = false;
 	pfc::com_ptr_t<Console> m_console;
 	pfc::com_ptr_t<Fb> m_fb;
 	pfc::com_ptr_t<Gdi> m_gdi;
+	pfc::com_ptr_t<IActiveScript> m_script_engine;
+	pfc::com_ptr_t<IActiveScriptParse32> m_parser;
+	pfc::com_ptr_t<IDispatch> m_script_root;
 	pfc::com_ptr_t<Plman> m_plman;
 	pfc::com_ptr_t<Utils> m_utils;
 	pfc::com_ptr_t<Window> m_window;
-	PanelWindow* m_panel;
-	std::unordered_map<DWORD, std::wstring> m_context_to_path_map;
-	std::unordered_map<CallbackID, DISPID> m_callback_map;
 };

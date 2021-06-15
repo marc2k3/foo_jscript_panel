@@ -4,7 +4,8 @@
 class PanelTimer
 {
 public:
-	PanelTimer(CWindow hwnd, IDispatch* pdisp, uint32_t delay, bool execute_once, uint32_t id) : m_hwnd(hwnd)
+	PanelTimer(CWindow hwnd, IDispatch* pdisp, uint32_t delay, bool execute_once, uint32_t id)
+		: m_hwnd(hwnd)
 		, m_pdisp(pdisp)
 		, m_delay(delay)
 		, m_execute_once(execute_once)
@@ -74,6 +75,6 @@ private:
 	HANDLE m_handle = nullptr;
 	IDispatch* m_pdisp = nullptr;
 	bool m_execute_once = false;
-	uint32_t m_delay = 0, m_id = 0;
 	std::atomic_bool m_stop_requested = false, m_stopped = false;
+	uint32_t m_delay = 0, m_id = 0;
 };
