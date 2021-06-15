@@ -16,17 +16,16 @@ public:
 		if (bytes < 12 || memcmp(data, "RIFF", 4) != 0 || memcmp((const char*)data + 8, "WEBP", 4) != 0) return nullptr;
 
 		WebPBitstreamFeatures bs;
-		int width = 0, height = 0;
-
-		if (WebPGetFeatures(data, bytes, &bs) == VP8_STATUS_OK && WebPGetInfo(data, bytes, &width, &height))
+		if (WebPGetFeatures(data, bytes, &bs) == VP8_STATUS_OK)
 		{
-			const Gdiplus::PixelFormat pf = bs.has_alpha ? PixelFormat32bppARGB : PixelFormat32bppRGB;
-			auto bitmap = std::make_unique<Gdiplus::Bitmap>(width, height, pf);
+			const int width = bs.width;
+			const int height = bs.height;
+			auto bitmap = std::make_unique<Gdiplus::Bitmap>(width, height, PixelFormat32bppARGB);
 			if (ensure_gdiplus_object(bitmap))
 			{
 				const Gdiplus::Rect rect(0, 0, width, height);
 				Gdiplus::BitmapData bmpdata;
-				if (bitmap->LockBits(&rect, Gdiplus::ImageLockModeRead | Gdiplus::ImageLockModeWrite, pf, &bmpdata) == Gdiplus::Ok)
+				if (bitmap->LockBits(&rect, Gdiplus::ImageLockModeRead | Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, &bmpdata) == Gdiplus::Ok)
 				{
 					if (WebPDecodeBGRAInto(data, bytes, static_cast<uint8_t*>(bmpdata.Scan0), bmpdata.Stride * height, bmpdata.Stride))
 					{
