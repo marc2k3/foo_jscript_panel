@@ -2254,7 +2254,8 @@ interface IMetadbHandleList {
 
 		BSearch(handle) (int)
 		/*
-		Should be faster than Find() but the order of the handle list is not preserved.
+		Returns a value >= 0 on success. Should be faster than Find() but the order of the handle list is not
+		preserved and duplicates will be removed.
 		Returns -1 on failure.
 		*/
 
@@ -2292,8 +2293,9 @@ interface IMetadbHandleList {
 
 		Find(handle) (int)
 		/*
-		Returns position of handle or -1 on failure.
-		BSearch may be faster but the original order of the handle list won't be preserved.
+		Returns position of handle or -1 on failure. The handle list is preserved as-is.
+		BSearch may be faster but the original order of the handle list is not preserved and
+		duplicates will be removed.
 		*/
 
 		GetLibraryRelativePaths() (VBArray)
