@@ -47,8 +47,7 @@ public:
 			const DWORD bytes = sts.cbSize.LowPart;
 			buffer.resize(bytes);
 			ULONG bytes_read = 0;
-			stream->Read(buffer.data(), bytes, &bytes_read);
-			return bytes == bytes_read;
+			return SUCCEEDED(stream->Read(buffer.data(), bytes, &bytes_read)) && bytes == bytes_read;
 		}
 		return false;
 	}
