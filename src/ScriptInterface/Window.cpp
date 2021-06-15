@@ -1,20 +1,19 @@
 #include "stdafx.h"
 #include "Window.h"
 #include "PanelManager.h"
-#include "PanelTimerDispatcher.h"
 #include "PanelWindow.h"
 
 Window::Window(PanelWindow* panel) : m_panel(panel) {}
 
 STDMETHODIMP Window::ClearInterval(UINT id)
 {
-	PanelTimerDispatcher::instance().request_stop(m_panel->m_hwnd, id);
+	PanelManager::instance().request_stop(m_panel->m_hwnd, id);
 	return S_OK;
 }
 
 STDMETHODIMP Window::ClearTimeout(UINT id)
 {
-	PanelTimerDispatcher::instance().request_stop(m_panel->m_hwnd, id);
+	PanelManager::instance().request_stop(m_panel->m_hwnd, id);
 	return S_OK;
 }
 
@@ -155,7 +154,7 @@ STDMETHODIMP Window::SetInterval(IDispatch* func, UINT delay, UINT* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = PanelTimerDispatcher::instance().create_timer(m_panel->m_hwnd, func, delay, false);
+	*out = PanelManager::instance().create_timer(m_panel->m_hwnd, func, delay, false);
 	return S_OK;
 }
 
@@ -169,7 +168,7 @@ STDMETHODIMP Window::SetTimeout(IDispatch* func, UINT delay, UINT* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = PanelTimerDispatcher::instance().create_timer(m_panel->m_hwnd, func, delay, true);
+	*out = PanelManager::instance().create_timer(m_panel->m_hwnd, func, delay, true);
 	return S_OK;
 }
 

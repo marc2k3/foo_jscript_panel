@@ -3,7 +3,6 @@
 #include "DialogProperties.h"
 #include "DropTargetImpl.h"
 #include "PanelManager.h"
-#include "PanelTimerDispatcher.h"
 #include "PanelWindow.h"
 
 static const std::map<size_t, CallbackID> wm_msg_map =
@@ -156,7 +155,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		redraw(true);
 		return true;
 	case jsp::uwm_timer:
-		PanelTimerDispatcher::instance().invoke_message(wp);
+		PanelManager::instance().invoke_message(wp);
 		return true;
 	case jsp::uwm_unload:
 		unload_script();
@@ -524,7 +523,7 @@ void PanelWindow::unload_script()
 	m_script_host->InvokeCallback(CallbackID::on_script_unload);
 	destroy_tooltip();
 
-	PanelTimerDispatcher::instance().request_stop_multi(m_hwnd);
+	PanelManager::instance().request_stop_multi(m_hwnd);
 	m_script_host->Stop();
 	m_selection_holder.release();
 

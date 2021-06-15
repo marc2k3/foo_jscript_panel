@@ -135,7 +135,7 @@
     <ClInclude Include="Panel\PanelProperties.h">
       <Filter>Header Files\Panel</Filter>
     </ClInclude>
-    <ClInclude Include="Panel\PanelTimerDispatcher.h">
+    <ClInclude Include="Panel\PanelTimer.h">
       <Filter>Header Files\Panel</Filter>
     </ClInclude>
     <ClInclude Include="Panel\PanelWindow.h">
@@ -282,9 +282,6 @@
       <Filter>Source Files\Panel</Filter>
     </ClCompile>
     <ClCompile Include="Panel\PanelProperties.cpp">
-      <Filter>Source Files\Panel</Filter>
-    </ClCompile>
-    <ClCompile Include="Panel\PanelTimerDispatcher.cpp">
       <Filter>Source Files\Panel</Filter>
     </ClCompile>
     <ClCompile Include="Panel\PanelWindow.cpp">
