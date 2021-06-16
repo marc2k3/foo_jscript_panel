@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-ITypeLibPtr g_typelib;
+pfc::com_ptr_t<ITypeLib> g_type_lib;
 
 namespace jsp
 {
@@ -15,7 +15,7 @@ namespace jsp
 		{
 			std::array<wchar_t, MAX_PATH> path;
 			GetModuleFileName(ins, path.data(), path.size());
-			return SUCCEEDED(LoadTypeLibEx(path.data(), REGKIND_NONE, &g_typelib));
+			return SUCCEEDED(LoadTypeLibEx(path.data(), REGKIND_NONE, g_type_lib.receive_ptr()));
 		}
 		return TRUE;
 	}

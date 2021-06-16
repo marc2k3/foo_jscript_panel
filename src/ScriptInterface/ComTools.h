@@ -1,6 +1,6 @@
 #pragma once
 
-extern ITypeLibPtr g_typelib;
+extern pfc::com_ptr_t<ITypeLib> g_type_lib;
 struct IDisposable;
 
 #define QI_HELPER_BEGIN(first) \
@@ -27,7 +27,7 @@ struct IDisposable;
 
 struct TypeInfoCache
 {
-	ITypeInfoPtr m_type_info = nullptr;
+	pfc::com_ptr_t<ITypeInfo> m_type_info;
 	std::unordered_map<ULONG, DISPID> m_cache;
 };
 
@@ -37,9 +37,9 @@ class JSDispatchImplBase : public T
 protected:
 	JSDispatchImplBase<T>()
 	{
-		if (g_type_info_cache.m_type_info == nullptr)
+		if (g_type_info_cache.m_type_info.is_empty())
 		{
-			g_typelib->GetTypeInfoOfGuid(__uuidof(T), &g_type_info_cache.m_type_info);
+			g_type_lib->GetTypeInfoOfGuid(__uuidof(T), g_type_info_cache.m_type_info.receive_ptr());
 		}
 	}
 
@@ -75,7 +75,7 @@ public:
 		if (!out) return E_POINTER;
 		if (i != 0) return DISP_E_BADINDEX;
 		g_type_info_cache.m_type_info->AddRef();
-		*out = g_type_info_cache.m_type_info.GetInterfacePtr();
+		*out = g_type_info_cache.m_type_info.get_ptr();
 		return S_OK;
 	}
 
@@ -160,19 +160,19 @@ class ComObjectSingleton
 public:
 	static T* instance()
 	{
-		if (!instance_)
+		if (instance_.is_empty())
 		{
 			instance_ = new ImplementCOMRefCounter<T>();
 		}
 
-		return reinterpret_cast<T*>(instance_.GetInterfacePtr());
+		return reinterpret_cast<T*>(instance_.get_ptr());
 	}
 
 private:
-	static IDispatchPtr instance_;
+	static pfc::com_ptr_t<IDispatch> instance_;
 
 	PFC_CLASS_NOT_COPYABLE_EX(ComObjectSingleton)
 };
 
 template <class T>
-FOOGUIDDECL IDispatchPtr ComObjectSingleton<T>::instance_;
+FOOGUIDDECL pfc::com_ptr_t<IDispatch> ComObjectSingleton<T>::instance_;

@@ -74,10 +74,9 @@ HRESULT ScriptHost::InitCallbackMap()
 HRESULT ScriptHost::InitScriptEngine()
 {
 	static constexpr CLSID jscript9clsid = { 0x16d51579, 0xa30b, 0x4c8b,{ 0xa2, 0x76, 0x0f, 0xf4, 0xdc, 0x41, 0xe7, 0x55 } };
-	static constexpr DWORD classContext = CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER;
 	_variant_t version = static_cast<LONG>(SCRIPTLANGUAGEVERSION_5_8 + 1);
 
-	if (FAILED(CoCreateInstance(jscript9clsid, nullptr, classContext, IID_PPV_ARGS(m_script_engine.receive_ptr()))))
+	if (FAILED(CoCreateInstance(jscript9clsid, nullptr, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER, IID_PPV_ARGS(m_script_engine.receive_ptr()))))
 	{
 		FB2K_console_formatter() << jsp::component_name << ": This component requires a system with IE9 or later.";
 		return E_FAIL;

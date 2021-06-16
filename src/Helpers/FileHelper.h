@@ -1,6 +1,5 @@
 #pragma once
 #include <MLang.h>
-_COM_SMARTPTR_TYPEDEF(IMultiLanguage2, IID_IMultiLanguage2);
 
 class FileHelper
 {
@@ -146,8 +145,8 @@ private:
 		int encodingCount = maxEncodings;
 		std::array<DetectEncodingInfo, maxEncodings> encodings;
 
-		IMultiLanguage2Ptr lang;
-		if (FAILED(lang.CreateInstance(CLSID_CMultiLanguage, nullptr, CLSCTX_INPROC_SERVER))) return 0;
+		pfc::com_ptr_t<IMultiLanguage2> lang;
+		if (FAILED(CoCreateInstance(CLSID_CMultiLanguage, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(lang.receive_ptr())))) return 0;
 		if (FAILED(lang->DetectInputCodepage(MLDETECTCP_NONE, 0, const_cast<char*>(content.get_ptr()), &size, encodings.data(), &encodingCount))) return 0;
 
 		const size_t codepage = encodings[0].nCodePage;
