@@ -30,14 +30,6 @@ void PanelManager::add_window(CWindow hwnd)
 	m_hwnds.insert(hwnd);
 }
 
-void PanelManager::invoke_message(uint32_t timer_id)
-{
-	if (m_timer_map.contains(timer_id))
-	{
-		m_timer_map.at(timer_id)->invoke();
-	}
-}
-
 void PanelManager::post_msg_to_all(CallbackID id, WPARAM wp)
 {
 	for (CWindow hwnd : m_hwnds)
@@ -58,23 +50,6 @@ void PanelManager::post_msg_to_all_pointer(CallbackID id, pfc::refcounted_object
 	}
 }
 
-void PanelManager::request_stop(CWindow hwnd, uint32_t timer_id)
-{
-	if (m_timer_map.contains(timer_id))
-	{
-		const auto& timer = m_timer_map.at(timer_id);
-		if (timer->m_hwnd == hwnd) timer->stop();
-	}
-}
-
-void PanelManager::request_stop_multi(CWindow hwnd)
-{
-	for (const auto& [id, timer] : m_timer_map)
-	{
-		if (timer->m_hwnd == hwnd) timer->stop();
-	}
-}
-
 void PanelManager::remove_timer(HANDLE timer_handle, uint32_t timer_id)
 {
 	DeleteTimerQueueTimer(m_timer_queue, timer_handle, nullptr);
@@ -88,6 +63,31 @@ void PanelManager::remove_timer(HANDLE timer_handle, uint32_t timer_id)
 void PanelManager::remove_window(CWindow hwnd)
 {
 	m_hwnds.erase(hwnd);
+}
+
+void PanelManager::stop_timer(CWindow hwnd, uint32_t timer_id)
+{
+	if (m_timer_map.contains(timer_id))
+	{
+		const auto& timer = m_timer_map.at(timer_id);
+		if (timer->m_hwnd == hwnd) timer->stop();
+	}
+}
+
+void PanelManager::stop_timers(CWindow hwnd)
+{
+	for (const auto& [id, timer] : m_timer_map)
+	{
+		if (timer->m_hwnd == hwnd) timer->stop();
+	}
+}
+
+void PanelManager::timer_invoke(uint32_t timer_id)
+{
+	if (m_timer_map.contains(timer_id))
+	{
+		m_timer_map.at(timer_id)->invoke();
+	}
 }
 
 void PanelManager::unload_all()

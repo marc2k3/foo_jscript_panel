@@ -7,13 +7,13 @@ Window::Window(PanelWindow* panel) : m_panel(panel) {}
 
 STDMETHODIMP Window::ClearInterval(UINT id)
 {
-	PanelManager::instance().request_stop(m_panel->m_hwnd, id);
+	PanelManager::instance().stop_timer(m_panel->m_hwnd, id);
 	return S_OK;
 }
 
 STDMETHODIMP Window::ClearTimeout(UINT id)
 {
-	PanelManager::instance().request_stop(m_panel->m_hwnd, id);
+	PanelManager::instance().stop_timer(m_panel->m_hwnd, id);
 	return S_OK;
 }
 

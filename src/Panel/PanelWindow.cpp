@@ -155,7 +155,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		redraw(true);
 		return true;
 	case jsp::uwm_timer:
-		PanelManager::instance().invoke_message(wp);
+		PanelManager::instance().timer_invoke(wp);
 		return true;
 	case jsp::uwm_unload:
 		unload_script();
@@ -523,7 +523,7 @@ void PanelWindow::unload_script()
 	m_script_host->InvokeCallback(CallbackID::on_script_unload);
 	destroy_tooltip();
 
-	PanelManager::instance().request_stop_multi(m_hwnd);
+	PanelManager::instance().stop_timers(m_hwnd);
 	m_script_host->Stop();
 	m_selection_holder.release();
 

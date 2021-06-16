@@ -12,13 +12,13 @@ public:
 
 	uint32_t create_timer(CWindow hwnd, IDispatch* pdisp, uint32_t delay, bool execute_once);
 	void add_window(CWindow hwnd);
-	void invoke_message(uint32_t timer_id);
 	void post_msg_to_all(CallbackID id, WPARAM wp = 0);
 	void post_msg_to_all_pointer(CallbackID id, pfc::refcounted_object_root* param, HWND except = nullptr);
-	void request_stop(CWindow hwnd, uint32_t timer_id);
-	void request_stop_multi(CWindow hwnd);
 	void remove_timer(HANDLE timer_handle, uint32_t timer_id);
 	void remove_window(CWindow hwnd);
+	void stop_timer(CWindow hwnd, uint32_t timer_id);
+	void stop_timers(CWindow hwnd);
+	void timer_invoke(uint32_t timer_id);
 	void unload_all();
 
 private:
