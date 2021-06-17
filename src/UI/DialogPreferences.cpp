@@ -122,16 +122,6 @@ namespace
 			return "";
 		}
 
-		uint32_t listGetEditFlags(ctx_t, size_t row, size_t column) override
-		{
-			const std::string& key = g_config.m_data[row].key;
-			if (key.ends_with("width") || key.ends_with("alpha"))
-			{
-				return InPlaceEdit::KFlagNumber;
-			}
-			return 0;
-		}
-
 		void listSetEditField(ctx_t, size_t row, size_t column, const char* value) override
 		{
 			if (column == 1)
