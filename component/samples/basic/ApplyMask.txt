@@ -5,7 +5,7 @@
 // @import "%fb2k_component_path%docs\Helpers.txt"
 // ==/PREPROCESSOR==
 
-var g_img = gdi.Image(fb.ComponentPath + 'samples\\basic\\images\\post.jpg');
+var g_img = gdi.Image(fb.ComponentPath + 'samples\\basic\\images\\1.webp');
 var font = gdi.Font('Segoe UI', 16, 1);
 var ww = 0, wh = 0;
 var applied = false;
