@@ -16,6 +16,7 @@
 #include <numeric>
 #include <queue>
 #include <random>
+#include <ranges>
 #include <set>
 #include <thread>
 #include <vector>
@@ -33,7 +34,9 @@ namespace Gdiplus
 #include <libPPUI/gdiplus_helpers.h>
 #include <json.hpp>
 
+using FontNameArray = std::array<wchar_t, LF_FACESIZE>;
 using ImageBuffer = std::vector<uint8_t>;
+using PathArray = std::array<wchar_t, MAX_PATH>;
 using Strings = std::vector<std::string>;
 using WStrings = std::vector<std::wstring>;
 using json = nlohmann::json;

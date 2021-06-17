@@ -29,7 +29,7 @@ STDMETHODIMP GdiFont::get_Name(BSTR* out)
 {
 	if (!m_font || !out) return E_POINTER;
 
-	std::array<wchar_t, LF_FACESIZE> name;
+	FontNameArray name;
 	Gdiplus::FontFamily fontFamily;
 	m_font->GetFamily(&fontFamily);
 	fontFamily.GetFamilyName(name.data(), LANG_NEUTRAL);

@@ -43,21 +43,19 @@ STDMETHODIMP Utils::CheckFont(BSTR name, VARIANT_BOOL* out)
 
 	Gdiplus::InstalledFontCollection fonts;
 	const int count = fonts.GetFamilyCount();
-	pfc::ptrholder_t<Gdiplus::FontFamily, pfc::releaser_delete_array> families = new Gdiplus::FontFamily[count];
+	std::vector<Gdiplus::FontFamily> families(count);
 
-	int found;
-	if (families.is_valid() && fonts.GetFamilies(count, families.get_ptr(), &found) == Gdiplus::Ok)
+	int found = 0;
+	if (fonts.GetFamilies(count, families.data(), &found) == Gdiplus::Ok)
 	{
-		std::array<wchar_t, LF_FACESIZE> family_name;
-		for (int i = 0; i < found; ++i)
-		{
-			families.get_ptr()[i].GetFamilyName(family_name.data());
-			if (_wcsicmp(name, family_name.data()) == 0)
+		const auto it = std::ranges::find_if(families, [name](const auto& family)
 			{
-				*out = VARIANT_TRUE;
-				break;
-			}
-		}
+				FontNameArray family_name;
+				family.GetFamilyName(family_name.data());
+				return _wcsicmp(family_name.data(), name) == 0;
+			});
+
+		*out = to_variant_bool(it != families.end());
 	}
 	return S_OK;
 }
@@ -319,9 +317,9 @@ STDMETHODIMP Utils::ReadINI(BSTR filename, BSTR section, BSTR key, BSTR defaultv
 {
 	if (!out) return E_POINTER;
 
-	std::array<wchar_t, MAX_PATH> buf;
-	GetPrivateProfileString(section, key, defaultval, buf.data(), buf.size(), filename);
-	*out = SysAllocString(buf.data());
+	PathArray buffer;
+	GetPrivateProfileString(section, key, defaultval, buffer.data(), buffer.size(), filename);
+	*out = SysAllocString(buffer.data());
 	return S_OK;
 }
 

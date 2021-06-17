@@ -207,17 +207,18 @@ STDMETHODIMP GdiBitmap::SaveAs(BSTR path, BSTR format, VARIANT_BOOL* out)
 	size_t num = 0, size = 0;
 	if (Gdiplus::GetImageEncodersSize(&num, &size) == Gdiplus::Ok && size > 0)
 	{
-		pfc::ptrholder_t<Gdiplus::ImageCodecInfo, pfc::releaser_free> pImageCodecInfo = new Gdiplus::ImageCodecInfo[size];
-		if (pImageCodecInfo.is_valid() && Gdiplus::GetImageEncoders(num, size, pImageCodecInfo.get_ptr()) == Gdiplus::Ok)
+		std::vector<Gdiplus::ImageCodecInfo> codecs(size);
+		if (Gdiplus::GetImageEncoders(num, size, codecs.data()) == Gdiplus::Ok)
 		{
-			for (size_t i = 0; i < num; ++i)
-			{
-				if (wcscmp(pImageCodecInfo.get_ptr()[i].MimeType, format) == 0)
+			const auto view = std::ranges::views::take(codecs, num);
+			const auto it = std::ranges::find_if(view, [format](const auto& codec)
 				{
-					m_bitmap->Save(path, &pImageCodecInfo.get_ptr()[i].Clsid);
-					*out = to_variant_bool(m_bitmap->GetLastStatus() == Gdiplus::Ok);
-					break;
-				}
+					return wcscmp(codec.MimeType, format) == 0;
+				});
+
+			if (it != view.end())
+			{
+				*out = to_variant_bool(m_bitmap->Save(path, &it->Clsid) == Gdiplus::Ok);
 			}
 		}
 	}
