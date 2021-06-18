@@ -15,18 +15,17 @@ STDMETHODIMP GdiBitmap::ApplyAlpha(UINT8 alpha, IGdiBitmap** out)
 {
 	if (!m_bitmap || !out) return E_POINTER;
 
-	const auto width = m_bitmap->GetWidth();
-	const auto height = m_bitmap->GetHeight();
-	auto bitmap = std::make_unique<Gdiplus::Bitmap>(width, height, PixelFormat32bppPARGB);
-	Gdiplus::Graphics g(bitmap.get());
-	const Gdiplus::Rect rect(0, 0, width, height);
-
 	Gdiplus::ImageAttributes ia;
 	Gdiplus::ColorMatrix cm = { 0.f };
 	cm.m[0][0] = cm.m[1][1] = cm.m[2][2] = cm.m[4][4] = 1.f;
 	cm.m[3][3] = static_cast<float>(alpha) / UINT8_MAX;
 	ia.SetColorMatrix(&cm);
 
+	const int width = static_cast<int>(m_bitmap->GetWidth());
+	const int height = static_cast<int>(m_bitmap->GetHeight());
+	const Gdiplus::Rect rect(0, 0, width, height);
+	auto bitmap = std::make_unique<Gdiplus::Bitmap>(width, height, PixelFormat32bppPARGB);
+	Gdiplus::Graphics g(bitmap.get());
 	g.DrawImage(m_bitmap.get(), rect, 0, 0, width, height, Gdiplus::UnitPixel, &ia);
 
 	*out = new ComObjectImpl<GdiBitmap>(std::move(bitmap));
@@ -96,13 +95,13 @@ STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* out)
 {
 	if (!m_bitmap || !out) return E_POINTER;
 
-	const int w = std::min<int>(m_bitmap->GetWidth(), 220);
-	const int h = std::min<int>(m_bitmap->GetHeight(), 220);
-	const Gdiplus::Rect rect(0, 0, w, h);
+	const int width = std::min<int>(m_bitmap->GetWidth(), 220);
+	const int height = std::min<int>(m_bitmap->GetHeight(), 220);
+	const Gdiplus::Rect rect(0, 0, width, height);
 	Gdiplus::BitmapData bmpdata;
 
-	auto bitmap = resize(w, h, Gdiplus::InterpolationMode::InterpolationModeHighQualityBilinear);
-	if (bitmap->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata) != Gdiplus::Ok) return E_POINTER;
+	auto resized = resize(width, width);
+	if (resized->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata) != Gdiplus::Ok) return E_POINTER;
 
 	const size_t colours_length = bmpdata.Width * bmpdata.Height;
 	const size_t* colours = static_cast<const size_t*>(bmpdata.Scan0);
@@ -121,7 +120,7 @@ STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* out)
 		++colour_counters[values];
 	}
 
-	bitmap->UnlockBits(&bmpdata);
+	resized->UnlockBits(&bmpdata);
 
 	KPoints points;
 	for (size_t id = 0; const auto& [values, pixel_count] : colour_counters)
@@ -164,10 +163,12 @@ STDMETHODIMP GdiBitmap::InvertColours(IGdiBitmap** out)
 	cm.m[3][3] = cm.m[4][0] = cm.m[4][1] = cm.m[4][2] = cm.m[4][4] = 1.f;
 	ia.SetColorMatrix(&cm);
 
-	const Gdiplus::Rect rect(0, 0, m_bitmap->GetWidth(), m_bitmap->GetHeight());
-	auto bitmap = std::make_unique<Gdiplus::Bitmap>(rect.Width, rect.Height, PixelFormat32bppPARGB);
+	const int width = static_cast<int>(m_bitmap->GetWidth());
+	const int height = static_cast<int>(m_bitmap->GetHeight());
+	const Gdiplus::Rect rect(0, 0, width, height);
+	auto bitmap = std::make_unique<Gdiplus::Bitmap>(width, height, PixelFormat32bppPARGB);
 	Gdiplus::Graphics g(bitmap.get());
-	g.DrawImage(m_bitmap.get(), rect, 0, 0, rect.Width, rect.Height, Gdiplus::UnitPixel, &ia);
+	g.DrawImage(m_bitmap.get(), rect, 0, 0, width, height, Gdiplus::UnitPixel, &ia);
 
 	*out = new ComObjectImpl<GdiBitmap>(std::move(bitmap));
 	return S_OK;
@@ -182,11 +183,12 @@ STDMETHODIMP GdiBitmap::ReleaseGraphics(IGdiGraphics* gr)
 	return S_OK;
 }
 
-STDMETHODIMP GdiBitmap::Resize(UINT w, UINT h, int interpolation_mode, IGdiBitmap** out)
+STDMETHODIMP GdiBitmap::Resize(UINT width, UINT height, int interpolation_mode, IGdiBitmap** out)
 {
 	if (!m_bitmap || !out) return E_POINTER;
 
-	*out = new ComObjectImpl<GdiBitmap>(resize(w, h, static_cast<Gdiplus::InterpolationMode>(interpolation_mode)));
+	auto resized = resize(static_cast<int>(width), static_cast<int>(height), static_cast<Gdiplus::InterpolationMode>(interpolation_mode));
+	*out = new ComObjectImpl<GdiBitmap>(std::move(resized));
 	return S_OK;
 }
 
@@ -202,26 +204,21 @@ STDMETHODIMP GdiBitmap::SaveAs(BSTR path, BSTR format, VARIANT_BOOL* out)
 {
 	if (!m_bitmap || !out) return E_POINTER;
 
-	*out = VARIANT_FALSE;
-
-	size_t num = 0, size = 0;
+	std::map<std::wstring, CLSID> encoder_map;
+	uint32_t num = 0, size = 0;
 	if (Gdiplus::GetImageEncodersSize(&num, &size) == Gdiplus::Ok && size > 0)
 	{
 		std::vector<Gdiplus::ImageCodecInfo> codecs(size);
 		if (Gdiplus::GetImageEncoders(num, size, codecs.data()) == Gdiplus::Ok)
 		{
-			const auto view = std::ranges::views::take(codecs, num);
-			const auto it = std::ranges::find_if(view, [format](const auto& codec)
-				{
-					return wcscmp(codec.MimeType, format) == 0;
-				});
-
-			if (it != view.end())
+			for (const auto& codec : std::ranges::views::take(codecs, num))
 			{
-				*out = to_variant_bool(m_bitmap->Save(path, &it->Clsid) == Gdiplus::Ok);
+				encoder_map.emplace(codec.MimeType, codec.Clsid);
 			}
 		}
 	}
+
+	*out = to_variant_bool(encoder_map.contains(format) && m_bitmap->Save(path, &encoder_map.at(format)) == Gdiplus::Ok);
 	return S_OK;
 }
 
@@ -290,12 +287,12 @@ STDMETHODIMP GdiBitmap::get_Width(UINT* out)
 	return S_OK;
 }
 
-std::unique_ptr<Gdiplus::Bitmap> GdiBitmap::resize(uint32_t w, uint32_t h, Gdiplus::InterpolationMode interpolation_mode)
+std::unique_ptr<Gdiplus::Bitmap> GdiBitmap::resize(int width, int height, Gdiplus::InterpolationMode interpolation_mode)
 {
-	auto bitmap = std::make_unique<Gdiplus::Bitmap>(w, h, PixelFormat32bppPARGB);
+	auto bitmap = std::make_unique<Gdiplus::Bitmap>(width, height, PixelFormat32bppPARGB);
 	Gdiplus::Graphics g(bitmap.get());
 	g.SetInterpolationMode(interpolation_mode);
-	g.DrawImage(m_bitmap.get(), 0, 0, w, h);
+	g.DrawImage(m_bitmap.get(), 0, 0, width, height);
 	return bitmap;
 }
 
