@@ -94,25 +94,11 @@ void CDialogProperties::LoadProperties(bool reload)
 			item.is_bool = true;
 			item.bool_value = to_bool(value.boolVal);
 			break;
-
-		case VT_I1:
-		case VT_UI1:
-		case VT_I2:
-		case VT_UI2:
-		case VT_I4:
-		case VT_UI4:
-		case VT_I8:
-		case VT_UI8:
-			var.ChangeType(VT_I4, &value);
-			item.value = std::to_string(var.lVal).c_str();
-			break;
-
 		case VT_BSTR:
 			item.is_string = true;
 			var.ChangeType(VT_BSTR, &value);
 			item.value = from_wide(var.bstrVal);
 			break;
-
 		default:
 			var.ChangeType(VT_BSTR, &value);
 			item.value = from_wide(var.bstrVal);
