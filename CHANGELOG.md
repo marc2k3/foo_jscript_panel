@@ -92,6 +92,10 @@ https://github.com/marc2k3/foo_jscript_panel/wiki/Breaking-Changes
 - Fix crash when using `utils.CheckFont` on `foobar2000` `v1.6`. This affected many of the included scripts. Apologies for any inconvenience.
 - Now requires `Windows 7` or later.
 
+## v2.3.7 [last version compatible with Windows XP / Windows Vista]
+- Fix crash caused by `utils.CheckFont` on foobar2000 v1.6 and later.
+- Fix crash caused by using editor if `foo_wave_seekbar` was present.
+
 ## v2.3.6.1 [released by kbuffington aka MordredKLB]
 - Fix bug where `on_focus` was not always triggered.
 
