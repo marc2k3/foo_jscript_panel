@@ -26,7 +26,7 @@
 - A recent website update broke the `Allmusic` sample. This is now fixed.
 
 ## v2.5.3
-- Add `IMetadbHandle` `ShowAlbumArtViewer` which uses the new internal viewer added in foobar2000 `v1.6.2`. You will see a popup text message if you try and use it on earlier versions. Check the docs for options.
+- Add `IMetadbHandle` `ShowAlbumArtViewer` which uses the new internal viewer added in `foobar2000` `v1.6.2`. You will see a popup text message if you try and use it on earlier versions. Check the docs for options.
 - The included `Album art` sample now has 3 choices available for the `double click` action. Use the right click menu to choose.
   * Open using external viewer
   * Open using new internal viewer mentioned above
@@ -93,7 +93,7 @@ https://github.com/marc2k3/foo_jscript_panel/wiki/Breaking-Changes
 - Now requires `Windows 7` or later.
 
 ## v2.3.7 [last version compatible with Windows XP / Windows Vista]
-- Fix crash caused by `utils.CheckFont` on foobar2000 v1.6 and later.
+- Fix crash caused by `utils.CheckFont` on `foobar2000` `v1.6` and later.
 - Fix crash caused by using editor if `foo_wave_seekbar` was present.
 
 ## v2.3.6.1 [released by kbuffington aka MordredKLB]
