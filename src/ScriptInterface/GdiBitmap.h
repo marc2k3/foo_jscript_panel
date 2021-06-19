@@ -25,6 +25,7 @@ protected:
 	void FinalRelease() override;
 
 private:
+	std::unique_ptr<Gdiplus::Bitmap> apply_attributes(const Gdiplus::ImageAttributes& ia);
 	std::unique_ptr<Gdiplus::Bitmap> resize(int width, int height, Gdiplus::InterpolationMode interpolation_mode = Gdiplus::InterpolationMode::InterpolationModeHighQualityBilinear);
 
 	std::unique_ptr<Gdiplus::Bitmap> m_bitmap;

@@ -351,13 +351,6 @@ void ScriptHost::Stop()
 	m_context_to_path_map.clear();
 	m_callback_map.clear();
 
-	if (m_script_engine.is_valid())
-	{
-		m_script_engine.release();
-	}
-
-	if (m_script_root.is_valid())
-	{
-		m_script_root.release();
-	}
+	m_script_engine.release();
+	m_script_root.release();
 }

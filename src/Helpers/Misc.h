@@ -70,6 +70,7 @@ static std::wstring to_wide(jstring str)
 static bool to_bool(VARIANT_BOOL vb) { return vb != VARIANT_FALSE; }
 static BSTR to_bstr(jstring str) { return SysAllocString(to_wide(str).data()); }
 static int to_int(size_t num) { return num == SIZE_MAX ? -1 : static_cast<int>(num); }
+static uint64_t hash_guid(const GUID& g) { return hasher_md5::get()->process_single_string(pfc::print_guid(g)).xorHalve(); }
 
 static int to_argb(COLORREF colour)
 {

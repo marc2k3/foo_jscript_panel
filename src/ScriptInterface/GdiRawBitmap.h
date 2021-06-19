@@ -14,5 +14,5 @@ protected:
 
 private:
 	HBITMAP m_hbmp;
-	size_t m_height, m_width;
+	uint32_t m_height, m_width;
 };

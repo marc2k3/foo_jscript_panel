@@ -68,7 +68,7 @@ public:
 				{
 					GUID g;
 					CoCreateGuid(&g);
-					uint64_t hash = hasher_md5::get()->process_single_string(pfc::print_guid(g).get_ptr()).xorHalve();
+					uint64_t hash = hash_guid(g);
 
 					s_map.emplace(hash, lock);
 					api->playlist_set_property_int(playlistIndex, guids::playlist_lock_flags, flags);

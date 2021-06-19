@@ -43,7 +43,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case WM_DESTROY:
 		unload_script();
 		PanelManager::instance().remove_window(m_hwnd);
-		if (m_gr_wrap.is_valid()) m_gr_wrap.release();
+		m_gr_wrap.release();
 		delete_context();
 		m_hwnd.ReleaseDC(m_hdc);
 		return true;

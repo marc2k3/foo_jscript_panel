@@ -591,10 +591,13 @@ STDMETHODIMP Plman::ShowPlaylistLockUI(UINT playlistIndex, VARIANT_BOOL* out)
 			modal_dialog_scope scope;
 			if (scope.can_create())
 			{
+				HWND hwnd = core_api::get_main_window();
+				scope.initialize(hwnd);
+
 				uint32_t flags = api->playlist_lock_get_filter_mask(playlistIndex);
 
 				CDialogPlaylistLock dlg(playlistIndex, flags);
-				dlg.DoModal(core_api::get_main_window());
+				dlg.DoModal(hwnd);
 				*out = VARIANT_TRUE;
 			}
 		}

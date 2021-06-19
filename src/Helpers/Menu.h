@@ -74,7 +74,7 @@ public:
 			for (auto e = service_enum_t<mainmenu_group>(); !e.finished(); ++e)
 			{
 				auto ptr = *e;
-				s_group_guid_map.emplace(hash(ptr->get_guid()), ptr);
+				s_group_guid_map.emplace(hash_guid(ptr->get_guid()), ptr);
 			}
 		}
 	}
@@ -157,7 +157,7 @@ private:
 		string8 path;
 		while (parent != pfc::guid_null)
 		{
-			mainmenu_group::ptr group_ptr = s_group_guid_map.at(hash(parent));
+			mainmenu_group::ptr group_ptr = s_group_guid_map.at(hash_guid(parent));
 			mainmenu_group_popup::ptr group_popup_ptr;
 
 			if (group_ptr->cast(group_popup_ptr))
@@ -172,11 +172,6 @@ private:
 		}
 		return path;
 	};
-
-	uint64_t hash(const GUID& g)
-	{
-		return hasher_md5::get()->process_single_string(pfc::print_guid(g).get_ptr()).xorHalve();
-	}
 
 	inline static std::unordered_map<uint64_t, mainmenu_group::ptr> s_group_guid_map;
 	string8 m_command;

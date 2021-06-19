@@ -21,13 +21,7 @@ STDMETHODIMP GdiBitmap::ApplyAlpha(UINT8 alpha, IGdiBitmap** out)
 	cm.m[3][3] = static_cast<float>(alpha) / UINT8_MAX;
 	ia.SetColorMatrix(&cm);
 
-	const int width = static_cast<int>(m_bitmap->GetWidth());
-	const int height = static_cast<int>(m_bitmap->GetHeight());
-	const Gdiplus::Rect rect(0, 0, width, height);
-	auto bitmap = std::make_unique<Gdiplus::Bitmap>(width, height, PixelFormat32bppPARGB);
-	Gdiplus::Graphics g(bitmap.get());
-	g.DrawImage(m_bitmap.get(), rect, 0, 0, width, height, Gdiplus::UnitPixel, &ia);
-
+	auto bitmap = apply_attributes(ia);
 	*out = new ComObjectImpl<GdiBitmap>(std::move(bitmap));
 	return S_OK;
 }
@@ -79,7 +73,7 @@ STDMETHODIMP GdiBitmap::Clone(float x, float y, float w, float h, IGdiBitmap** o
 	if (!m_bitmap || !out) return E_POINTER;
 
 	std::unique_ptr<Gdiplus::Bitmap> bitmap(m_bitmap->Clone(x, y, w, h, PixelFormat32bppPARGB));
-	*out = ensure_gdiplus_object(bitmap) ? new ComObjectImpl<GdiBitmap>(std::move(bitmap)) : nullptr;
+	*out = new ComObjectImpl<GdiBitmap>(std::move(bitmap));
 	return S_OK;
 }
 
@@ -163,13 +157,7 @@ STDMETHODIMP GdiBitmap::InvertColours(IGdiBitmap** out)
 	cm.m[3][3] = cm.m[4][0] = cm.m[4][1] = cm.m[4][2] = cm.m[4][4] = 1.f;
 	ia.SetColorMatrix(&cm);
 
-	const int width = static_cast<int>(m_bitmap->GetWidth());
-	const int height = static_cast<int>(m_bitmap->GetHeight());
-	const Gdiplus::Rect rect(0, 0, width, height);
-	auto bitmap = std::make_unique<Gdiplus::Bitmap>(width, height, PixelFormat32bppPARGB);
-	Gdiplus::Graphics g(bitmap.get());
-	g.DrawImage(m_bitmap.get(), rect, 0, 0, width, height, Gdiplus::UnitPixel, &ia);
-
+	auto bitmap = apply_attributes(ia);
 	*out = new ComObjectImpl<GdiBitmap>(std::move(bitmap));
 	return S_OK;
 }
@@ -285,6 +273,16 @@ STDMETHODIMP GdiBitmap::get_Width(UINT* out)
 
 	*out = m_bitmap->GetWidth();
 	return S_OK;
+}
+
+std::unique_ptr<Gdiplus::Bitmap> GdiBitmap::apply_attributes(const Gdiplus::ImageAttributes& ia)
+{
+	const int width = static_cast<int>(m_bitmap->GetWidth());
+	const int height = static_cast<int>(m_bitmap->GetHeight());
+	auto bitmap = std::make_unique<Gdiplus::Bitmap>(width, height, PixelFormat32bppPARGB);
+	Gdiplus::Graphics g(bitmap.get());
+	g.DrawImage(m_bitmap.get(), Gdiplus::Rect(0, 0, width, height), 0, 0, width, height, Gdiplus::UnitPixel, &ia);
+	return bitmap;
 }
 
 std::unique_ptr<Gdiplus::Bitmap> GdiBitmap::resize(int width, int height, Gdiplus::InterpolationMode interpolation_mode)
