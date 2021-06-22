@@ -41,7 +41,7 @@ namespace
 
 		IGdiFont* get_font_ui(size_t type) override
 		{
-			const auto t = static_cast<cui::fonts::font_type_t>(type);
+			const cui::fonts::font_type_t t = static_cast<cui::fonts::font_type_t>(type);
 			if (t <= cui::fonts::font_type_labels)
 			{
 				HFONT hFont = static_api_ptr_t<cui::fonts::manager>()->get_font(t);
@@ -117,7 +117,7 @@ namespace
 		int get_colour_ui(size_t type) override
 		{
 			COLORREF colour = 0;
-			const auto t = static_cast<cui::colours::colour_identifier_t>(type);
+			const cui::colours::colour_identifier_t t = static_cast<cui::colours::colour_identifier_t>(type);
 			if (t <= cui::colours::colour_active_item_frame)
 			{
 				colour = m_colours_helper.get_colour(t);

@@ -367,7 +367,7 @@ void PanelWindow::on_context_menu(LPARAM lp)
 	CPoint pt(lp);
 	if (pt.x == -1 && pt.y == -1)
 	{
-		DWORD dwPos = GetMessagePos();
+		const DWORD dwPos = GetMessagePos();
 		pt.SetPoint(GET_X_LPARAM(dwPos), GET_Y_LPARAM(dwPos));
 
 		CRect rect;

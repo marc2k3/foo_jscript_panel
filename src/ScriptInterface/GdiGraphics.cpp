@@ -313,7 +313,7 @@ STDMETHODIMP GdiGraphics::GdiDrawText(BSTR str, IGdiFont* font, __int64 colour, 
 			CRect rect_calc;
 			rect_calc.CopyRect(&rect);
 			DrawText(dc, str, -1, &rect_calc, format);
-			auto nh = rect_calc.Height();
+			const int nh = rect_calc.Height();
 
 			format &= ~DT_CALCRECT;
 

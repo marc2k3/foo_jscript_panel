@@ -86,7 +86,7 @@ BOOL CDialogConfigure::OnInitDialog(CWindow, LPARAM)
 
 LRESULT CDialogConfigure::OnNotify(int, LPNMHDR pnmh)
 {
-	auto code = static_cast<Notification>(pnmh->code);
+	const Notification code = static_cast<Notification>(pnmh->code);
 
 	switch (code)
 	{

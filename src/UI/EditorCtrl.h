@@ -33,7 +33,7 @@ private:
 	struct API
 	{
 		std::string text;
-		size_t len;
+		size_t len = 0;
 	};
 
 	struct EditorStyle

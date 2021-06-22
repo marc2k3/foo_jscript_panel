@@ -594,7 +594,7 @@ STDMETHODIMP Plman::ShowPlaylistLockUI(UINT playlistIndex, VARIANT_BOOL* out)
 				HWND hwnd = core_api::get_main_window();
 				scope.initialize(hwnd);
 
-				uint32_t flags = api->playlist_lock_get_filter_mask(playlistIndex);
+				const uint32_t flags = api->playlist_lock_get_filter_mask(playlistIndex);
 
 				CDialogPlaylistLock dlg(playlistIndex, flags);
 				dlg.DoModal(hwnd);
