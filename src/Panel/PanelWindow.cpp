@@ -164,7 +164,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
 	if (msg < WM_USER) return false;
 
-	CallbackID id = static_cast<CallbackID>(msg);
+	const CallbackID id = static_cast<CallbackID>(msg);
 
 	switch (id)
 	{
