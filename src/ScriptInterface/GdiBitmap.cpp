@@ -192,6 +192,8 @@ STDMETHODIMP GdiBitmap::SaveAs(BSTR path, BSTR format, VARIANT_BOOL* out)
 {
 	if (!m_bitmap || !out) return E_POINTER;
 
+	*out = VARIANT_FALSE;
+
 	std::map<std::wstring, CLSID> encoder_map;
 	uint32_t num = 0, size = 0;
 	if (Gdiplus::GetImageEncodersSize(&num, &size) == Gdiplus::Ok && size > 0)
@@ -206,7 +208,11 @@ STDMETHODIMP GdiBitmap::SaveAs(BSTR path, BSTR format, VARIANT_BOOL* out)
 		}
 	}
 
-	*out = to_variant_bool(encoder_map.contains(format) && m_bitmap->Save(path, &encoder_map.at(format)) == Gdiplus::Ok);
+	const auto& it = encoder_map.find(format);
+	if (it != encoder_map.end())
+	{
+		*out = to_variant_bool(m_bitmap->Save(path, &it->second) == Gdiplus::Ok);
+	}
 	return S_OK;
 }
 

@@ -67,10 +67,10 @@ void PanelManager::remove_window(CWindow hwnd)
 
 void PanelManager::stop_timer(CWindow hwnd, uint32_t timer_id)
 {
-	if (m_timer_map.contains(timer_id))
+	const auto& it = m_timer_map.find(timer_id);
+	if (it != m_timer_map.end() && it->second->m_hwnd == hwnd)
 	{
-		const auto& timer = m_timer_map.at(timer_id);
-		if (timer->m_hwnd == hwnd) timer->stop();
+		it->second->stop();
 	}
 }
 
@@ -84,9 +84,10 @@ void PanelManager::stop_timers(CWindow hwnd)
 
 void PanelManager::timer_invoke(uint32_t timer_id)
 {
-	if (m_timer_map.contains(timer_id))
+	const auto& it = m_timer_map.find(timer_id);
+	if (it != m_timer_map.end())
 	{
-		m_timer_map.at(timer_id)->invoke();
+		it->second->invoke();
 	}
 }
 

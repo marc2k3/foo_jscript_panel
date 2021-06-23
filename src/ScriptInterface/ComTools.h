@@ -56,9 +56,10 @@ public:
 		for (size_t i = 0; i < cNames; ++i)
 		{
 			const ULONG hash = LHashValOfName(LANG_NEUTRAL, names[i]);
-			if (g_type_info_cache.m_cache.contains(hash))
+			const auto& it = g_type_info_cache.m_cache.find(hash);
+			if (it != g_type_info_cache.m_cache.end())
 			{
-				dispids[i] = g_type_info_cache.m_cache.at(hash);
+				dispids[i] = it->second;
 			}
 			else
 			{

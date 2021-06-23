@@ -31,7 +31,7 @@ STDMETHODIMP MainMenuManager::Init(BSTR root_name)
 		{ L"help", &mainmenu_groups::help }
 	};
 
-	const auto it = std::ranges::find_if(valid_root_names, [&](const ValidRootName& item) { return _wcsicmp(root_name, item.name.data()) == 0; });
+	const auto& it = std::ranges::find_if(valid_root_names, [&](const ValidRootName& item) { return _wcsicmp(root_name, item.name.data()) == 0; });
 	if (it == valid_root_names.end()) return E_INVALIDARG;
 
 	m_mm = mainmenu_manager::get();

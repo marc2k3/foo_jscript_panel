@@ -90,13 +90,12 @@ public:
 		if (name.equals(jsp::component_name))
 		{
 			uint64_t hash;
-			if (api->playlist_get_property_int(playlistIndex, guids::playlist_lock_hash, hash) && s_map.contains(hash))
+			if (api->playlist_get_property_int(playlistIndex, guids::playlist_lock_hash, hash))
 			{
-				auto lock = s_map.at(hash);
-
-				if (api->playlist_lock_uninstall(playlistIndex, lock))
+				const auto& it = s_map.find(hash);
+				if (it != s_map.end() && api->playlist_lock_uninstall(playlistIndex, it->second))
 				{
-					s_map.erase(hash);
+					s_map.erase(it);
 					api->playlist_remove_property(playlistIndex, guids::playlist_lock_flags);
 					api->playlist_remove_property(playlistIndex, guids::playlist_lock_hash);
 					return true;

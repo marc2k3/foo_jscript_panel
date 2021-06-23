@@ -62,9 +62,10 @@ void Config::merge_map(const StringMap& map)
 {
 	for (auto& [key, value] : m_data)
 	{
-		if (map.contains(key))
+		const auto& it = map.find(key);
+		if (it != map.end())
 		{
-			value = map.at(key);
+			value = it->second;
 		}
 	}
 }

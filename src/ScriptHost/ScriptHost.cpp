@@ -248,9 +248,10 @@ STDMETHODIMP ScriptHost::OnScriptError(IActiveScriptError* err)
 
 	if (SUCCEEDED(err->GetSourcePosition(&ctx, &line, &charpos)))
 	{
-		if (m_context_to_path_map.contains(ctx))
+		const auto& it = m_context_to_path_map.find(ctx);
+		if (it != m_context_to_path_map.end())
 		{
-			formatter << "File: " << m_context_to_path_map.at(ctx).data() << "\n";
+			formatter << "File: " << it->second.data() << "\n";
 		}
 		formatter << "Line: " << (line + 1) << ", Col: " << (charpos + 1) << "\n";
 	}
@@ -293,16 +294,19 @@ bool ScriptHost::HasError()
 
 bool ScriptHost::InvokeMouseRBtnUp(VariantArgs& args)
 {
-	const CallbackID id = CallbackID::on_mouse_rbtn_up;
-	if (Ready() && m_callback_map.contains(id))
+	if (Ready())
 	{
-		std::ranges::reverse(args);
-		DISPPARAMS params = { args.data(), nullptr, args.size(), 0 };
-		_variant_t result;
-		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &result, nullptr, nullptr);
-		if (SUCCEEDED(VariantChangeType(&result, &result, 0, VT_BOOL)))
+		const auto& it = m_callback_map.find(CallbackID::on_mouse_rbtn_up);
+		if (it != m_callback_map.end())
 		{
-			return to_bool(result.boolVal);
+			std::ranges::reverse(args);
+			DISPPARAMS params = { args.data(), nullptr, args.size(), 0 };
+			_variant_t result;
+			m_script_root->Invoke(it->second, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, &result, nullptr, nullptr);
+			if (SUCCEEDED(VariantChangeType(&result, &result, 0, VT_BOOL)))
+			{
+				return to_bool(result.boolVal);
+			}
 		}
 	}
 	return false;
@@ -315,20 +319,28 @@ bool ScriptHost::Ready()
 
 void ScriptHost::InvokeCallback(CallbackID id)
 {
-	if (Ready() && m_callback_map.contains(id))
+	if (Ready())
 	{
-		DISPPARAMS params{};
-		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, nullptr, nullptr, nullptr);
+		const auto& it = m_callback_map.find(id);
+		if (it != m_callback_map.end())
+		{
+			DISPPARAMS params{};
+			m_script_root->Invoke(it->second, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, nullptr, nullptr, nullptr);
+		}
 	}
 }
 
 void ScriptHost::InvokeCallback(CallbackID id, VariantArgs& args)
 {
-	if (Ready() && m_callback_map.contains(id))
+	if (Ready())
 	{
-		std::ranges::reverse(args);
-		DISPPARAMS params = { args.data(), nullptr, args.size(), 0 };
-		m_script_root->Invoke(m_callback_map.at(id), IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, nullptr, nullptr, nullptr);
+		const auto& it = m_callback_map.find(id);
+		if (it != m_callback_map.end())
+		{
+			std::ranges::reverse(args);
+			DISPPARAMS params = { args.data(), nullptr, args.size(), 0 };
+			m_script_root->Invoke(it->second, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, nullptr, nullptr, nullptr);
+		}
 	}
 }
 

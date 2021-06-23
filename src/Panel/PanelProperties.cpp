@@ -3,9 +3,10 @@
 
 bool PanelProperties::get_property(jstring key, VARIANT& out)
 {
-	if (m_data.contains(key))
+	const auto& it = m_data.find(key);
+	if (it != m_data.end())
 	{
-		return SUCCEEDED(VariantCopy(&out, &m_data.at(key)));
+		return SUCCEEDED(VariantCopy(&out, &it->second));
 	}
 	return false;
 }

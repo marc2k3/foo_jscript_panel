@@ -48,7 +48,7 @@ STDMETHODIMP Utils::CheckFont(BSTR name, VARIANT_BOOL* out)
 	int found = 0;
 	if (fonts.GetFamilies(count, families.data(), &found) == Gdiplus::Ok)
 	{
-		const auto it = std::ranges::find_if(families, [name](const auto& family)
+		const auto& it = std::ranges::find_if(families, [name](const auto& family)
 			{
 				FontNameArray family_name;
 				family.GetFamilyName(family_name.data());

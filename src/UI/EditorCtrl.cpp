@@ -772,11 +772,12 @@ void CEditorCtrl::Init()
 	{
 		if (value.empty()) continue;
 
-		if (styles.contains(key))
+		const auto& it = styles.find(key);
+		if (it != styles.end())
 		{
 			EditorStyle style = ParseStyle(value);
 
-			for (const int id : styles.at(key))
+			for (const int id : it->second)
 			{
 				if (style.font.length()) StyleSetFont(id, style.font.c_str());
 				if (style.size > 0) StyleSetSize(id, style.size);
