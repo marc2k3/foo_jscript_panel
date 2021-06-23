@@ -59,11 +59,10 @@ public:
 
 	void remove_point(size_t point_id)
 	{
-		auto it = std::remove_if(points.begin(), points.end(), [point_id](const KPoint& point)
+		std::erase_if(points, [point_id](const KPoint& point)
 			{
 				return point.m_point_id == point_id;
 			});
-		points.erase(it, points.end());
 	}
 
 	ColourValues central_values{};
