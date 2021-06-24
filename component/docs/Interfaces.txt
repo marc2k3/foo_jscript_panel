@@ -683,10 +683,11 @@ interface IPlman {
 		*/
 
 	Methods:
-		// In all these methods, playlistIndex is the target playlist
+		// In all these methods, playlistIndex is the target playlist.
 
 		plman.AddLocations(playlistIndex, paths[, select]) (void)
 		/*
+		playlistIndex: must be valid, not an autoplaylist or have a lock present that prevents adding files
 		paths: An array of files/URLs/playlists
 		select: boolean, default false.
 
@@ -803,7 +804,10 @@ interface IPlman {
 		plman.EnsurePlaylistItemVisible(playlistIndex, playlistItemIndex) (void)
 
 		plman.ExecutePlaylistDefaultAction(playlistIndex, playlistItemIndex) (boolean)
-		// Starts playback by executing default doubleclick/enter action unless overridden by a lock to do something else.
+		/*
+		playlistIndex and playlistItemIndex must be valid or an error will be thrown.
+		Starts playback by executing default doubleclick/enter action unless overridden by a lock to do something else.
+		*/
 
 		plman.FindOrCreatePlaylist(name, unlocked) (uint)
 		/*
@@ -894,8 +898,10 @@ interface IPlman {
 		*/
 
 		plman.GetRecyclerItems(index) (IMetadbHandleList)
+		// index must be valid or an error will be thrown.
 
 		plman.GetRecyclerName(index) (string)
+		// index must be valid or an error will be thrown.
 
 		plman.InsertPlaylistItems(playlistIndex, base, handle_list[, select]) (void)
 		/*
@@ -918,12 +924,13 @@ interface IPlman {
 		// Same as above except any duplicates contained in handle_list are removed.
 
 		plman.IsAutoPlaylist(playlistIndex) (boolean)
+		// playlistIndex must be valid or an error will be thrown.
 
 		plman.IsPlaylistItemSelected(playlistIndex, playlistItemIndex) (boolean)
 
 		plman.IsPlaylistLocked(playlistIndex) (boolean)
 		/*
-		NOTE: This always returns true if the playlist is an autoplaylist. Also, you must always check if the playlistIndex is valid before using.
+		playlistIndex must be valid or an error will be thrown. This always returns true if the playlist is an autoplaylist.
 
 		As of v2.3.5, it's advisable to use plman.GetPlaylistLockFilterMask as this will let you determine what kind
 		of locks are applied to a playlist. For example, if a playlist only has a lock preventing you from deleting it, you can still
@@ -931,6 +938,7 @@ interface IPlman {
 		*/
 
 		plman.MovePlaylist(from, to) (boolean)
+		// from and to must be valid and not equal
 
 		plman.MovePlaylistSelection(playlistIndex, delta) (boolean)
 		/*
@@ -950,6 +958,7 @@ interface IPlman {
 		// affectedItems: An array like [1, 3, 5]
 
 		plman.RecyclerRestore(index) (void)
+		// index must be valid or an error will be thrown.
 
 		plman.RemovePlaylist(playlistIndex) (boolean)
 		/*
@@ -960,6 +969,7 @@ interface IPlman {
 
 		plman.RemovePlaylistLock(playlistIndex) (boolean)
 		/*
+		playlistIndex must be valid or an error will be thrown.
 		You can only remove a playlist lock if it's owned by JScript Panel. You can check this with plman.GetPlaylistLockName.
 		See plman.AddPlaylistLock for an example.
 		*/
@@ -1064,9 +1074,9 @@ interface IPlman {
 
 		plman.ShowPlaylistLockUI(playlistIndex) (boolean)
 		/*
+		playlistIndex must be valid or an error will be thrown.
 		Shows popup window letting you toggle the various lock options on/off. Returns false if the playlist
-		is an autoplaylist or the lock is owned by another component. Throws an error if the playlistIndex is
-		out of bounds.
+		is an autoplaylist or the lock is owned by another component.
 		*/
 
 		plman.SortByFormat(playlistIndex, pattern[, selected_items_only]) (boolean)
