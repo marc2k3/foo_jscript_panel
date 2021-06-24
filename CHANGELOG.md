@@ -1,3 +1,8 @@
+## v2.6.0.2
+- Fixes a regression in `v2.6.0` where selected text in the [Configuration Window](https://github.com/marc2k3/foo_jscript_panel/wiki/Configuration-Window) may have beocme hard to read when the window lost focus.
+- Because of the above change, colour/font changes have been reset. Also, the `Editor Properties` found under `File>Preferences>Tools>JScript Panel` have been simplified.
+- Doc fixes.
+
 ## v2.6.0.1
 - Fix regression in `v2.6.0` where the [Configuration Window](https://github.com/marc2k3/foo_jscript_panel/wiki/Configuration-Window) line numbers were not shown.
 
