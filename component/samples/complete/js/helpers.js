@@ -16,13 +16,11 @@ _.mixin({
 	artistFolder : function (artist) {
 		var a = utils.ReplaceIllegalChars(artist, false);
 		var folder = folders.artists + a;
-		if (utils.IsFolder(folder)) {
-			return fso.GetFolder(folder) + '\\';
-		} else {
+		if (!utils.IsFolder(folder)) {
 			folder = folders.artists + _.trunc(a, 64);
 			_.createFolder(folder);
-			return fso.GetFolder(folder) + '\\';
 		}
+		return fso.GetFolder(folder) + '\\';
 	},
 	blendColours : function (c1, c2, f) {
 		c1 = _.toRGB(c1);
