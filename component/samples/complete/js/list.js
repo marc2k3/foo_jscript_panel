@@ -833,8 +833,11 @@ _.mixin({
 						if (plman.GetPlaylistName(i) == n) arr.push(i);
 					}
 					if (arr.length) plman.RemovePlaylists(arr);
-					plman.CreateAutoPlaylist(plman.PlaylistCount, n, q, s, f ? 1 : 0);
-					plman.ActivePlaylist = plman.PlaylistCount - 1;
+					if (plman.CreateAutoPlaylist(plman.PlaylistCount, n, q, s, f ? 1 : 0) == -1) {
+						fb.ShowPopupMessage('Autoplaylist creation failed. The most likely cause is an invalid query.');
+					} else {
+						plman.ActivePlaylist = plman.PlaylistCount - 1;
+					}
 				}
 				
 				_.createFolder(folders.data);
