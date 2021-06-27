@@ -7,7 +7,7 @@ public:
 
 	void run() override
 	{
-		IGdiBitmap* bitmap = ImageHelper(m_path).load();
+		IGdiBitmap* bitmap = ImageHelpers::load(m_path);
 		AsyncImageData data(m_cookie, bitmap, SysAllocString(m_path.data()));
 		m_hwnd.SendMessage(to_uint(CallbackID::on_load_image_done), reinterpret_cast<WPARAM>(&data));
 	}

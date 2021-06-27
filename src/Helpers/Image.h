@@ -6,11 +6,8 @@
 #pragma comment(lib, "../lib/libwebp/libwebpdecoder.lib")
 #endif
 
-class ImageHelper
+namespace ImageHelpers
 {
-public:
-	ImageHelper(const std::wstring& path) : m_path(path) {}
-
 	static IGdiBitmap* webp_to_bitmap(const uint8_t* data, size_t bytes)
 	{
 		if (bytes < 12 || memcmp(data, "RIFF", 4) != 0 || memcmp((const char*)data + 8, "WEBP", 4) != 0) return nullptr;
@@ -51,10 +48,10 @@ public:
 		return false;
 	}
 
-	IGdiBitmap* load()
+	static IGdiBitmap* load(const std::wstring& path)
 	{
 		pfc::com_ptr_t<IStream> stream;
-		if (SUCCEEDED(SHCreateStreamOnFileEx(m_path.data(), STGM_READ | STGM_SHARE_DENY_WRITE, GENERIC_READ, FALSE, nullptr, stream.receive_ptr())))
+		if (SUCCEEDED(SHCreateStreamOnFileEx(path.data(), STGM_READ | STGM_SHARE_DENY_WRITE, GENERIC_READ, FALSE, nullptr, stream.receive_ptr())))
 		{
 			auto bitmap = std::make_unique<Gdiplus::Bitmap>(stream.get_ptr(), TRUE);
 			if (ensure_gdiplus_object(bitmap))
@@ -72,10 +69,7 @@ public:
 		}
 		return nullptr;
 	}
-
-private:
-	std::wstring m_path;
-};
+}
 
 namespace AlbumArt
 {
@@ -106,7 +100,7 @@ namespace AlbumArt
 				}
 				else
 				{
-					return ImageHelper::webp_to_bitmap(ptr, bytes);
+					return ImageHelpers::webp_to_bitmap(ptr, bytes);
 				}
 			}
 		}

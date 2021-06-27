@@ -33,7 +33,7 @@ STDMETHODIMP Gdi::Image(BSTR path, IGdiBitmap** out)
 {
 	if (!out) return E_POINTER;
 
-	*out = ImageHelper(path).load();
+	*out = ImageHelpers::load(path);
 	return S_OK;
 }
 

@@ -44,7 +44,7 @@ STDMETHODIMP MetadbHandleList::AttachImage(BSTR path, UINT art_id)
 	if (SUCCEEDED(SHCreateStreamOnFileEx(path, STGM_READ | STGM_SHARE_DENY_WRITE, GENERIC_READ, FALSE, nullptr, stream.receive_ptr())))
 	{
 		ImageBuffer buffer;
-		if (ImageHelper::istream_to_buffer(stream.get_ptr(), buffer))
+		if (ImageHelpers::istream_to_buffer(stream.get_ptr(), buffer))
 		{
 			album_art_data_ptr data = album_art_data_impl::g_create(buffer.data(), buffer.size());
 
