@@ -5,6 +5,57 @@ class PlaylistLock : public playlist_lock
 public:
 	PlaylistLock(uint32_t flags) : m_flags(flags) {}
 
+	static bool add(size_t playlistIndex, uint32_t flags)
+	{
+		if (flags > 0)
+		{
+			auto api = playlist_manager_v2::get();
+
+			if (!api->playlist_lock_is_present(playlistIndex))
+			{
+				auto lock = fb2k::service_new<PlaylistLock>(flags);
+
+				if (api->playlist_lock_install(playlistIndex, lock))
+				{
+					GUID g;
+					CoCreateGuid(&g);
+					uint64_t hash = hash_guid(g);
+
+					s_map.emplace(hash, lock);
+					api->playlist_set_property_int(playlistIndex, guids::playlist_lock_flags, flags);
+					api->playlist_set_property_int(playlistIndex, guids::playlist_lock_hash, hash);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	static bool remove(size_t playlistIndex)
+	{
+		auto api = playlist_manager_v2::get();
+
+		string8 name;
+		api->playlist_lock_query_name(playlistIndex, name);
+
+		if (name.equals(jsp::component_name))
+		{
+			uint64_t hash = 0;
+			if (api->playlist_get_property_int(playlistIndex, guids::playlist_lock_hash, hash))
+			{
+				const auto& it = s_map.find(hash);
+				if (it != s_map.end() && api->playlist_lock_uninstall(playlistIndex, it->second))
+				{
+					s_map.erase(it);
+					api->playlist_remove_property(playlistIndex, guids::playlist_lock_flags);
+					api->playlist_remove_property(playlistIndex, guids::playlist_lock_hash);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	bool execute_default_action(size_t) override
 	{
 		return false;
@@ -53,57 +104,6 @@ public:
 	void on_playlist_index_change(size_t) override {}
 	void on_playlist_remove() override {}
 	void show_ui() override {}
-
-	static bool add(size_t playlistIndex, uint32_t flags)
-	{
-		if (flags > 0)
-		{
-			auto api = playlist_manager_v2::get();
-
-			if (!api->playlist_lock_is_present(playlistIndex))
-			{
-				auto lock = fb2k::service_new<PlaylistLock>(flags);
-
-				if (api->playlist_lock_install(playlistIndex, lock))
-				{
-					GUID g;
-					CoCreateGuid(&g);
-					uint64_t hash = hash_guid(g);
-
-					s_map.emplace(hash, lock);
-					api->playlist_set_property_int(playlistIndex, guids::playlist_lock_flags, flags);
-					api->playlist_set_property_int(playlistIndex, guids::playlist_lock_hash, hash);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	static bool remove(size_t playlistIndex)
-	{
-		auto api = playlist_manager_v2::get();
-
-		string8 name;
-		api->playlist_lock_query_name(playlistIndex, name);
-
-		if (name.equals(jsp::component_name))
-		{
-			uint64_t hash;
-			if (api->playlist_get_property_int(playlistIndex, guids::playlist_lock_hash, hash))
-			{
-				const auto& it = s_map.find(hash);
-				if (it != s_map.end() && api->playlist_lock_uninstall(playlistIndex, it->second))
-				{
-					s_map.erase(it);
-					api->playlist_remove_property(playlistIndex, guids::playlist_lock_flags);
-					api->playlist_remove_property(playlistIndex, guids::playlist_lock_hash);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 
 	inline static std::map<uint64_t, playlist_lock::ptr> s_map;
 

@@ -124,7 +124,7 @@ private:
 	{
 		string8 path = parent_path;
 		string8 text;
-		uint32_t flags;
+		uint32_t flags = 0;
 		node->get_display(text, flags);
 		path.add_string(text);
 

@@ -116,7 +116,7 @@ namespace
 
 			for (size_t i = 0; i < count; ++i)
 			{
-				uint32_t flags;
+				uint32_t flags = 0;
 				if (api->playlist_get_property_int(i, guids::playlist_lock_flags, flags))
 				{
 					PlaylistLock::add(i, flags);

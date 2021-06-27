@@ -16,7 +16,7 @@ STDMETHODIMP MetadbHandle::ClearStats()
 {
 	if (m_handle.is_empty()) return E_POINTER;
 
-	metadb_index_hash hash;
+	metadb_index_hash hash = 0;
 	if (db::hashHandle(m_handle, hash))
 	{
 		db::set(hash, db::Fields());
@@ -73,7 +73,7 @@ STDMETHODIMP MetadbHandle::SetFirstPlayed(BSTR first_played)
 {
 	if (m_handle.is_empty()) return E_POINTER;
 
-	metadb_index_hash hash;
+	metadb_index_hash hash = 0;
 	if (db::hashHandle(m_handle, hash))
 	{
 		db::Fields f = db::get(hash);
@@ -91,7 +91,7 @@ STDMETHODIMP MetadbHandle::SetLastPlayed(BSTR last_played)
 {
 	if (m_handle.is_empty()) return E_POINTER;
 
-	metadb_index_hash hash;
+	metadb_index_hash hash = 0;
 	if (db::hashHandle(m_handle, hash))
 	{
 		db::Fields f = db::get(hash);
@@ -109,7 +109,7 @@ STDMETHODIMP MetadbHandle::SetLoved(UINT loved)
 {
 	if (m_handle.is_empty()) return E_POINTER;
 
-	metadb_index_hash hash;
+	metadb_index_hash hash = 0;
 	if (db::hashHandle(m_handle, hash))
 	{
 		db::Fields f = db::get(hash);
@@ -126,7 +126,7 @@ STDMETHODIMP MetadbHandle::SetPlaycount(UINT playcount)
 {
 	if (m_handle.is_empty()) return E_POINTER;
 
-	metadb_index_hash hash;
+	metadb_index_hash hash = 0;
 	if (db::hashHandle(m_handle, hash))
 	{
 		db::Fields f = db::get(hash);
@@ -143,7 +143,7 @@ STDMETHODIMP MetadbHandle::SetRating(UINT rating)
 {
 	if (m_handle.is_empty()) return E_POINTER;
 
-	metadb_index_hash hash;
+	metadb_index_hash hash = 0;
 	if (db::hashHandle(m_handle, hash))
 	{
 		db::Fields f = db::get(hash);

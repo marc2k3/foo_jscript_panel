@@ -26,10 +26,8 @@ public:
 
 		for (const auto& [id, filter] : id_filter_map)
 		{
-			Item item;
-			item.hwnd = GetDlgItem(id);
-			item.hwnd.SetCheck((m_flags & filter));
-			item.filter = filter;
+			Item item(CCheckBox(GetDlgItem(id)), filter);
+			item.cbox.SetCheck((m_flags & filter));
 			m_items.emplace_back(item);
 		}
 
@@ -43,9 +41,9 @@ public:
 		{
 			uint32_t flags = 0;
 
-			for (const auto& [hwnd, filter] : m_items)
+			for (const auto& [cbox, filter] : m_items)
 			{
-				if (hwnd.IsChecked()) flags |= filter;
+				if (cbox.IsChecked()) flags |= filter;
 			}
 
 			if (flags != m_flags)
@@ -62,11 +60,13 @@ public:
 private:
 	struct Item
 	{
-		CCheckBox hwnd;
+		CCheckBox cbox;
 		uint32_t filter = 0;
 	};
 
+	using Items = std::vector<Item>;
+
+	Items m_items;
 	size_t m_playlistIndex = 0;
-	std::vector<Item> m_items;
 	uint32_t m_flags = 0;
 };

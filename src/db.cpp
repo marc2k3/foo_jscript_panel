@@ -72,7 +72,7 @@ namespace db
 	public:
 		bool process_field(uint32_t index, metadb_handle* handle, titleformat_text_out* out) override
 		{
-			metadb_index_hash hash;
+			metadb_index_hash hash = 0;
 			if (!hashHandle(handle, hash)) return false;
 			const Fields f = get(hash);
 
@@ -128,7 +128,7 @@ namespace db
 				const size_t count = handles.get_count();
 				if (count == 1)
 				{
-					metadb_index_hash hash;
+					metadb_index_hash hash = 0;
 					if (hashHandle(handles[0], hash))
 					{
 						const Fields f = get(hash);
@@ -176,7 +176,7 @@ namespace db
 		{
 			try
 			{
-				stream_reader_formatter_simple_ref<false> reader(temp.get_ptr(), temp.get_size());
+				stream_reader_formatter_simple_ref reader(temp.get_ptr(), temp.get_size());
 				Fields f;
 				reader >> f.playcount;
 				reader >> f.loved;
@@ -206,7 +206,7 @@ namespace db
 		const size_t count = handles.get_count();
 		for (size_t i = 0; i < count; ++i)
 		{
-			metadb_index_hash hash;
+			metadb_index_hash hash = 0;
 			if (hashHandle(handles[i], hash))
 			{
 				hashes.emplace(hash);
@@ -229,7 +229,7 @@ namespace db
 
 	void set(metadb_index_hash hash, Fields f)
 	{
-		stream_writer_formatter_simple<false> writer;
+		stream_writer_formatter_simple writer;
 		writer << f.playcount;
 		writer << f.loved;
 		writer << f.first_played;
