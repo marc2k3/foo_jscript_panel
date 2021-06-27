@@ -245,15 +245,13 @@ namespace
 
 		void on_playback_seek(double time) override
 		{
-			VariantArgs args = { time };
-			auto data = new CallbackData(args);
+			auto data = new CallbackData({ time });
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_seek, data);
 		}
 
 		void on_playback_starting(playback_control::t_track_command cmd, bool paused) override
 		{
-			VariantArgs args = { cmd, paused };
-			auto data = new CallbackData(args);
+			auto data = new CallbackData({ cmd, paused });
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_starting, data);
 		}
 
@@ -264,15 +262,13 @@ namespace
 
 		void on_playback_time(double time) override
 		{
-			VariantArgs args = { time };
-			auto data = new CallbackData(args);
+			auto data = new CallbackData({ time });
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_time, data);
 		}
 
 		void on_volume_change(float new_val) override
 		{
-			VariantArgs args = { new_val };
-			auto data = new CallbackData(args);
+			auto data = new CallbackData({ new_val });
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_volume_change, data);
 		}
 	};
@@ -306,15 +302,13 @@ namespace
 
 		void on_item_ensure_visible(size_t playlist, size_t idx) override
 		{
-			VariantArgs args = { playlist, idx };
-			auto data = new CallbackData(args);
+			auto data = new CallbackData({ playlist, idx });
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playlist_item_ensure_visible, data);
 		}
 
 		void on_item_focus_change(size_t playlist, size_t from, size_t to) override
 		{
-			VariantArgs args = { playlist, from, to };
-			auto data = new CallbackData(args);
+			auto data = new CallbackData({ playlist, from, to });
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_item_focus_change, data);
 		}
 
@@ -325,8 +319,7 @@ namespace
 
 		void on_items_removed(size_t playlist, const pfc::bit_array&, size_t, size_t new_count) override
 		{
-			VariantArgs args = { playlist, new_count };
-			auto data = new CallbackData(args);
+			auto data = new CallbackData({ playlist, new_count });
 			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playlist_items_removed, data);
 		}
 

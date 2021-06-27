@@ -2,7 +2,7 @@
 
 struct CallbackData : public pfc::refcounted_object_root
 {
-	CallbackData(const VariantArgs& args) : m_args(args) {}
+	CallbackData(const std::initializer_list<_variant_t>& args) : m_args(args) {}
 
 	VariantArgs m_args;
 };
