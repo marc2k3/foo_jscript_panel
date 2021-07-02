@@ -85,7 +85,7 @@ void Config::set_data_raw(stream_reader* reader, size_t sizehint, abort_callback
 	try
 	{
 		StringMap map;
-		size_t count;
+		size_t count = 0;
 		string8 key, value;
 
 		reader->read_object_t(count, abort);

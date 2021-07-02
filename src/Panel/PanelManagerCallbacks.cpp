@@ -40,7 +40,7 @@ namespace
 			const auto& it = std::ranges::find_if(watched_objects, [=](const WatchedObject& item) { return g == *item.guid; });
 			if (it != watched_objects.end())
 			{
-				bool b;
+				bool b = false;
 				object->get_data_bool(b);
 				PanelManager::instance().post_msg_to_all(it->id, b);
 			}

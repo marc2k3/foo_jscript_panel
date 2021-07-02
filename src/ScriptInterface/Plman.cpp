@@ -227,8 +227,7 @@ STDMETHODIMP Plman::GetPlayingItemLocation(IPlayingItemLocation** out)
 {
 	if (!out) return E_POINTER;
 
-	size_t playlistIndex;
-	size_t playlistItemIndex;
+	size_t playlistIndex = 0, playlistItemIndex = 0;
 	bool isValid = playlist_manager::get()->get_playing_item_location(&playlistIndex, &playlistItemIndex);
 	*out = new ComObjectImpl<PlayingItemLocation>(isValid, playlistIndex, playlistItemIndex);
 	return S_OK;

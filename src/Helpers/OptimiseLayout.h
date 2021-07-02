@@ -31,6 +31,6 @@ public:
 	}
 
 private:
-	bool m_minimise;
+	bool m_minimise = false;
 	metadb_handle_list m_handles;
 };

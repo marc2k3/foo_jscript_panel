@@ -129,7 +129,6 @@ void CDialogProperties::OnCloseCmd(UINT, int nID, CWindow)
 	case IDOK:
 		Apply();
 		break;
-
 	case IDC_BTN_APPLY:
 		Apply();
 		return;

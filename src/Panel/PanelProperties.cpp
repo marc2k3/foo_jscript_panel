@@ -69,7 +69,7 @@ void PanelProperties::g_set(stream_reader* reader, PropertyData& data, abort_cal
 
 	try
 	{
-		size_t count;
+		size_t count = 0;
 		reader->read_lendian_t(count, abort);
 
 		for (size_t i = 0; i < count; ++i)

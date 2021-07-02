@@ -50,258 +50,254 @@ static constexpr std::array<const uint8_t, 255> stackblur_shr =
 	24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24
 };
 
-void StackBlurJob(uint8_t* src, uint32_t w, uint32_t h, uint8_t radius, uint32_t cores, uint32_t core, uint32_t step, uint8_t* stack)
+class StackBlur
 {
-	uint8_t i;
-	uint32_t x, y, xp, yp;
-	uint32_t sp;
-	uint32_t stack_start;
-	uint8_t* stack_ptr;
-
-	uint8_t* src_ptr;
-	uint8_t* dst_ptr;
-
-	uint32_t sum_r;
-	uint32_t sum_g;
-	uint32_t sum_b;
-	uint32_t sum_a;
-	uint32_t sum_in_r;
-	uint32_t sum_in_g;
-	uint32_t sum_in_b;
-	uint32_t sum_in_a;
-	uint32_t sum_out_r;
-	uint32_t sum_out_g;
-	uint32_t sum_out_b;
-	uint32_t sum_out_a;
-
-	uint32_t wm = w - 1;
-	uint32_t hm = h - 1;
-	uint32_t w4 = w * 4;
-	uint32_t div = (radius * 2) + 1;
-	uint16_t mul_sum = stackblur_mul[radius];
-	uint8_t shr_sum = stackblur_shr[radius];
-
-	if (step == 1)
+public:
+	StackBlur(uint8_t p_radius, uint32_t p_width, uint32_t p_height) : radius(std::clamp<uint8_t>(p_radius, 2, 254)), width(p_width), height(p_height)
 	{
-		uint32_t minY = core * h / cores;
-		uint32_t maxY = (core + 1) * h / cores;
+		div = (radius * 2) + 1;
+		cores = std::max(1U, std::thread::hardware_concurrency());
+		shr_sum = stackblur_shr[radius];
+		mul_sum = stackblur_mul[radius];
+	}
 
-		for (y = minY; y < maxY; ++y)
+	void run(uint8_t* src)
+	{
+		ImageBuffer stack(div * 4 * cores);
+		std::vector<std::thread> workers(cores);
+
+		for (uint32_t core = 0; core < cores; ++core)
 		{
-			sum_r = sum_g = sum_b = sum_a =
-				sum_in_r = sum_in_g = sum_in_b = sum_in_a =
-				sum_out_r = sum_out_g = sum_out_b = sum_out_a = 0;
-
-			src_ptr = src + w4 * y;
-
-			for (i = 0; i <= radius; ++i)
-			{
-				stack_ptr = &stack[4 * i];
-				stack_ptr[0] = src_ptr[0];
-				stack_ptr[1] = src_ptr[1];
-				stack_ptr[2] = src_ptr[2];
-				stack_ptr[3] = src_ptr[3];
-				sum_r += src_ptr[0] * (i + 1);
-				sum_g += src_ptr[1] * (i + 1);
-				sum_b += src_ptr[2] * (i + 1);
-				sum_a += src_ptr[3] * (i + 1);
-				sum_out_r += src_ptr[0];
-				sum_out_g += src_ptr[1];
-				sum_out_b += src_ptr[2];
-				sum_out_a += src_ptr[3];
-			}
-
-			for (i = 1; i <= radius; ++i)
-			{
-				if (i <= wm) src_ptr += 4;
-				stack_ptr = &stack[4 * (i + radius)];
-				stack_ptr[0] = src_ptr[0];
-				stack_ptr[1] = src_ptr[1];
-				stack_ptr[2] = src_ptr[2];
-				stack_ptr[3] = src_ptr[3];
-				sum_r += src_ptr[0] * (radius + 1 - i);
-				sum_g += src_ptr[1] * (radius + 1 - i);
-				sum_b += src_ptr[2] * (radius + 1 - i);
-				sum_a += src_ptr[3] * (radius + 1 - i);
-				sum_in_r += src_ptr[0];
-				sum_in_g += src_ptr[1];
-				sum_in_b += src_ptr[2];
-				sum_in_a += src_ptr[3];
-			}
-
-			sp = radius;
-			xp = radius;
-			if (xp > wm) xp = wm;
-			src_ptr = src + 4 * (xp + y * w);
-			dst_ptr = src + y * w4;
-
-			for (x = 0; x < w; ++x)
-			{
-				dst_ptr[0] = static_cast<uint8_t>((sum_r * mul_sum) >> shr_sum);
-				dst_ptr[1] = static_cast<uint8_t>((sum_g * mul_sum) >> shr_sum);
-				dst_ptr[2] = static_cast<uint8_t>((sum_b * mul_sum) >> shr_sum);
-				dst_ptr[3] = static_cast<uint8_t>((sum_a * mul_sum) >> shr_sum);
-				dst_ptr += 4;
-
-				sum_r -= sum_out_r;
-				sum_g -= sum_out_g;
-				sum_b -= sum_out_b;
-				sum_a -= sum_out_a;
-
-				stack_start = sp + div - radius;
-				if (stack_start >= div) stack_start -= div;
-				stack_ptr = &stack[4 * stack_start];
-
-				sum_out_r -= stack_ptr[0];
-				sum_out_g -= stack_ptr[1];
-				sum_out_b -= stack_ptr[2];
-				sum_out_a -= stack_ptr[3];
-
-				if (xp < wm)
+			workers[core] = std::thread([&, core]()
 				{
-					src_ptr += 4;
-					++xp;
+					StackBlurThread(1, core, src, &stack[div * 4 * core]);
+				});
+		}
+
+		for (auto& worker : workers)
+		{
+			worker.join();
+		}
+
+		for (uint32_t core = 0; core < cores; ++core)
+		{
+			workers[core] = std::thread([&, core]()
+				{
+					StackBlurThread(2, core, src, &stack[div * 4 * core]);
+				});
+		}
+
+		for (auto& worker : workers)
+		{
+			worker.join();
+		}
+	}
+
+private:
+	struct stack_rgba
+	{
+		stack_rgba& operator +=(const stack_rgba& other)
+		{
+			this->r += other.r;
+			this->g += other.g;
+			this->b += other.b;
+			this->a += other.a;
+			return *this;
+		}
+
+		stack_rgba& operator -=(const stack_rgba& other)
+		{
+			this->r -= other.r;
+			this->g -= other.g;
+			this->b -= other.b;
+			this->a -= other.a;
+			return *this;
+		}
+
+		stack_rgba& operator -=(const uint8_t* ptr)
+		{
+			this->r -= ptr[0];
+			this->g -= ptr[1];
+			this->b -= ptr[2];
+			this->a -= ptr[3];
+			return *this;
+		}
+
+		void add(const uint8_t* ptr, uint8_t multiplier = 1)
+		{
+			r += ptr[0] * multiplier;
+			g += ptr[1] * multiplier;
+			b += ptr[2] * multiplier;
+			a += ptr[3] * multiplier;
+		}
+
+		void reset()
+		{
+			r = 0;
+			g = 0;
+			b = 0;
+			a = 0;
+		}
+
+		uint32_t r = 0, g = 0, b = 0, a = 0;
+	};
+
+	void InitPtr(uint8_t* ptr, const stack_rgba& sum)
+	{
+		ptr[0] = static_cast<uint8_t>((sum.r * mul_sum) >> shr_sum);
+		ptr[1] = static_cast<uint8_t>((sum.g * mul_sum) >> shr_sum);
+		ptr[2] = static_cast<uint8_t>((sum.b * mul_sum) >> shr_sum);
+		ptr[3] = static_cast<uint8_t>((sum.a * mul_sum) >> shr_sum);
+	}
+
+	void StackBlurThread(uint32_t step, uint32_t core, uint8_t* src, uint8_t* stack)
+	{
+		stack_rgba sum, sum_in, sum_out;
+
+		uint8_t* stack_ptr;
+		uint8_t* src_ptr;
+		uint8_t* dst_ptr;
+
+		uint32_t wm = width - 1;
+		uint32_t hm = height - 1;
+		uint32_t w4 = width * 4;
+		uint32_t sp = 0, stack_start = 0;
+
+		if (step == 1)
+		{
+			uint32_t minY = core * height / cores;
+			uint32_t maxY = (core + 1) * height / cores;
+
+			for (uint32_t y = minY; y < maxY; ++y)
+			{
+				sum.reset();
+				sum_in.reset();
+				sum_out.reset();
+
+				src_ptr = src + w4 * y;
+
+				for (uint8_t i = 0; i <= radius; ++i)
+				{
+					stack_ptr = &stack[i * 4];
+					memcpy(stack_ptr, src_ptr, 4);
+					sum.add(src_ptr, i + 1);
+					sum_out.add(src_ptr);
 				}
 
-				stack_ptr[0] = src_ptr[0];
-				stack_ptr[1] = src_ptr[1];
-				stack_ptr[2] = src_ptr[2];
-				stack_ptr[3] = src_ptr[3];
+				for (uint8_t i = 1; i <= radius; ++i)
+				{
+					if (i <= wm) src_ptr += 4;
+					stack_ptr = &stack[4 * (i + radius)];
+					memcpy(stack_ptr, src_ptr, 4);
+					sum.add(src_ptr, radius + 1 - i);
+					sum_in.add(src_ptr);
+				}
 
-				sum_in_r += src_ptr[0];
-				sum_in_g += src_ptr[1];
-				sum_in_b += src_ptr[2];
-				sum_in_a += src_ptr[3];
-				sum_r += sum_in_r;
-				sum_g += sum_in_g;
-				sum_b += sum_in_b;
-				sum_a += sum_in_a;
+				sp = radius;
+				uint32_t xp = radius;
+				if (xp > wm) xp = wm;
+				src_ptr = src + 4 * (xp + y * width);
+				dst_ptr = src + y * w4;
 
-				++sp;
-				if (sp >= div) sp = 0;
-				stack_ptr = &stack[sp * 4];
+				for (uint32_t x = 0; x < width; ++x)
+				{
+					InitPtr(dst_ptr, sum);
+					dst_ptr += 4;
 
-				sum_out_r += stack_ptr[0];
-				sum_out_g += stack_ptr[1];
-				sum_out_b += stack_ptr[2];
-				sum_out_a += stack_ptr[3];
-				sum_in_r -= stack_ptr[0];
-				sum_in_g -= stack_ptr[1];
-				sum_in_b -= stack_ptr[2];
-				sum_in_a -= stack_ptr[3];
+					stack_start = sp + div - radius;
+					if (stack_start >= div) stack_start -= div;
+					stack_ptr = &stack[4 * stack_start];
+
+					if (xp < wm)
+					{
+						src_ptr += 4;
+						++xp;
+					}
+
+					sum -= sum_out;
+					sum_out -= stack_ptr;
+					memcpy(stack_ptr, src_ptr, 4);
+					sum_in.add(src_ptr);
+					sum += sum_in;
+
+					++sp;
+					if (sp >= div) sp = 0;
+					stack_ptr = &stack[sp * 4];
+
+					sum_out.add(stack_ptr);
+					sum_in -= stack_ptr;
+				}
+			}
+		}
+		else if (step == 2)
+		{
+			uint32_t minX = core * width / cores;
+			uint32_t maxX = (core + 1) * width / cores;
+
+			for (uint32_t x = minX; x < maxX; ++x)
+			{
+				sum.reset();
+				sum_in.reset();
+				sum_out.reset();
+
+				src_ptr = src + 4 * x;
+
+				for (uint8_t i = 0; i <= radius; ++i)
+				{
+					stack_ptr = &stack[i * 4];
+					memcpy(stack_ptr, src_ptr, 4);
+					sum.add(src_ptr, i + 1);
+					sum_out.add(src_ptr);
+				}
+
+				for (uint8_t i = 1; i <= radius; ++i)
+				{
+					if (i <= hm) src_ptr += w4;
+					stack_ptr = &stack[4 * (i + radius)];
+					memcpy(stack_ptr, src_ptr, 4);
+					sum.add(src_ptr, radius + 1 - i);
+					sum_in.add(src_ptr);
+				}
+
+				sp = radius;
+				uint32_t yp = radius;
+				if (yp > hm) yp = hm;
+				src_ptr = src + 4 * (x + yp * width);
+				dst_ptr = src + 4 * x;
+
+				for (uint32_t y = 0; y < height; ++y)
+				{
+					InitPtr(dst_ptr, sum);
+					dst_ptr += w4;
+
+					stack_start = sp + div - radius;
+					if (stack_start >= div) stack_start -= div;
+					stack_ptr = &stack[4 * stack_start];
+
+					if (yp < hm)
+					{
+						src_ptr += w4;
+						++yp;
+					}
+
+					sum -= sum_out;
+					sum_out -= stack_ptr;
+					memcpy(stack_ptr, src_ptr, 4);
+					sum_in.add(src_ptr);
+					sum += sum_in;
+
+					++sp;
+					if (sp >= div) sp = 0;
+					stack_ptr = &stack[sp * 4];
+
+					sum_out.add(stack_ptr);
+					sum_in -= stack_ptr;
+				}
 			}
 		}
 	}
-	else if (step == 2)
-	{
-		uint32_t minX = core * w / cores;
-		uint32_t maxX = (core + 1) * w / cores;
 
-		for (x = minX; x < maxX; ++x)
-		{
-			sum_r = sum_g = sum_b = sum_a =
-				sum_in_r = sum_in_g = sum_in_b = sum_in_a =
-				sum_out_r = sum_out_g = sum_out_b = sum_out_a = 0;
-
-			src_ptr = src + 4 * x;
-
-			for (i = 0; i <= radius; ++i)
-			{
-				stack_ptr = &stack[i * 4];
-				stack_ptr[0] = src_ptr[0];
-				stack_ptr[1] = src_ptr[1];
-				stack_ptr[2] = src_ptr[2];
-				stack_ptr[3] = src_ptr[3];
-				sum_r += src_ptr[0] * (i + 1);
-				sum_g += src_ptr[1] * (i + 1);
-				sum_b += src_ptr[2] * (i + 1);
-				sum_a += src_ptr[3] * (i + 1);
-				sum_out_r += src_ptr[0];
-				sum_out_g += src_ptr[1];
-				sum_out_b += src_ptr[2];
-				sum_out_a += src_ptr[3];
-			}
-
-			for (i = 1; i <= radius; ++i)
-			{
-				if (i <= hm) src_ptr += w4;
-
-				stack_ptr = &stack[4 * (i + radius)];
-				stack_ptr[0] = src_ptr[0];
-				stack_ptr[1] = src_ptr[1];
-				stack_ptr[2] = src_ptr[2];
-				stack_ptr[3] = src_ptr[3];
-				sum_r += src_ptr[0] * (radius + 1 - i);
-				sum_g += src_ptr[1] * (radius + 1 - i);
-				sum_b += src_ptr[2] * (radius + 1 - i);
-				sum_a += src_ptr[3] * (radius + 1 - i);
-				sum_in_r += src_ptr[0];
-				sum_in_g += src_ptr[1];
-				sum_in_b += src_ptr[2];
-				sum_in_a += src_ptr[3];
-			}
-
-			sp = radius;
-			yp = radius;
-			if (yp > hm) yp = hm;
-			src_ptr = src + 4 * (x + yp * w);
-			dst_ptr = src + 4 * x;
-
-			for (y = 0; y < h; ++y)
-			{
-				dst_ptr[0] = static_cast<uint8_t>((sum_r * mul_sum) >> shr_sum);
-				dst_ptr[1] = static_cast<uint8_t>((sum_g * mul_sum) >> shr_sum);
-				dst_ptr[2] = static_cast<uint8_t>((sum_b * mul_sum) >> shr_sum);
-				dst_ptr[3] = static_cast<uint8_t>((sum_a * mul_sum) >> shr_sum);
-				dst_ptr += w4;
-
-				sum_r -= sum_out_r;
-				sum_g -= sum_out_g;
-				sum_b -= sum_out_b;
-				sum_a -= sum_out_a;
-
-				stack_start = sp + div - radius;
-				if (stack_start >= div) stack_start -= div;
-				stack_ptr = &stack[4 * stack_start];
-
-				sum_out_r -= stack_ptr[0];
-				sum_out_g -= stack_ptr[1];
-				sum_out_b -= stack_ptr[2];
-				sum_out_a -= stack_ptr[3];
-
-				if (yp < hm)
-				{
-					src_ptr += w4;
-					++yp;
-				}
-
-				stack_ptr[0] = src_ptr[0];
-				stack_ptr[1] = src_ptr[1];
-				stack_ptr[2] = src_ptr[2];
-				stack_ptr[3] = src_ptr[3];
-
-				sum_in_r += src_ptr[0];
-				sum_in_g += src_ptr[1];
-				sum_in_b += src_ptr[2];
-				sum_in_a += src_ptr[3];
-				sum_r += sum_in_r;
-				sum_g += sum_in_g;
-				sum_b += sum_in_b;
-				sum_a += sum_in_a;
-
-				++sp;
-				if (sp >= div) sp = 0;
-				stack_ptr = &stack[sp * 4];
-
-				sum_out_r += stack_ptr[0];
-				sum_out_g += stack_ptr[1];
-				sum_out_b += stack_ptr[2];
-				sum_out_a += stack_ptr[3];
-				sum_in_r -= stack_ptr[0];
-				sum_in_g -= stack_ptr[1];
-				sum_in_b -= stack_ptr[2];
-				sum_in_a -= stack_ptr[3];
-			}
-		}
-	}
-}
+	uint8_t radius = 0, shr_sum = 0;
+	uint16_t mul_sum = 0;
+	uint32_t div = 0, cores = 0, width = 0, height = 0;
+};

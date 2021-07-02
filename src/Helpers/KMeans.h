@@ -160,5 +160,5 @@ private:
 
 	Clusters m_clusters;
 	KPoints m_points;
-	size_t m_count;
+	size_t m_count = 0;
 };

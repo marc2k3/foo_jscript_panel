@@ -13,6 +13,18 @@ public:
 
 	FileInfoFilter(const Tags& tags) : m_tags(tags) {}
 
+	static Strings g_get_values(json j)
+	{
+		Strings values;
+		if (!j.is_array()) j = json::array({ j });
+		for (const auto& value : j)
+		{
+			std::string str = value.is_string() ? value.get_ref<const std::string&>() : value.dump();
+			if (str.length()) values.emplace_back(str);
+		}
+		return values;
+	}
+
 	bool apply_filter(metadb_handle_ptr location, t_filestats stats, file_info& info) override
 	{
 		for (const auto& [name, values] : m_tags)
@@ -24,18 +36,6 @@ public:
 			}
 		}
 		return true;
-	}
-
-	static Strings g_get_values(json j)
-	{
-		Strings values;
-		if (!j.is_array()) j = json::array({ j });
-		for (const auto& value : j)
-		{
-			std::string str = value.is_string() ? value.get_ref<const std::string&>() : value.dump();
-			if (str.length()) values.emplace_back(str);
-		}
-		return values;
 	}
 
 private:

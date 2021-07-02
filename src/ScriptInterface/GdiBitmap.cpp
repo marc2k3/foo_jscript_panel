@@ -220,44 +220,14 @@ STDMETHODIMP GdiBitmap::StackBlur(UINT8 radius)
 {
 	if (!m_bitmap) return E_POINTER;
 
-	radius = std::clamp<uint8_t>(radius, 2, 254);
 	const Gdiplus::Rect rect(0, 0, m_bitmap->GetWidth(), m_bitmap->GetHeight());
 	Gdiplus::BitmapData bmpdata;
 
 	if (m_bitmap->LockBits(&rect, Gdiplus::ImageLockModeRead | Gdiplus::ImageLockModeWrite, PixelFormat32bppPARGB, &bmpdata) == Gdiplus::Ok)
 	{
 		uint8_t* src = static_cast<uint8_t*>(bmpdata.Scan0);
-		const uint32_t cores = std::max(1U, std::thread::hardware_concurrency());
-		const uint32_t div = (radius * 2) + 1;
-		ImageBuffer stack(div * 4 * cores);
-
-		std::vector<std::thread> workers(cores);
-
-		for (uint32_t core = 0; core < cores; ++core)
-		{
-			workers[core] = std::thread([&, core]()
-				{
-					StackBlurJob(src, rect.Width, rect.Height, radius, cores, core, 1, &stack[div * 4 * core]);
-				});
-		}
-
-		for (auto& worker : workers)
-		{
-			worker.join();
-		}
-
-		for (uint32_t core = 0; core < cores; ++core)
-		{
-			workers[core] = std::thread([&, core]()
-				{
-					StackBlurJob(src, rect.Width, rect.Height, radius, cores, core, 2, &stack[div * 4 * core]);
-				});
-		}
-
-		for (auto& worker : workers)
-		{
-			worker.join();
-		}
+		::StackBlur job(radius, rect.Width, rect.Height);
+		job.run(src);
 
 		m_bitmap->UnlockBits(&bmpdata);
 	}
