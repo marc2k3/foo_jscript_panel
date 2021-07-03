@@ -61,7 +61,7 @@ public:
 		mul_sum = stackblur_mul[radius];
 	}
 
-	void run(uint8_t* src)
+	void Run(uint8_t* src)
 	{
 		ImageBuffer stack(div * 4 * cores);
 		std::vector<std::thread> workers(cores);
@@ -94,9 +94,9 @@ public:
 	}
 
 private:
-	struct stack_rgba
+	struct StackRGBA
 	{
-		stack_rgba& operator +=(const stack_rgba& other)
+		StackRGBA& operator +=(const StackRGBA& other)
 		{
 			this->r += other.r;
 			this->g += other.g;
@@ -105,7 +105,7 @@ private:
 			return *this;
 		}
 
-		stack_rgba& operator -=(const stack_rgba& other)
+		StackRGBA& operator -=(const StackRGBA& other)
 		{
 			this->r -= other.r;
 			this->g -= other.g;
@@ -114,7 +114,7 @@ private:
 			return *this;
 		}
 
-		stack_rgba& operator -=(const uint8_t* ptr)
+		StackRGBA& operator -=(const uint8_t* ptr)
 		{
 			this->r -= ptr[0];
 			this->g -= ptr[1];
@@ -123,7 +123,7 @@ private:
 			return *this;
 		}
 
-		void add(const uint8_t* ptr, uint8_t multiplier = 1)
+		void Add(const uint8_t* ptr, uint8_t multiplier = 1)
 		{
 			r += ptr[0] * multiplier;
 			g += ptr[1] * multiplier;
@@ -131,7 +131,7 @@ private:
 			a += ptr[3] * multiplier;
 		}
 
-		void reset()
+		void Reset()
 		{
 			r = 0;
 			g = 0;
@@ -142,7 +142,7 @@ private:
 		uint32_t r = 0, g = 0, b = 0, a = 0;
 	};
 
-	void InitPtr(uint8_t* ptr, const stack_rgba& sum)
+	void InitPtr(uint8_t* ptr, const StackRGBA& sum)
 	{
 		ptr[0] = static_cast<uint8_t>((sum.r * mul_sum) >> shr_sum);
 		ptr[1] = static_cast<uint8_t>((sum.g * mul_sum) >> shr_sum);
@@ -152,7 +152,7 @@ private:
 
 	void StackBlurThread(uint32_t step, uint32_t core, uint8_t* src, uint8_t* stack)
 	{
-		stack_rgba sum, sum_in, sum_out;
+		StackRGBA sum, sum_in, sum_out;
 
 		uint8_t* stack_ptr;
 		uint8_t* src_ptr;
@@ -170,9 +170,9 @@ private:
 
 			for (uint32_t y = minY; y < maxY; ++y)
 			{
-				sum.reset();
-				sum_in.reset();
-				sum_out.reset();
+				sum.Reset();
+				sum_in.Reset();
+				sum_out.Reset();
 
 				src_ptr = src + w4 * y;
 
@@ -180,8 +180,8 @@ private:
 				{
 					stack_ptr = &stack[i * 4];
 					memcpy(stack_ptr, src_ptr, 4);
-					sum.add(src_ptr, i + 1);
-					sum_out.add(src_ptr);
+					sum.Add(src_ptr, i + 1);
+					sum_out.Add(src_ptr);
 				}
 
 				for (uint8_t i = 1; i <= radius; ++i)
@@ -189,8 +189,8 @@ private:
 					if (i <= wm) src_ptr += 4;
 					stack_ptr = &stack[4 * (i + radius)];
 					memcpy(stack_ptr, src_ptr, 4);
-					sum.add(src_ptr, radius + 1 - i);
-					sum_in.add(src_ptr);
+					sum.Add(src_ptr, radius + 1 - i);
+					sum_in.Add(src_ptr);
 				}
 
 				sp = radius;
@@ -217,14 +217,14 @@ private:
 					sum -= sum_out;
 					sum_out -= stack_ptr;
 					memcpy(stack_ptr, src_ptr, 4);
-					sum_in.add(src_ptr);
+					sum_in.Add(src_ptr);
 					sum += sum_in;
 
 					++sp;
 					if (sp >= div) sp = 0;
 					stack_ptr = &stack[sp * 4];
 
-					sum_out.add(stack_ptr);
+					sum_out.Add(stack_ptr);
 					sum_in -= stack_ptr;
 				}
 			}
@@ -236,9 +236,9 @@ private:
 
 			for (uint32_t x = minX; x < maxX; ++x)
 			{
-				sum.reset();
-				sum_in.reset();
-				sum_out.reset();
+				sum.Reset();
+				sum_in.Reset();
+				sum_out.Reset();
 
 				src_ptr = src + 4 * x;
 
@@ -246,8 +246,8 @@ private:
 				{
 					stack_ptr = &stack[i * 4];
 					memcpy(stack_ptr, src_ptr, 4);
-					sum.add(src_ptr, i + 1);
-					sum_out.add(src_ptr);
+					sum.Add(src_ptr, i + 1);
+					sum_out.Add(src_ptr);
 				}
 
 				for (uint8_t i = 1; i <= radius; ++i)
@@ -255,8 +255,8 @@ private:
 					if (i <= hm) src_ptr += w4;
 					stack_ptr = &stack[4 * (i + radius)];
 					memcpy(stack_ptr, src_ptr, 4);
-					sum.add(src_ptr, radius + 1 - i);
-					sum_in.add(src_ptr);
+					sum.Add(src_ptr, radius + 1 - i);
+					sum_in.Add(src_ptr);
 				}
 
 				sp = radius;
@@ -283,14 +283,14 @@ private:
 					sum -= sum_out;
 					sum_out -= stack_ptr;
 					memcpy(stack_ptr, src_ptr, 4);
-					sum_in.add(src_ptr);
+					sum_in.Add(src_ptr);
 					sum += sum_in;
 
 					++sp;
 					if (sp >= div) sp = 0;
 					stack_ptr = &stack[sp * 4];
 
-					sum_out.add(stack_ptr);
+					sum_out.Add(stack_ptr);
 					sum_in -= stack_ptr;
 				}
 			}

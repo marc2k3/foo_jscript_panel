@@ -227,7 +227,7 @@ STDMETHODIMP GdiBitmap::StackBlur(UINT8 radius)
 	{
 		uint8_t* src = static_cast<uint8_t*>(bmpdata.Scan0);
 		::StackBlur job(radius, rect.Width, rect.Height);
-		job.run(src);
+		job.Run(src);
 
 		m_bitmap->UnlockBits(&bmpdata);
 	}
