@@ -262,8 +262,7 @@ namespace
 
 		void on_playback_time(double time) override
 		{
-			auto data = new CallbackData({ time });
-			PanelManager::instance().post_msg_to_all_pointer(CallbackID::on_playback_time, data);
+			PanelManager::instance().post_msg_to_all(CallbackID::on_playback_time, to_uint(time));
 		}
 
 		void on_volume_change(float new_val) override

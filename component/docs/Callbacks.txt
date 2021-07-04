@@ -187,7 +187,7 @@ function on_playback_stop(reason) {}
 
 function on_playback_time(time) {}
 // Called every second, for time display.
-// time - float value, in sec.
+// time: playback position in seconds.
 
 function on_playlist_item_ensure_visible(playlistIndex, playlistItemIndex) {}
 

@@ -182,6 +182,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case CallbackID::on_playback_order_changed:
 	case CallbackID::on_playback_queue_changed:
 	case CallbackID::on_playback_stop:
+	case CallbackID::on_playback_time:
 	case CallbackID::on_playlist_items_added:
 	case CallbackID::on_playlist_items_reordered:
 	case CallbackID::on_replaygain_mode_changed:
@@ -204,7 +205,6 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	case CallbackID::on_notify_data:
 	case CallbackID::on_playback_seek:
 	case CallbackID::on_playback_starting:
-	case CallbackID::on_playback_time:
 	case CallbackID::on_playlist_item_ensure_visible:
 	case CallbackID::on_playlist_items_removed:
 	case CallbackID::on_volume_change:
