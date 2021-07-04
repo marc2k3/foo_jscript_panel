@@ -7,7 +7,7 @@ function on_char(code) {}
 
 function on_colours_changed() {}
 // Called when colours are changed via default UI/columns UI preferences.
-// Use window.GetColourCUI()/window.GetColourDUI() to get new colours.
+// Use window.GetColourCUI() / window.GetColourDUI() to get new colours.
 
 function on_cursor_follow_playback_changed(state) {}
 // Called when "cursor follow playback" state is changed.
@@ -35,7 +35,7 @@ function on_get_album_art_done(handle, art_id, image, image_path) {}
 /*
 Called when thread created by utils.GetAlbumArtAsync() is done.
 image: IGdiBitmap object or null on failure.
-image_path: path to image file (or music file if image is embedded).
+image_path: path to image file (or music file if image is embedded), empty string if image is null.
 */
 
 function on_item_focus_change(playlistIndex, from, to) {}
@@ -43,7 +43,7 @@ function on_item_focus_change(playlistIndex, from, to) {}
 
 function on_item_played(handle) {}
 // Called when at least one minute of the track has been played or the track has reached
-// its end after at least 1/3 of it has been played through.
+// its end after at least 1/3 of it has been played.
 
 function on_key_down(vkey) {}
 function on_key_up(vkey) {}
@@ -176,7 +176,7 @@ function on_playback_queue_changed(origin) {}
 // origin: 0 user_added, 1 user_removed, 2 playback advance
 
 function on_playback_seek(time) {}
-// time: float value, in seconds.
+// time: floating point value in seconds.
 
 function on_playback_starting(cmd, is_paused) {}
 // cmd: 0 default, 1 play, 2 next, 3 prev, 4 settrack, 5 rand, 6 resume.
@@ -186,7 +186,7 @@ function on_playback_stop(reason) {}
 // reason: 0 user, 1 eof, 2 starting_another.
 
 function on_playback_time(time) {}
-// Called every second, for time display.
+// Called every second for time display.
 // time: playback position in seconds.
 
 function on_playlist_item_ensure_visible(playlistIndex, playlistItemIndex) {}
@@ -208,7 +208,7 @@ function on_playlists_changed() {}
 /*
 Called when:
 -playlists are added/removed/reordered/renamed.
--a playlist's lock status changes through the use of components such as foo_utils or foo_playlist_attributes.
+-a playlist's lock status changes through the use of the built-in playlist lock methods or other components such as foo_utils or foo_playlist_attributes.
 */
 
 function on_replaygain_mode_changed(new_mode) {}
@@ -239,4 +239,4 @@ function on_size() {}
 // IMPORTANT: DO NOT call window.Repaint()
 
 function on_volume_change(val) {}
-// val: volume level in dB. minimum is -100. maximum is 0.
+// val: floating point value in dB. Minimum is -100, maximum is 0.
