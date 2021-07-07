@@ -61,7 +61,7 @@ public:
 			}
 			f.close();
 		}
-		if (content.length() >= 3 && content[0] == -17 && content[1] == -69 && content[2] == -65)
+		if (content.length() >= 3 && strncmp(content.c_str(), UTF_8_BOM, 3) == 0)
 		{
 			return content.substr(3).c_str();
 		}
@@ -82,7 +82,7 @@ public:
 		LPCBYTE pAddr = static_cast<LPCBYTE>(MapViewOfFile(hFileMapping.Get(), FILE_MAP_READ, 0, 0, 0));
 		if (pAddr == nullptr) return;
 
-		if (dwFileSize >= 2 && pAddr[0] == 0xFF && pAddr[1] == 0xFE) // UTF16 LE?
+		if (dwFileSize >= 2 && memcmp(pAddr, UTF_16_LE_BOM, 2) == 0)
 		{
 			const wchar_t* pSource = reinterpret_cast<const wchar_t*>(pAddr + 2);
 			const size_t len = (dwFileSize - 2) >> 1;
@@ -90,7 +90,7 @@ public:
 			content.resize(len);
 			pfc::__unsafe__memcpy_t(content.data(), pSource, len);
 		}
-		else if (dwFileSize >= 3 && pAddr[0] == 0xEF && pAddr[1] == 0xBB && pAddr[2] == 0xBF) // UTF8-BOM?
+		else if (dwFileSize >= 3 && memcmp(pAddr, UTF_8_BOM, 3) == 0)
 		{
 			string8 str(reinterpret_cast<const char*>(pAddr + 3), dwFileSize - 3);
 			content = to_wide(str);
@@ -153,6 +153,9 @@ private:
 		if (codepage == 20127) return CP_UTF8;
 		return codepage;
 	}
+
+	static constexpr const char* UTF_16_LE_BOM = "\xFF\xFE";
+	static constexpr const char* UTF_8_BOM = "\xEF\xBB\xBF";
 
 	std::filesystem::directory_options m_options = std::filesystem::directory_options::skip_permission_denied;
 	std::filesystem::path m_path;
