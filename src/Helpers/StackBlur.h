@@ -194,8 +194,7 @@ private:
 				}
 
 				sp = radius;
-				uint32_t xp = radius;
-				if (xp > wm) xp = wm;
+				uint32_t xp = std::min<uint32_t>(radius, wm);
 				src_ptr = src + 4 * (xp + y * width);
 				dst_ptr = src + y * w4;
 
@@ -260,8 +259,7 @@ private:
 				}
 
 				sp = radius;
-				uint32_t yp = radius;
-				if (yp > hm) yp = hm;
+				uint32_t yp = std::min<uint32_t>(radius, hm);
 				src_ptr = src + 4 * (x + yp * width);
 				dst_ptr = src + 4 * x;
 
