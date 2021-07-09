@@ -61,7 +61,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		return true;
 	case WM_GETMINMAXINFO:
 		{
-			auto info = reinterpret_cast<LPMINMAXINFO>(lp);
+			LPMINMAXINFO info = reinterpret_cast<LPMINMAXINFO>(lp);
 			info->ptMaxTrackSize = m_max;
 			info->ptMinTrackSize = m_min;
 			return true;
@@ -246,7 +246,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		}
 	case CallbackID::on_get_album_art_done:
 		{
-			auto data = reinterpret_cast<AsyncArtData*>(wp);
+			AsyncArtData* data = reinterpret_cast<AsyncArtData*>(wp);
 
 			VariantArgs args = { data->m_handle, data->m_art_id, data->m_bitmap, data->m_path };
 			m_script_host->InvokeCallback(id, args);
@@ -254,7 +254,7 @@ bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		}
 	case CallbackID::on_load_image_done:
 		{
-			auto data = reinterpret_cast<AsyncImageData*>(wp);
+			AsyncImageData* data = reinterpret_cast<AsyncImageData*>(wp);
 
 			VariantArgs args = { data->m_cookie, data->m_bitmap, data->m_path };
 			m_script_host->InvokeCallback(id, args);

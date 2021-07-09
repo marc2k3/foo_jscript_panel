@@ -44,7 +44,7 @@ public:
 private:
 	bool get_property(IDispatch* pdisp, const std::wstring& name, VARTYPE vt, VARIANT& result)
 	{
-		auto cname = const_cast<LPOLESTR>(name.data());
+		LPOLESTR cname = const_cast<LPOLESTR>(name.data());
 		DISPID dispId;
 		DISPPARAMS params{};
 		if (FAILED(pdisp->GetIDsOfNames(IID_NULL, &cname, 1, LOCALE_USER_DEFAULT, &dispId))) return false;

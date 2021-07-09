@@ -21,7 +21,7 @@ public:
 
 	static VOID CALLBACK timerProc(PVOID lpParameter, BOOLEAN)
 	{
-		auto timer = static_cast<PanelTimer*>(lpParameter);
+		PanelTimer* timer = static_cast<PanelTimer*>(lpParameter);
 
 		if (timer->m_stopped)
 		{

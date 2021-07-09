@@ -45,7 +45,7 @@ HRESULT ScriptHost::InitCallbackMap()
 	if (m_script_root.is_empty()) return E_POINTER;
 	for (const auto& [id, name] : CallbackIDNames)
 	{
-		auto cname = const_cast<LPOLESTR>(name.data());
+		LPOLESTR cname = const_cast<LPOLESTR>(name.data());
 		DISPID dispId;
 		if (SUCCEEDED(m_script_root->GetIDsOfNames(IID_NULL, &cname, 1, LOCALE_USER_DEFAULT, &dispId)))
 		{
@@ -99,7 +99,7 @@ HRESULT ScriptHost::ParseScripts()
 		if (i < count) // import
 		{
 			path = m_info.m_imports[i];
-			auto f = FileHelper(path);
+			FileHelper f(path);
 			if (f.is_file())
 			{
 				code = f.read();
