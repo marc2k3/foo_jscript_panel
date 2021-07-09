@@ -10,8 +10,8 @@ public:
 		remove_all
 	};
 
-	Embed(metadb_handle_list_cref handles, size_t id, const album_art_data_ptr& data) : m_handles(handles), m_id(id), m_data(data), m_action(actions::attach) {}
-	Embed(metadb_handle_list_cref handles, size_t id) : m_handles(handles), m_id(id), m_action(actions::remove) {}
+	Embed(metadb_handle_list_cref handles, uint32_t id, const album_art_data_ptr& data) : m_handles(handles), m_id(id), m_data(data), m_action(actions::attach) {}
+	Embed(metadb_handle_list_cref handles, uint32_t id) : m_handles(handles), m_id(id), m_action(actions::remove) {}
 	Embed(metadb_handle_list_cref handles) : m_handles(handles), m_action(actions::remove_all) {}
 
 	void run(threaded_process_status& status, abort_callback& abort) override
@@ -55,5 +55,5 @@ private:
 	actions m_action;
 	album_art_data_ptr m_data;
 	metadb_handle_list m_handles;
-	size_t m_id = 0;
+	uint32_t m_id = 0;
 };

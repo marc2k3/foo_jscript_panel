@@ -9,5 +9,5 @@ public:
 	STDMETHODIMP LoadImageAsync(UINT window_id, BSTR path, UINT* out) override;
 
 private:
-	size_t m_image_cookie = 0;
+	uint32_t m_image_cookie = 0;
 };

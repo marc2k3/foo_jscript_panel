@@ -39,7 +39,7 @@ namespace
 			out = jsp::component_name;
 		}
 
-		BOOL ProcessWindowMessage(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp, LRESULT& lres, DWORD) override
+		BOOL ProcessWindowMessage(HWND hwnd, uint32_t msg, WPARAM wp, LPARAM lp, LRESULT& lres, DWORD) override
 		{
 			lres = 0;
 
@@ -83,7 +83,7 @@ namespace
 			return m_hwnd;
 		}
 
-		IGdiFont* get_font_ui(size_t type) override
+		IGdiFont* get_font_ui(uint32_t type) override
 		{
 			if (type < guids::fonts.size())
 			{
@@ -105,7 +105,7 @@ namespace
 			return true;
 		}
 
-		int get_colour_ui(size_t type) override
+		int get_colour_ui(uint32_t type) override
 		{
 			COLORREF colour = 0;
 			if (type < guids::colours.size())
@@ -122,12 +122,12 @@ namespace
 			return builder.finish(g_get_guid());
 		}
 
-		void edit_mode_context_menu_build(const POINT&, bool, HMENU menu, size_t id_base) override
+		void edit_mode_context_menu_build(const POINT&, bool, HMENU menu, uint32_t id_base) override
 		{
 			build_context_menu(menu, id_base);
 		}
 
-		void edit_mode_context_menu_command(const POINT&, bool, size_t id, size_t id_base) override
+		void edit_mode_context_menu_command(const POINT&, bool, uint32_t id, uint32_t id_base) override
 		{
 			execute_context_menu_command(id, id_base);
 		}

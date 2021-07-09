@@ -81,7 +81,7 @@ STDMETHODIMP Plman::CreateAutoPlaylist(UINT playlistIndex, BSTR name, BSTR query
 
 	if (filter.is_valid())
 	{
-		size_t pos = CreatePlaylist(playlistIndex, name);
+		const uint32_t pos = CreatePlaylist(playlistIndex, name);
 		autoplaylist_manager::get()->add_client_simple(uquery, from_wide(sort), pos, flags);
 		*out = to_int(pos);
 	}
@@ -227,7 +227,7 @@ STDMETHODIMP Plman::GetPlayingItemLocation(IPlayingItemLocation** out)
 {
 	if (!out) return E_POINTER;
 
-	size_t playlistIndex = 0, playlistItemIndex = 0;
+	uint32_t playlistIndex = 0, playlistItemIndex = 0;
 	bool isValid = playlist_manager::get()->get_playing_item_location(&playlistIndex, &playlistItemIndex);
 	*out = new ComObjectImpl<PlayingItemLocation>(isValid, playlistIndex, playlistItemIndex);
 	return S_OK;
@@ -724,7 +724,7 @@ STDMETHODIMP Plman::put_PlaybackOrder(UINT order)
 	return E_INVALIDARG;
 }
 
-size_t Plman::CreatePlaylist(size_t playlistIndex, const std::wstring& name)
+uint32_t Plman::CreatePlaylist(uint32_t playlistIndex, const std::wstring& name)
 {
 	auto api = playlist_manager::get();
 	const string8 uname = from_wide(name);

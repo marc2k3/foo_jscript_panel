@@ -5,7 +5,7 @@
 #include "PanelManager.h"
 #include "PanelWindow.h"
 
-static const std::map<size_t, CallbackID> wm_msg_map =
+static const std::map<uint32_t, CallbackID> wm_msg_map =
 {
 	{ WM_LBUTTONDOWN, CallbackID::on_mouse_lbtn_down },
 	{ WM_MBUTTONDOWN, CallbackID::on_mouse_mbtn_down },
@@ -27,7 +27,7 @@ static const std::map<size_t, CallbackID> wm_msg_map =
 PanelWindow::PanelWindow() : m_script_host(new ScriptHost(this)) {}
 PanelWindow::~PanelWindow() {}
 
-bool PanelWindow::handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+bool PanelWindow::handle_message(HWND hwnd, uint32_t msg, WPARAM wp, LPARAM lp)
 {
 	switch (msg)
 	{
@@ -269,7 +269,7 @@ bool PanelWindow::is_transparent()
 	return m_supports_transparency && m_config.m_transparent;
 }
 
-void PanelWindow::build_context_menu(HMENU menu, int id_base)
+void PanelWindow::build_context_menu(HMENU menu, uint32_t id_base)
 {
 	AppendMenu(menu, MF_STRING, id_base + 1, L"&Reload");
 	AppendMenu(menu, MF_SEPARATOR, 0, 0);
@@ -310,7 +310,7 @@ void PanelWindow::destroy_tooltip()
 	if (!m_tooltip_font.IsNull()) m_tooltip_font.DeleteObject();
 }
 
-void PanelWindow::execute_context_menu_command(int id, int id_base)
+void PanelWindow::execute_context_menu_command(uint32_t id, uint32_t id_base)
 {
 	switch (id - id_base)
 	{
@@ -382,7 +382,7 @@ void PanelWindow::on_context_menu(LPARAM lp)
 	}
 
 	CMenu menu = CreatePopupMenu();
-	constexpr int base_id = 0;
+	constexpr uint32_t base_id = 0;
 	build_context_menu(menu, base_id);
 	const int idx = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD, pt.x, pt.y, m_hwnd, nullptr);
 	execute_context_menu_command(idx, base_id);

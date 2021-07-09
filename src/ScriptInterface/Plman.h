@@ -67,5 +67,5 @@ public:
 	STDMETHODIMP put_PlaybackOrder(UINT order) override;
 
 private:
-	size_t CreatePlaylist(size_t playlistIndex, const std::wstring& name);
+	uint32_t CreatePlaylist(uint32_t playlistIndex, const std::wstring& name);
 };

@@ -25,7 +25,7 @@ public:
 
 		if (size > sizeof(size_t))
 		{
-			size_t ver = 0;
+			uint32_t ver = 0;
 			try
 			{
 				reader->read_object_t(ver, abort);

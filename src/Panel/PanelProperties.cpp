@@ -69,10 +69,10 @@ void PanelProperties::g_set(stream_reader* reader, PropertyData& data, abort_cal
 
 	try
 	{
-		size_t count = 0;
+		uint32_t count = 0;
 		reader->read_lendian_t(count, abort);
 
-		for (size_t i = 0; i < count; ++i)
+		for (uint32_t i = 0; i < count; ++i)
 		{
 			string8 key;
 			_variant_t value;

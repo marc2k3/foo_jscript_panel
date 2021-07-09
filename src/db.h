@@ -4,11 +4,11 @@ namespace db
 {
 	struct Fields
 	{
-		size_t playcount = 0;
-		size_t loved = 0;
+		uint32_t playcount = 0;
+		uint32_t loved = 0;
 		string8 first_played;
 		string8 last_played;
-		size_t rating = 0;
+		uint32_t rating = 0;
 	};
 
 	using hash_list = pfc::list_t<metadb_index_hash>;

@@ -43,11 +43,6 @@ public:
 		return false;
 	}
 
-	size_t guess_codepage()
-	{
-		return guess_codepage(read());
-	}
-
 	string8 read()
 	{
 		std::string content;
@@ -68,7 +63,12 @@ public:
 		return content.c_str();
 	}
 
-	void read_wide(size_t codepage, std::wstring& content)
+	uint32_t guess_codepage()
+	{
+		return guess_codepage(read());
+	}
+
+	void read_wide(uint32_t codepage, std::wstring& content)
 	{
 		CloseHandleScope hFile = CreateFile(m_path.wstring().data(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 		if (hFile.Get() == INVALID_HANDLE_VALUE) return;
@@ -85,7 +85,7 @@ public:
 		if (dwFileSize >= 2 && memcmp(pAddr, UTF_16_LE_BOM, 2) == 0)
 		{
 			const wchar_t* pSource = reinterpret_cast<const wchar_t*>(pAddr + 2);
-			const size_t len = (dwFileSize - 2) >> 1;
+			const uint32_t len = (dwFileSize - 2) >> 1;
 
 			content.resize(len);
 			pfc::__unsafe__memcpy_t(content.data(), pSource, len);
@@ -136,7 +136,7 @@ private:
 		return wstrings;
 	}
 
-	size_t guess_codepage(jstring content)
+	uint32_t guess_codepage(jstring content)
 	{
 		int size = static_cast<int>(content.length());
 		if (size == 0) return 0;
@@ -149,7 +149,7 @@ private:
 		if (FAILED(CoCreateInstance(CLSID_CMultiLanguage, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(lang.receive_ptr())))) return 0;
 		if (FAILED(lang->DetectInputCodepage(MLDETECTCP_NONE, 0, const_cast<char*>(content.get_ptr()), &size, encodings.data(), &encodingCount))) return 0;
 
-		const size_t codepage = encodings[0].nCodePage;
+		const uint32_t codepage = encodings[0].nCodePage;
 		if (codepage == 20127) return CP_UTF8;
 		return codepage;
 	}

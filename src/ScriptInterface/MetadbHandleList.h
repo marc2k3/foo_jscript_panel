@@ -44,7 +44,7 @@ protected:
 	void FinalRelease() override;
 
 private:
-	static constexpr size_t flags = threaded_process::flag_show_progress | threaded_process::flag_show_delayed | threaded_process::flag_show_item;
+	static constexpr uint32_t flags = threaded_process::flag_show_progress | threaded_process::flag_show_delayed | threaded_process::flag_show_item;
 
 	metadb_handle_list m_handles;
 };

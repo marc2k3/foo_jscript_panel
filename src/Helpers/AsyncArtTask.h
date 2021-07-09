@@ -3,7 +3,7 @@
 class AsyncArtTask : public SimpleThreadTask
 {
 public:
-	AsyncArtTask(CWindow hwnd, const metadb_handle_ptr& handle, size_t id, bool need_stub, bool only_embed)
+	AsyncArtTask(CWindow hwnd, const metadb_handle_ptr& handle, uint32_t id, bool need_stub, bool only_embed)
 		: m_hwnd(hwnd)
 		, m_handle(handle)
 		, m_id(id)
@@ -47,5 +47,5 @@ private:
 	bool m_need_stub = true;
 	bool m_only_embed = false;
 	metadb_handle_ptr m_handle;
-	size_t m_id = 0;
+	uint32_t m_id = 0;
 };

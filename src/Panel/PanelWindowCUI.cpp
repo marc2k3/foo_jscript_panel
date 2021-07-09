@@ -39,7 +39,7 @@ namespace
 			return m_hwnd;
 		}
 
-		IGdiFont* get_font_ui(size_t type) override
+		IGdiFont* get_font_ui(uint32_t type) override
 		{
 			const cui::fonts::font_type_t t = static_cast<cui::fonts::font_type_t>(type);
 			if (t <= cui::fonts::font_type_labels)
@@ -57,7 +57,7 @@ namespace
 			return nullptr;
 		}
 
-		LRESULT on_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) override
+		LRESULT on_message(HWND hwnd, uint32_t msg, WPARAM wp, LPARAM lp) override
 		{
 			switch (msg)
 			{
@@ -114,7 +114,7 @@ namespace
 			return guids::window_cui;
 		}
 
-		int get_colour_ui(size_t type) override
+		int get_colour_ui(uint32_t type) override
 		{
 			COLORREF colour = 0;
 			const cui::colours::colour_identifier_t t = static_cast<cui::colours::colour_identifier_t>(type);
@@ -125,7 +125,7 @@ namespace
 			return to_argb(colour);
 		}
 
-		size_t get_type() const override
+		uint32_t get_type() const override
 		{
 			return uie::type_toolbar | uie::type_panel;
 		}

@@ -49,7 +49,7 @@ void ScriptInfo::clear()
 	m_build_string.reset();
 }
 
-void ScriptInfo::update(size_t id, jstring str)
+void ScriptInfo::update(uint32_t id, jstring str)
 {
 	clear();
 	m_name << "id:" << id;

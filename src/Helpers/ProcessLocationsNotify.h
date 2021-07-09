@@ -10,7 +10,7 @@ public:
 	};
 
 	ProcessLocationsNotify(CWindow hwnd, int cookie) : m_hwnd(hwnd), m_cookie(cookie), m_mode(mode::callback) {}
-	ProcessLocationsNotify(size_t playlist, size_t base, bool to_select) : m_playlist(playlist), m_base(base), m_to_select(to_select), m_mode(mode::playlist) {}
+	ProcessLocationsNotify(uint32_t playlist, uint32_t base, bool to_select) : m_playlist(playlist), m_base(base), m_to_select(to_select), m_mode(mode::playlist) {}
 
 	void on_aborted() override {}
 
@@ -47,5 +47,5 @@ private:
 	bool m_to_select = true;
 	int m_cookie = 0;
 	mode m_mode = mode::callback;
-	size_t m_base = 0, m_playlist = 0;
+	uint32_t m_base = 0, m_playlist = 0;
 };

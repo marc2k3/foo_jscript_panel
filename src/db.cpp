@@ -144,7 +144,7 @@ namespace db
 					hash_set hashes;
 					get_hashes(handles, hashes);
 
-					size_t total = std::accumulate(hashes.begin(), hashes.end(), 0U, [](size_t t, const metadb_index_hash hash)
+					uint32_t total = std::accumulate(hashes.begin(), hashes.end(), 0U, [](uint32_t t, const metadb_index_hash hash)
 						{
 							return t + get(hash).playcount;
 						});

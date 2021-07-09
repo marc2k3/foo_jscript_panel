@@ -13,8 +13,8 @@ namespace jsp
 		"Build: " __TIME__ ", " __DATE__ "\n\n"
 		"foobar2000 SDK: " SDK_STRING(FOOBAR2000_SDK_VERSION) "\n"
 		"Columns UI SDK: " UI_EXTENSION_VERSION;
-	static constexpr size_t uwm_refreshbk = WM_USER + 1;
-	static constexpr size_t uwm_timer = WM_USER + 2;
-	static constexpr size_t uwm_unload = WM_USER + 3;
-	static constexpr size_t version = 2602;
+	static constexpr uint32_t uwm_refreshbk = WM_USER + 1;
+	static constexpr uint32_t uwm_timer = WM_USER + 2;
+	static constexpr uint32_t uwm_unload = WM_USER + 3;
+	static constexpr uint32_t version = 2602;
 }

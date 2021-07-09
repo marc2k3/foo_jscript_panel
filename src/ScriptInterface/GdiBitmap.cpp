@@ -47,14 +47,13 @@ STDMETHODIMP GdiBitmap::ApplyMask(IGdiBitmap* image, VARIANT_BOOL* out)
 	{
 		if (m_bitmap->LockBits(&rect, Gdiplus::ImageLockModeRead | Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, &bmpdata_dst) == Gdiplus::Ok)
 		{
-			size_t* mask = static_cast<size_t*>(bmpdata_mask.Scan0);
-			size_t* dst = static_cast<size_t*>(bmpdata_dst.Scan0);
-			const size_t* mask_end = mask + (rect.Width * rect.Height);
-			size_t alpha;
+			uint32_t* mask = static_cast<uint32_t*>(bmpdata_mask.Scan0);
+			uint32_t* dst = static_cast<uint32_t*>(bmpdata_dst.Scan0);
+			const uint32_t* mask_end = mask + (rect.Width * rect.Height);
 
 			while (mask < mask_end)
 			{
-				alpha = (((~*mask & UINT8_MAX) * (*dst >> 24)) << 16) & 0xff000000;
+				uint32_t alpha = (((~*mask & UINT8_MAX) * (*dst >> 24)) << 16) & 0xff000000;
 				*dst = alpha | (*dst & 0xffffff);
 				++mask;
 				++dst;
@@ -97,12 +96,12 @@ STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* out)
 	auto resized = resize(width, width);
 	if (resized->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata) != Gdiplus::Ok) return E_POINTER;
 
-	const size_t colours_length = bmpdata.Width * bmpdata.Height;
-	const size_t* colours = static_cast<const size_t*>(bmpdata.Scan0);
+	const uint32_t colours_length = bmpdata.Width * bmpdata.Height;
+	const uint32_t* colours = static_cast<const uint32_t*>(bmpdata.Scan0);
 	static constexpr std::array shifts = { RED_SHIFT, GREEN_SHIFT, BLUE_SHIFT };
-	std::map<ColourValues, size_t> colour_counters;
+	std::map<ColourValues, uint32_t> colour_counters;
 
-	for (size_t i = 0; i < colours_length; ++i)
+	for (uint32_t i = 0; i < colours_length; ++i)
 	{
 		ColourValues values;
 		std::ranges::transform(shifts, values.begin(), [colour = colours[i]](const auto& shift)
@@ -117,7 +116,7 @@ STDMETHODIMP GdiBitmap::GetColourSchemeJSON(UINT count, BSTR* out)
 	resized->UnlockBits(&bmpdata);
 
 	KPoints points;
-	for (size_t id = 0; const auto& [values, pixel_count] : colour_counters)
+	for (uint32_t id = 0; const auto& [values, pixel_count] : colour_counters)
 	{
 		points.emplace_back(KPoint(id++, values, pixel_count));
 	}

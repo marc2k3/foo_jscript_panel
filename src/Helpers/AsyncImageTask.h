@@ -3,7 +3,7 @@
 class AsyncImageTask : public SimpleThreadTask
 {
 public:
-	AsyncImageTask(CWindow hwnd, const std::wstring& path, size_t cookie) : m_hwnd(hwnd), m_path(path), m_cookie(cookie) {}
+	AsyncImageTask(CWindow hwnd, const std::wstring& path, uint32_t cookie) : m_hwnd(hwnd), m_path(path), m_cookie(cookie) {}
 
 	void run() override
 	{
@@ -14,6 +14,6 @@ public:
 
 private:
 	CWindow m_hwnd;
-	size_t m_cookie = 0;
 	std::wstring m_path;
+	uint32_t m_cookie = 0;
 };

@@ -5,7 +5,7 @@ class PlaylistLock : public playlist_lock
 public:
 	PlaylistLock(uint32_t flags) : m_flags(flags) {}
 
-	static bool add(size_t playlistIndex, uint32_t flags)
+	static bool add(uint32_t playlistIndex, uint32_t flags)
 	{
 		if (flags > 0)
 		{
@@ -31,7 +31,7 @@ public:
 		return false;
 	}
 
-	static bool remove(size_t playlistIndex)
+	static bool remove(uint32_t playlistIndex)
 	{
 		auto api = playlist_manager_v2::get();
 

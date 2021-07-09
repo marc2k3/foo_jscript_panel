@@ -5,7 +5,7 @@ class ScriptInfo
 public:
 	ScriptInfo();
 
-	void update(size_t id, jstring str);
+	void update(uint32_t id, jstring str);
 
 	WStrings m_imports;
 	string8 m_name, m_build_string;

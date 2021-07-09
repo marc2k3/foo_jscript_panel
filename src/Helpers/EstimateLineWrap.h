@@ -6,12 +6,12 @@ public:
 	struct WrappedItem
 	{
 		std::wstring text;
-		size_t width = 0;
+		uint32_t width = 0;
 	};
 
 	using WrappedItems = std::vector<WrappedItem>;
 
-	EstimateLineWrap(HDC hdc, size_t width) : m_hdc(hdc), m_width(width) {}
+	EstimateLineWrap(HDC hdc, uint32_t width) : m_hdc(hdc), m_width(width) {}
 
 	void wrap(const std::wstring& text, WrappedItems& out)
 	{
@@ -35,16 +35,16 @@ private:
 		return current_alpha_num == 0 || iswalnum(next) == 0;
 	}
 
-	size_t get_text_width(const std::wstring& text, size_t length)
+	uint32_t get_text_width(const std::wstring& text, uint32_t length)
 	{
 		SIZE size;
 		GetTextExtentPoint32(m_hdc, text.data(), static_cast<int>(length), &size);
-		return static_cast<size_t>(size.cx);
+		return to_uint(size.cx);
 	}
 
 	void wrap_recur(const std::wstring& text, WrappedItems& out)
 	{
-		const size_t text_width = get_text_width(text, text.length());
+		const uint32_t text_width = get_text_width(text, text.length());
 
 		if (text_width <= m_width)
 		{
@@ -53,7 +53,7 @@ private:
 		}
 		else
 		{
-			size_t text_length = text.length() * m_width / text_width;
+			uint32_t text_length = text.length() * m_width / text_width;
 
 			if (get_text_width(text, text_length) < m_width)
 			{
@@ -70,7 +70,7 @@ private:
 				}
 			}
 
-			const size_t fallback_length = std::max<size_t>(text_length, 1);
+			const uint32_t fallback_length = std::max<uint32_t>(text_length, 1);
 
 			while (text_length > 0 && !is_wrap_char(text.at(text_length - 1), text.at(text_length)))
 			{
@@ -90,5 +90,5 @@ private:
 	}
 
 	HDC m_hdc;
-	size_t m_width;
+	uint32_t m_width;
 };

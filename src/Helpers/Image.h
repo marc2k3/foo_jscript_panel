@@ -71,7 +71,7 @@ namespace ImageHelpers
 
 namespace AlbumArt
 {
-	static GUID id_to_guid(size_t id)
+	static GUID id_to_guid(uint32_t id)
 	{
 		if (id < guids::art.size())
 		{
@@ -105,7 +105,7 @@ namespace AlbumArt
 		return nullptr;
 	}
 
-	static album_art_data_ptr get(const metadb_handle_ptr& handle, size_t id, bool need_stub, pfc::string_base& image_path)
+	static album_art_data_ptr get(const metadb_handle_ptr& handle, uint32_t id, bool need_stub, pfc::string_base& image_path)
 	{
 		const GUID what = id_to_guid(id);
 		album_art_data_ptr data;
@@ -154,7 +154,7 @@ namespace AlbumArt
 		return data;
 	}
 
-	static album_art_data_ptr get_embedded(jstring path, size_t id)
+	static album_art_data_ptr get_embedded(jstring path, uint32_t id)
 	{
 		album_art_data_ptr data;
 		album_art_extractor::ptr ptr;

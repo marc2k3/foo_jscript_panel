@@ -7,8 +7,8 @@ class DropTargetImpl;
 class PanelWindow
 {
 public:
-	virtual IGdiFont* get_font_ui(size_t type) = 0;
-	virtual int get_colour_ui(size_t type) = 0;
+	virtual IGdiFont* get_font_ui(uint32_t type) = 0;
+	virtual int get_colour_ui(uint32_t type) = 0;
 	virtual void notify_size_limit_changed() = 0;
 
 public:
@@ -31,15 +31,15 @@ public:
 	bool m_is_default_ui = true;
 	bool m_supports_transparency = false;
 	pfc::com_ptr_t<ScriptHost> m_script_host;
-	size_t m_id = 0;
+	uint32_t m_id = 0;
 
 protected:
 	PanelWindow();
 	virtual ~PanelWindow();
 
-	bool handle_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
-	void build_context_menu(HMENU menu, int id_base);
-	void execute_context_menu_command(int id, int id_base);
+	bool handle_message(HWND hwnd, uint32_t msg, WPARAM wp, LPARAM lp);
+	void build_context_menu(HMENU menu, uint32_t id_base);
+	void execute_context_menu_command(uint32_t id, uint32_t id_base);
 	void on_context_menu(LPARAM lp);
 
 	HDC m_hdc = nullptr;

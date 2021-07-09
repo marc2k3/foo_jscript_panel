@@ -41,7 +41,7 @@ private:
 
 struct AsyncArtData
 {
-	AsyncArtData(IMetadbHandle* handle, size_t art_id, IGdiBitmap* bitmap, BSTR path) : m_handle(handle), m_art_id(art_id), m_bitmap(bitmap), m_path(path) {}
+	AsyncArtData(IMetadbHandle* handle, uint32_t art_id, IGdiBitmap* bitmap, BSTR path) : m_handle(handle), m_art_id(art_id), m_bitmap(bitmap), m_path(path) {}
 
 	~AsyncArtData()
 	{
@@ -59,12 +59,12 @@ struct AsyncArtData
 	IGdiBitmap* m_bitmap;
 	IMetadbHandle* m_handle;
 	_bstr_t m_path;
-	size_t m_art_id;
+	uint32_t m_art_id = 0;
 };
 
 struct AsyncImageData
 {
-	AsyncImageData(size_t cookie, IGdiBitmap* bitmap, BSTR path) : m_cookie(cookie), m_bitmap(bitmap), m_path(path) {}
+	AsyncImageData(uint32_t cookie, IGdiBitmap* bitmap, BSTR path) : m_cookie(cookie), m_bitmap(bitmap), m_path(path) {}
 
 	~AsyncImageData()
 	{
@@ -76,5 +76,5 @@ struct AsyncImageData
 
 	IGdiBitmap* m_bitmap;
 	_bstr_t m_path;
-	size_t m_cookie;
+	uint32_t m_cookie = 0;
 };

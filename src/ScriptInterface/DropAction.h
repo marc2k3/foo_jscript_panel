@@ -13,6 +13,5 @@ public:
 
 	DWORD m_effect = DROPEFFECT_NONE;
 	bool m_to_select = true;
-	size_t m_base = 0;
-	size_t m_playlist_idx = 0;
+	uint32_t m_base = 0, m_playlist_idx = 0;
 };

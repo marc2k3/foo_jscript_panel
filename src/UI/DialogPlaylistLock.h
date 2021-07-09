@@ -3,7 +3,7 @@
 class CDialogPlaylistLock : public CDialogImpl<CDialogPlaylistLock>
 {
 public:
-	CDialogPlaylistLock(size_t playlistIndex, uint32_t flags) : m_playlistIndex(playlistIndex), m_flags(flags) {}
+	CDialogPlaylistLock(uint32_t playlistIndex, uint32_t flags) : m_playlistIndex(playlistIndex), m_flags(flags) {}
 
 	BEGIN_MSG_MAP_EX(CDialogPlaylistLock)
 		MSG_WM_INITDIALOG(OnInitDialog)
@@ -67,6 +67,5 @@ private:
 	using Items = std::vector<Item>;
 
 	Items m_items;
-	size_t m_playlistIndex = 0;
-	uint32_t m_flags = 0;
+	uint32_t m_flags = 0, m_playlistIndex = 0;
 };
