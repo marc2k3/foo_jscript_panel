@@ -10,10 +10,8 @@ namespace ImageHelpers
 {
 	static IGdiBitmap* webp_to_bitmap(const uint8_t* data, size_t bytes)
 	{
-		if (bytes < 12 || memcmp(data, "RIFF", 4) != 0 || memcmp((const char*)data + 8, "WEBP", 4) != 0) return nullptr;
-
 		WebPBitstreamFeatures bs;
-		if (WebPGetFeatures(data, bytes, &bs) == VP8_STATUS_OK)
+		if (WebPGetFeatures(data, bytes, &bs) == VP8_STATUS_OK && !bs.has_animation)
 		{
 			const int width = bs.width;
 			const int height = bs.height;
@@ -86,7 +84,7 @@ namespace AlbumArt
 	{
 		if (data.is_valid())
 		{
-			const auto ptr = (const uint8_t*)data->get_ptr();
+			const uint8_t* ptr = static_cast<const uint8_t*>(data->get_ptr());
 			const size_t bytes = data->get_size();
 
 			pfc::com_ptr_t<IStream> stream;
