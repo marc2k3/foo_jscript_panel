@@ -457,6 +457,7 @@ library foo_jscript_panel
 		HRESULT IsKeyPressed(UINT vkey, [out, retval] VARIANT_BOOL* out);
 		HRESULT ListFiles(BSTR folder, [defaultvalue(0)] VARIANT_BOOL recur, [out, retval] VARIANT* out);
 		HRESULT ListFolders(BSTR folder, [defaultvalue(0)] VARIANT_BOOL recur, [out, retval] VARIANT* out);
+		HRESULT ListFonts([out, retval] VARIANT* out);
 		HRESULT MapString(BSTR str, UINT lcid, UINT flags, [out, retval] BSTR* out);
 		HRESULT PathWildcardMatch(BSTR pattern, BSTR str, [out, retval] VARIANT_BOOL* out);
 		HRESULT ReadINI(BSTR filename, BSTR section, BSTR key, [defaultvalue("")] BSTR defaultval, [out, retval] BSTR* out);

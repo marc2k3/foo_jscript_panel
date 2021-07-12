@@ -2,19 +2,9 @@
 
 namespace FontHelpers
 {
-	static FontStrings fonts;
-
-	static FontString get_name(const std::unique_ptr<Gdiplus::Font>& font)
+	static FontStrings get_fonts()
 	{
-		FontString name;
-		Gdiplus::FontFamily fontFamily;
-		font->GetFamily(&fontFamily);
-		fontFamily.GetFamilyName(name.data(), LANG_NEUTRAL);
-		return name;
-	}
-
-	static bool check_name(const std::wstring& name)
-	{
+		static FontStrings fonts;
 		if (fonts.empty())
 		{
 			Gdiplus::InstalledFontCollection font_collection;
@@ -32,6 +22,21 @@ namespace FontHelpers
 				}
 			}
 		}
+		return fonts;
+	}
+
+	static FontString get_name(const std::unique_ptr<Gdiplus::Font>& font)
+	{
+		FontString name;
+		Gdiplus::FontFamily fontFamily;
+		font->GetFamily(&fontFamily);
+		fontFamily.GetFamilyName(name.data(), LANG_NEUTRAL);
+		return name;
+	}
+
+	static bool check_name(const std::wstring& name)
+	{
+		FontStrings fonts = get_fonts();
 
 		const auto& it = std::ranges::find_if(fonts, [name](const FontString& font)
 			{

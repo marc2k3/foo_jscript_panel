@@ -1355,6 +1355,9 @@ interface IUtils {
 		recursive: boolean, default false.
 		*/
 
+		utils.ListFonts() (VBArray)
+		// Returns a VBArray so you need to use .toArray() on the result.
+
 		utils.MapString(text, lcid, flags) (string)
 
 		utils.PathWildcardMatch(pattern, str) (boolean)

@@ -273,6 +273,26 @@ STDMETHODIMP Utils::ListFolders(BSTR folder, VARIANT_BOOL recur, VARIANT* out)
 	return S_OK;
 }
 
+STDMETHODIMP Utils::ListFonts(VARIANT* out)
+{
+	if (!out) return E_POINTER;
+
+	FontStrings fonts = FontHelpers::get_fonts();
+	const size_t count = fonts.size();
+
+	ComArrayWriter writer;
+	if (!writer.create(count)) return E_OUTOFMEMORY;
+
+	for (size_t i = 0; i < count; ++i)
+	{
+		if (!writer.put_item(i, fonts[i].data())) return E_OUTOFMEMORY;
+	}
+
+	out->vt = VT_ARRAY | VT_VARIANT;
+	out->parray = writer.get_ptr();
+	return S_OK;
+}
+
 STDMETHODIMP Utils::MapString(BSTR str, UINT lcid, UINT flags, BSTR* out)
 {
 	if (!out) return E_POINTER;

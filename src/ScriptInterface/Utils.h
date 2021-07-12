@@ -23,6 +23,7 @@ public:
 	STDMETHODIMP IsKeyPressed(UINT vkey, VARIANT_BOOL* out) override;
 	STDMETHODIMP ListFiles(BSTR folder, VARIANT_BOOL recur, VARIANT* out) override;
 	STDMETHODIMP ListFolders(BSTR folder, VARIANT_BOOL recur, VARIANT* out) override;
+	STDMETHODIMP ListFonts(VARIANT* out) override;
 	STDMETHODIMP MapString(BSTR str, UINT lcid, UINT flags, BSTR* out) override;
 	STDMETHODIMP PathWildcardMatch(BSTR pattern, BSTR str, VARIANT_BOOL* out) override;
 	STDMETHODIMP ReadINI(BSTR filename, BSTR section, BSTR key, BSTR defaultval, BSTR* out) override;
