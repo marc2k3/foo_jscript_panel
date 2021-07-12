@@ -5,7 +5,7 @@
 namespace jsp
 {
 	static constexpr const char* component_name = "JScript Panel";
-	static constexpr const char* component_version = "2.6.0.2";
+	static constexpr const char* component_version = "2.6.1";
 	static constexpr const char* component_dll_name = "foo_jscript_panel.dll";
 	static constexpr const char* component_info = "Copyright (C) 2015-2021 marc2003\n"
 		"Based on WSH Panel Mod by T.P. Wang\n"
@@ -16,5 +16,5 @@ namespace jsp
 	static constexpr uint32_t uwm_refreshbk = WM_USER + 1;
 	static constexpr uint32_t uwm_timer = WM_USER + 2;
 	static constexpr uint32_t uwm_unload = WM_USER + 3;
-	static constexpr uint32_t version = 2602;
+	static constexpr uint32_t version = 2610;
 }
