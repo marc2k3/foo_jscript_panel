@@ -1,6 +1,7 @@
 ## v2.6.1 (dev)
 - `window.GetFontCUI` and `window.GetFontDUI` have been updated so they never return null on failure. `Segoe UI` will be used instead.
 - `gdi.Font` has also been updated so if it fails, the fallback font is `Segoe UI`. Previous fallbacks were not always predictable and there could be mismatches between the `.Name` property and what was actually used. In theory, that should not happen now.
+- Add `utils.ListFonts`.
 
 ## v2.6.0.2
 - Fixes a regression in `v2.6.0` where selected text in the [Configuration Window](https://github.com/marc2k3/foo_jscript_panel/wiki/Configuration-Window) may have become hard to read when the window lost focus.
