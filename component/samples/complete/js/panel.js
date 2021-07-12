@@ -60,15 +60,9 @@ _.mixin({
 		}
 		
 		this.font_changed = function () {
-			var name;
 			var font = window.InstanceType ? window.GetFontDUI(0) : window.GetFontCUI(0);
-			if (font) {
-				name = font.Name;
-				_.dispose(font);
-			} else {
-				name = 'Segoe UI';
-				console.log(N, 'Unable to use default font. Using', name, 'instead.');
-			}
+			var name = font.Name;
+			
 			_.dispose(this.fonts.title, this.fonts.normal, this.fonts.fixed);
 			this.fonts.title = _.gdiFont(name, 12, 1);
 			this.fonts.normal = _.gdiFont(name, this.fonts.size.value);

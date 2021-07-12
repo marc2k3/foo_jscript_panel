@@ -54,7 +54,7 @@ STDMETHODIMP Window::CreateTooltip(BSTR name, float pxSize, int style, ITooltip*
 		core_api::get_my_instance(),
 		nullptr);
 
-	m_panel->m_tooltip_font = create_font(name, pxSize, style);
+	m_panel->m_tooltip_font = FontHelpers::create(name, pxSize, style);
 	m_panel->m_tooltip.SetFont(m_panel->m_tooltip_font, FALSE);
 
 	*out = new ComObjectImpl<Tooltip>(m_panel->m_tooltip, m_panel->m_hwnd);
@@ -65,6 +65,7 @@ STDMETHODIMP Window::GetColourCUI(UINT type, int* out)
 {
 	if (!out) return E_POINTER;
 	if (m_panel->m_is_default_ui) return E_NOTIMPL;
+	if (type > 6) return E_INVALIDARG;
 
 	*out = m_panel->get_colour_ui(type);
 	return S_OK;
@@ -74,6 +75,7 @@ STDMETHODIMP Window::GetColourDUI(UINT type, int* out)
 {
 	if (!out) return E_POINTER;
 	if (!m_panel->m_is_default_ui) return E_NOTIMPL;
+	if (type >= guids::colours.size()) return E_INVALIDARG;
 
 	*out = m_panel->get_colour_ui(type);
 	return S_OK;
@@ -83,6 +85,7 @@ STDMETHODIMP Window::GetFontCUI(UINT type, IGdiFont** out)
 {
 	if (!out) return E_POINTER;
 	if (m_panel->m_is_default_ui) return E_NOTIMPL;
+	if (type > 1) return E_INVALIDARG;
 
 	*out = m_panel->get_font_ui(type);
 	return S_OK;
@@ -92,6 +95,7 @@ STDMETHODIMP Window::GetFontDUI(UINT type, IGdiFont** out)
 {
 	if (!out) return E_POINTER;
 	if (!m_panel->m_is_default_ui) return E_NOTIMPL;
+	if (type >= guids::fonts.size()) return E_INVALIDARG;
 
 	*out = m_panel->get_font_ui(type);
 	return S_OK;
@@ -177,7 +181,7 @@ STDMETHODIMP Window::SetTooltipFont(BSTR name, float pxSize, int style)
 	{
 		if (!m_panel->m_tooltip_font.IsNull()) m_panel->m_tooltip_font.DeleteObject();
 
-		m_panel->m_tooltip_font = create_font(name, pxSize, style);
+		m_panel->m_tooltip_font = FontHelpers::create(name, pxSize, style);
 		m_panel->m_tooltip.SetFont(m_panel->m_tooltip_font, FALSE);
 	}
 	return S_OK;

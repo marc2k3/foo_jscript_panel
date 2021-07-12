@@ -10,14 +10,14 @@ namespace Component
 
 	static std::wstring get_path()
 	{
-		PathArray path;
+		PathString path;
 		GetModuleFileName(core_api::get_my_instance(), path.data(), path.size());
 		return std::filesystem::path(path.data()).parent_path().wstring() + std::filesystem::path::preferred_separator;
 	}
 
 	static std::wstring get_fb2k_path()
 	{
-		PathArray path;
+		PathString path;
 		GetModuleFileName(nullptr, path.data(), path.size());
 		return std::filesystem::path(path.data()).parent_path().wstring() + std::filesystem::path::preferred_separator;
 	}

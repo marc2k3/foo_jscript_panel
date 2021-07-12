@@ -34,9 +34,10 @@ namespace Gdiplus
 #include <libPPUI/gdiplus_helpers.h>
 #include <json.hpp>
 
-using FontNameArray = std::array<wchar_t, LF_FACESIZE>;
+using FontString = std::array<wchar_t, LF_FACESIZE>;
+using FontStrings = std::vector<FontString>;
 using ImageBuffer = std::vector<uint8_t>;
-using PathArray = std::array<wchar_t, MAX_PATH>;
+using PathString = std::array<wchar_t, MAX_PATH>;
 using Strings = std::vector<std::string>;
 using WStrings = std::vector<std::wstring>;
 using json = nlohmann::json;
@@ -53,5 +54,6 @@ using pfc::string8;
 #include "Component.h"
 #include "CustomSort.h"
 #include "FileHelper.h"
+#include "FontHelpers.h"
 #include "Image.h"
 #include "ProcessLocationsNotify.h"

@@ -13,7 +13,7 @@ namespace jsp
 	{
 		if (reason == DLL_PROCESS_ATTACH)
 		{
-			PathArray path;
+			PathString path;
 			GetModuleFileName(ins, path.data(), path.size());
 			return SUCCEEDED(LoadTypeLibEx(path.data(), REGKIND_NONE, g_type_lib.receive_ptr()));
 		}

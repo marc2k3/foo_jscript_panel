@@ -3,7 +3,7 @@
 class GdiFont : public JSDisposableImpl<IGdiFont>
 {
 public:
-	GdiFont(std::unique_ptr<Gdiplus::Font> font, HFONT hFont, bool managed = true);
+	GdiFont(std::unique_ptr<Gdiplus::Font> font, HFONT hFont);
 
 	STDMETHODIMP get__HFONT(HFONT* out) override;
 	STDMETHODIMP get__ptr(void** out) override;
@@ -16,7 +16,6 @@ protected:
 	void FinalRelease() override;
 
 private:
-	HFONT m_hFont = nullptr;
-	bool m_managed = true;
+	CFont m_hFont;
 	std::unique_ptr<Gdiplus::Font> m_font;
 };

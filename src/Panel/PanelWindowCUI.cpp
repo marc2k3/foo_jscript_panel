@@ -41,18 +41,14 @@ namespace
 
 		IGdiFont* get_font_ui(uint32_t type) override
 		{
-			const cui::fonts::font_type_t t = static_cast<cui::fonts::font_type_t>(type);
-			if (t <= cui::fonts::font_type_labels)
+			LOGFONT lf;
+			static_api_ptr_t<cui::fonts::manager>()->get_font(static_cast<cui::fonts::font_type_t>(type), lf);
+			CFont hFont = FontHelpers::create(lf);
+
+			auto font = std::make_unique<Gdiplus::Font>(m_hdc, hFont);
+			if (ensure_gdiplus_object(font))
 			{
-				HFONT hFont = static_api_ptr_t<cui::fonts::manager>()->get_font(t);
-				if (hFont)
-				{
-					auto font = std::make_unique<Gdiplus::Font>(m_hdc, hFont);
-					if (ensure_gdiplus_object(font))
-					{
-						return new ComObjectImpl<GdiFont>(std::move(font), hFont);
-					}
-				}
+				return new ComObjectImpl<GdiFont>(std::move(font), hFont.Detach());
 			}
 			return nullptr;
 		}
@@ -116,13 +112,7 @@ namespace
 
 		int get_colour_ui(uint32_t type) override
 		{
-			COLORREF colour = 0;
-			const cui::colours::colour_identifier_t t = static_cast<cui::colours::colour_identifier_t>(type);
-			if (t <= cui::colours::colour_active_item_frame)
-			{
-				colour = m_colours_helper.get_colour(t);
-			}
-			return to_argb(colour);
+			return to_argb(m_colours_helper.get_colour(static_cast<cui::colours::colour_identifier_t>(type)));
 		}
 
 		uint32_t get_type() const override

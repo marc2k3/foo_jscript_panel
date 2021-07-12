@@ -85,17 +85,15 @@ namespace
 
 		IGdiFont* get_font_ui(uint32_t type) override
 		{
-			if (type < guids::fonts.size())
+			CFontHandle tmp = m_callback->query_font_ex(*guids::fonts[type]);
+			LOGFONT lf;
+			tmp.GetLogFont(&lf);
+			CFont hFont = FontHelpers::create(lf);
+
+			auto font = std::make_unique<Gdiplus::Font>(m_hdc, hFont);
+			if (ensure_gdiplus_object(font))
 			{
-				HFONT hFont = m_callback->query_font_ex(*guids::fonts[type]);
-				if (hFont)
-				{
-					auto font = std::make_unique<Gdiplus::Font>(m_hdc, hFont);
-					if (ensure_gdiplus_object(font))
-					{
-						return new ComObjectImpl<GdiFont>(std::move(font), hFont, false);
-					}
-				}
+				return new ComObjectImpl<GdiFont>(std::move(font), hFont.Detach());
 			}
 			return nullptr;
 		}
@@ -107,12 +105,7 @@ namespace
 
 		int get_colour_ui(uint32_t type) override
 		{
-			COLORREF colour = 0;
-			if (type < guids::colours.size())
-			{
-				colour = m_callback->query_std_color(*guids::colours[type]);
-			}
-			return to_argb(colour);
+			return to_argb(m_callback->query_std_color(*guids::colours[type]));
 		}
 
 		ui_element_config::ptr get_configuration() override

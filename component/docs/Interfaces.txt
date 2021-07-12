@@ -606,6 +606,8 @@ interface IGdi {
 		3: BoldItalic
 		4: Underline
 		8: Strikeout
+
+		If the specified font_name is not found/not supported, Segoe UI will be used instead.
 		*/
 
 		gdi.Image(path) (IGdiBitmap)
@@ -1176,10 +1178,6 @@ interface IUtils {
 		*/
 
 		utils.CheckFont(name) (boolean)
-		/*
-		This only checks for fonts that are actually installed. It cannot detect fonts
-		loaded by foo_ui_hacks and always returns false. However, gdi.Font can use those fonts.
-		*/
 
 		utils.ColourPicker(window_id, default_colour) (int)
 		/*
@@ -1662,7 +1660,7 @@ interface IWindow {
 		0: items
 		1: labels
 
-		Returns null on failure.
+		Before v2.6.1, this would return null if the font given by foobar2000 was not supported by the component. Segoe UI is now used as a fallback so you always get a valid font.
 		*/
 
 		window.GetFontDUI(type) (IGdiFont)
@@ -1676,7 +1674,7 @@ interface IWindow {
 		4: statusbar
 		5: console
 
-		Returns null on failure.
+		Before v2.6.1, this would return null if the font given by foobar2000 was not supported by the component. Segoe UI is now used as a fallback so you always get a valid font.
 		*/
 
 		window.GetProperty(name[, defaultval]) (VARIANT)

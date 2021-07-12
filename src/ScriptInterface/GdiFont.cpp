@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "GdiFont.h"
 
-GdiFont::GdiFont(std::unique_ptr<Gdiplus::Font> font, HFONT hFont, bool managed) : m_font(std::move(font)), m_hFont(hFont), m_managed(managed) {}
+GdiFont::GdiFont(std::unique_ptr<Gdiplus::Font> font, HFONT hFont) : m_font(std::move(font)), m_hFont(hFont) {}
 
 STDMETHODIMP GdiFont::get__HFONT(HFONT* out)
 {
-	if (!out) return E_POINTER;
+	if (!m_font || !out) return E_POINTER;
 
 	*out = m_hFont;
 	return S_OK;
@@ -29,11 +29,7 @@ STDMETHODIMP GdiFont::get_Name(BSTR* out)
 {
 	if (!m_font || !out) return E_POINTER;
 
-	FontNameArray name;
-	Gdiplus::FontFamily fontFamily;
-	m_font->GetFamily(&fontFamily);
-	fontFamily.GetFamilyName(name.data(), LANG_NEUTRAL);
-	*out = SysAllocString(name.data());
+	*out = SysAllocString(FontHelpers::get_name(m_font).data());
 	return S_OK;
 }
 
@@ -60,9 +56,8 @@ void GdiFont::FinalRelease()
 		m_font.reset();
 	}
 
-	if (m_hFont && m_managed)
+	if (m_hFont)
 	{
-		DeleteFont(m_hFont);
-		m_hFont = nullptr;
+		m_hFont.DeleteObject();
 	}
 }

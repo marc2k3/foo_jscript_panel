@@ -78,22 +78,3 @@ static int to_argb(COLORREF colour)
 	c.SetFromCOLORREF(colour);
 	return static_cast<int>(Gdiplus::Color::MakeARGB(UINT8_MAX, c.GetRed(), c.GetGreen(), c.GetBlue()));
 }
-
-static HFONT create_font(const std::wstring& name, float pxSize, int style)
-{
-	return CreateFont(
-		-static_cast<int>(pxSize),
-		0,
-		0,
-		0,
-		(style & Gdiplus::FontStyleBold) ? FW_BOLD : FW_NORMAL,
-		(style & Gdiplus::FontStyleItalic) ? TRUE : FALSE,
-		(style & Gdiplus::FontStyleUnderline) ? TRUE : FALSE,
-		(style & Gdiplus::FontStyleStrikeout) ? TRUE : FALSE,
-		DEFAULT_CHARSET,
-		OUT_DEFAULT_PRECIS,
-		CLIP_DEFAULT_PRECIS,
-		DEFAULT_QUALITY,
-		DEFAULT_PITCH | FF_DONTCARE,
-		name.data());
-}

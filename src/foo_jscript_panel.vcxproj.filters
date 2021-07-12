@@ -84,6 +84,9 @@
     <ClInclude Include="Helpers\FileInfoFilter.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="Helpers\FontHelpers.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
     <ClInclude Include="Helpers\Image.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>

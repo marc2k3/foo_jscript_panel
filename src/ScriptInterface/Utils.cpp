@@ -39,24 +39,7 @@ STDMETHODIMP Utils::CheckFont(BSTR name, VARIANT_BOOL* out)
 {
 	if (!out) return E_POINTER;
 
-	*out = VARIANT_FALSE;
-
-	Gdiplus::InstalledFontCollection fonts;
-	const int count = fonts.GetFamilyCount();
-	std::vector<Gdiplus::FontFamily> families(count);
-
-	int found = 0;
-	if (fonts.GetFamilies(count, families.data(), &found) == Gdiplus::Ok)
-	{
-		const auto& it = std::ranges::find_if(families, [name](const auto& family)
-			{
-				FontNameArray family_name;
-				family.GetFamilyName(family_name.data());
-				return _wcsicmp(family_name.data(), name) == 0;
-			});
-
-		*out = to_variant_bool(it != families.end());
-	}
+	*out = to_variant_bool(FontHelpers::check_name(name));
 	return S_OK;
 }
 
@@ -317,7 +300,7 @@ STDMETHODIMP Utils::ReadINI(BSTR filename, BSTR section, BSTR key, BSTR defaultv
 {
 	if (!out) return E_POINTER;
 
-	PathArray buffer;
+	PathString buffer;
 	GetPrivateProfileString(section, key, defaultval, buffer.data(), buffer.size(), filename);
 	*out = SysAllocString(buffer.data());
 	return S_OK;

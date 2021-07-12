@@ -17,14 +17,13 @@ STDMETHODIMP Gdi::Font(BSTR name, float pxSize, int style, IGdiFont** out)
 
 	*out = nullptr;
 
-	auto font = std::make_unique<Gdiplus::Font>(name, pxSize, style, Gdiplus::UnitPixel);
+	std::wstring name_checked = FontHelpers::check_name(name) ? name : L"Segoe UI";
+
+	auto font = std::make_unique<Gdiplus::Font>(name_checked.data(), pxSize, style, Gdiplus::UnitPixel);
 	if (ensure_gdiplus_object(font))
 	{
-		HFONT hFont = create_font(name, pxSize, style);
-		if (hFont != nullptr)
-		{
-			*out = new ComObjectImpl<GdiFont>(std::move(font), hFont);
-		}
+		CFont hFont = FontHelpers::create(name_checked, pxSize, style);
+		*out = new ComObjectImpl<GdiFont>(std::move(font), hFont.Detach());
 	}
 	return S_OK;
 }

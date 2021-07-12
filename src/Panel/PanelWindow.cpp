@@ -398,7 +398,7 @@ void PanelWindow::on_paint()
 
 	if (m_script_host->HasError())
 	{
-		CFont font = create_font(L"Segoe UI", 24, Gdiplus::FontStyleBold);
+		CFont font = FontHelpers::create(L"Segoe UI", 24, Gdiplus::FontStyleBold);
 		LOGBRUSH lbBack = { BS_SOLID, RGB(225, 60, 45), 0 };
 		CBrush hBack = CreateBrushIndirect(&lbBack);
 		SelectObjectScope scope(memdc, font);
