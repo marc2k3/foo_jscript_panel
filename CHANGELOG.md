@@ -1,4 +1,4 @@
-## v2.6.1 (dev)
+## v2.6.1
 - `window.GetFontCUI` and `window.GetFontDUI` have been updated so they never return null on failure. `Segoe UI` will be used instead.
 - `gdi.Font` has also been updated so if it fails, the fallback font is `Segoe UI`. Previous fallbacks were not always predictable and there could be mismatches between the `.Name` property and what was actually used. In theory, that should not happen now.
 - Add `utils.ListFonts`.
