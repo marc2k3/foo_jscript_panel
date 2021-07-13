@@ -30,7 +30,7 @@ namespace FontHelpers
 		FontString name;
 		Gdiplus::FontFamily fontFamily;
 		font->GetFamily(&fontFamily);
-		fontFamily.GetFamilyName(name.data(), LANG_NEUTRAL);
+		fontFamily.GetFamilyName(name.data());
 		return name;
 	}
 
