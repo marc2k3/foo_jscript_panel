@@ -2369,12 +2369,11 @@ oBrowser = function (name) {
 		_child01.AppendTo(_menu, MF_STRING, "Add to...");
 		_child01.AppendMenuItem(MF_STRING, 2000, "a New playlist...");
 
-		var pl_count = plman.PlaylistCount;
-		if (pl_count > 1) {
+		if (plman.PlaylistCount > 1) {
 			_child01.AppendMenuSeparator();
 		}
-		for (var i = 0; i < pl_count; i++) {
-			if (i != this.playlist && playlist_can_add_items(i)) {
+		for (var i = 0; i < plman.PlaylistCount; i++) {
+			if (playlist_can_add_items(i)) {
 				_child01.AppendMenuItem(MF_STRING, 2001 + i, plman.GetPlaylistName(i));
 			}
 		}
@@ -2392,8 +2391,11 @@ oBrowser = function (name) {
 			plman.InsertPlaylistItems(plman.PlaylistCount - 1, 0, this.metadblist_selection, false);
 			break;
 		default:
-			var insert_index = plman.PlaylistItemCount(idx - 2001);
-			plman.InsertPlaylistItems(idx - 2001, insert_index, this.metadblist_selection, false);
+			var target_playlist = idx - 2001;
+			plman.UndoBackup(target_playlist);
+			var base = plman.PlaylistItemCount(target_playlist);
+			plman.InsertPlaylistItems(target_playlist, base, this.metadblist_selection, false);
+			plman.ActivePlaylist = target_playlist;
 		}
 		_child01.Dispose();
 		_menu.Dispose();
