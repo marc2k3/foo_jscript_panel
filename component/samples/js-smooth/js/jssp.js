@@ -2558,7 +2558,7 @@ oBrowser = function (name) {
 		case idx == 0:
 			break;
 		case idx < 800:
-			Context.ExecuteByID(ret - 1);
+			Context.ExecuteByID(idx - 1);
 			break;
 		case idx == 1020:
 			plman.UndoBackup(g_active_playlist);
@@ -2570,8 +2570,8 @@ oBrowser = function (name) {
 			plman.InsertPlaylistItems(plman.PlaylistCount - 1, 0, this.metadblist_selection, false);
 			break;
 		default:
-			var insert_index = plman.PlaylistItemCount(ret - 2001);
-			plman.InsertPlaylistItems((ret - 2001), insert_index, this.metadblist_selection, false);
+			var insert_index = plman.PlaylistItemCount(idx - 2001);
+			plman.InsertPlaylistItems((idx - 2001), insert_index, this.metadblist_selection, false);
 		}
 		_child01.Dispose();
 		_child02.Dispose();
